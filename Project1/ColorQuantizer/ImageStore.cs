@@ -58,7 +58,6 @@ namespace ColorQuantizer
                             else
                             {
                                 colorCount[c]++;
-                                Console.WriteLine(c.ToString() + ": " + colorCount[c] + "\r\n");
                             }
                         }
                     }

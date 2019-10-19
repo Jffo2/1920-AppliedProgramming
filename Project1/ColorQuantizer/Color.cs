@@ -6,37 +6,37 @@ namespace ColorQuantizer
 {
     public class Color : IEquatable<Color>
     {
-        public int Red { get; set; }
-        public int Green { get; set; }
-        public int Blue { get; set; }
+        public int Channel1 { get; set; }
+        public int Channel2 { get; set; }
+        public int Channel3 { get; set; }
 
         public Color() { }
-        public Color(int red, int green, int blue)
+        public Color(int channel1, int channel2, int channel3)
         {
-            Red = red;
-            Green = green;
-            Blue = blue;
+            Channel1 = channel1;
+            Channel2 = channel2;
+            Channel3 = channel3;
         }
 
         public override string ToString()
         {
-            return $"({Red}, {Green}, {Blue})";
+            return $"({Channel1}, {Channel2}, {Channel3})";
         }
 
         public bool Equals(Color other)
         {
             return other != null &&
-                   Red == other.Red &&
-                   Green == other.Green &&
-                   Blue == other.Blue;
+                   Channel1 == other.Channel1 &&
+                   Channel2 == other.Channel2 &&
+                   Channel3 == other.Channel3;
         }
 
         public override int GetHashCode()
         {
             var hashCode = -1058441243;
-            hashCode = hashCode * -1521134295 + Red.GetHashCode();
-            hashCode = hashCode * -1521134295 + Green.GetHashCode();
-            hashCode = hashCode * -1521134295 + Blue.GetHashCode();
+            hashCode = hashCode * -1521134295 + Channel1.GetHashCode();
+            hashCode = hashCode * -1521134295 + Channel2.GetHashCode();
+            hashCode = hashCode * -1521134295 + Channel3.GetHashCode();
             return hashCode;
         }
     }
