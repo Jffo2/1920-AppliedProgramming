@@ -32,9 +32,12 @@
             this.ButtonLoadImage = new System.Windows.Forms.Button();
             this.LabelPath = new System.Windows.Forms.Label();
             this.OpenFileDialogImageLoader = new System.Windows.Forms.OpenFileDialog();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.PictureBoxHistogram = new System.Windows.Forms.PictureBox();
+            this.PictureBoxQuantized = new System.Windows.Forms.PictureBox();
+            this.ProgressBarQuantization = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).BeginInit();
             this.SuspendLayout();
             // 
             // PictureBoxLoadedImage
@@ -68,25 +71,45 @@
             // 
             // OpenFileDialogImageLoader
             // 
-            this.OpenFileDialogImageLoader.Filter = "Bitmap files|*.bmp";
+            this.OpenFileDialogImageLoader.Filter = "Bitmap files|*.bmp|PNG files|*.png";
             this.OpenFileDialogImageLoader.InitialDirectory = ".";
             // 
-            // pictureBox1
+            // PictureBoxHistogram
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(622, 37);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(497, 347);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
+            this.PictureBoxHistogram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PictureBoxHistogram.Location = new System.Drawing.Point(622, 37);
+            this.PictureBoxHistogram.Name = "PictureBoxHistogram";
+            this.PictureBoxHistogram.Size = new System.Drawing.Size(497, 347);
+            this.PictureBoxHistogram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBoxHistogram.TabIndex = 3;
+            this.PictureBoxHistogram.TabStop = false;
+            // 
+            // PictureBoxQuantized
+            // 
+            this.PictureBoxQuantized.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PictureBoxQuantized.Location = new System.Drawing.Point(12, 414);
+            this.PictureBoxQuantized.Name = "PictureBoxQuantized";
+            this.PictureBoxQuantized.Size = new System.Drawing.Size(497, 347);
+            this.PictureBoxQuantized.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBoxQuantized.TabIndex = 4;
+            this.PictureBoxQuantized.TabStop = false;
+            // 
+            // ProgressBarQuantization
+            // 
+            this.ProgressBarQuantization.Location = new System.Drawing.Point(12, 388);
+            this.ProgressBarQuantization.Name = "ProgressBarQuantization";
+            this.ProgressBarQuantization.Size = new System.Drawing.Size(497, 23);
+            this.ProgressBarQuantization.Step = 2;
+            this.ProgressBarQuantization.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1142, 773);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.ProgressBarQuantization);
+            this.Controls.Add(this.PictureBoxQuantized);
+            this.Controls.Add(this.PictureBoxHistogram);
             this.Controls.Add(this.LabelPath);
             this.Controls.Add(this.ButtonLoadImage);
             this.Controls.Add(this.PictureBoxLoadedImage);
@@ -94,7 +117,8 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -106,7 +130,9 @@
         private System.Windows.Forms.Button ButtonLoadImage;
         private System.Windows.Forms.Label LabelPath;
         private System.Windows.Forms.OpenFileDialog OpenFileDialogImageLoader;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox PictureBoxHistogram;
+        private System.Windows.Forms.PictureBox PictureBoxQuantized;
+        private System.Windows.Forms.ProgressBar ProgressBarQuantization;
     }
 }
 

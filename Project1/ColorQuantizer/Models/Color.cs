@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ColorQuantizer
+namespace ImageProcessing.Models
 {
     public class Color : IEquatable<Color>
     {
-        public int Channel1 { get; set; }
-        public int Channel2 { get; set; }
-        public int Channel3 { get; set; }
+        public byte Channel1 { get; set; }
+        public byte Channel2 { get; set; }
+        public byte Channel3 { get; set; }
 
         public Color() { }
-        public Color(int channel1, int channel2, int channel3)
+        public Color(byte channel1, byte channel2, byte channel3)
         {
             Channel1 = channel1;
             Channel2 = channel2;
@@ -39,5 +39,12 @@ namespace ColorQuantizer
             hashCode = hashCode * -1521134295 + Channel3.GetHashCode();
             return hashCode;
         }
+    }
+
+    public enum Channel
+    {
+        CHANNEL1,
+        CHANNEL2,
+        CHANNEL3
     }
 }

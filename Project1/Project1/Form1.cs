@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using ImageProcessing.Logic;
+using ImageProcessing.Logic.Quantizers;
+using ImageProcessing.Presentation;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ColorQuantizer;
 
 namespace Project1
 {
     public partial class Form1 : Form
     {
         private string ImagePath;
-        private ImageStore colorQuantizer;
+        private ImageStore imageStore;
+        private SimpleDrawer drawer;
 
         public Form1()
         {
@@ -34,18 +33,33 @@ namespace Project1
                 LabelPath.Text = ImagePath;
                 var image = new Bitmap(ImagePath);
                 PictureBoxLoadedImage.Image = image;
-                colorQuantizer = new ImageStore(image);
-                while (colorQuantizer.Histogram==null)
-                {
-                    Application.DoEvents();
-                }
-                VisualizeHistogram();
+                imageStore = new ImageStore(image, new SimpleQuantizer());
+                drawer = new SimpleDrawer(imageStore);
+                imageStore.InitFinished += AfterInit;
+                drawer.ProgressUpdate += ProgressUpdate;
+                
             }
         }
 
-        private async void VisualizeHistogram()
+        private async void SetQuantizedImage()
         {
-            pictureBox1.Image = await colorQuantizer.Histogram.VisualizeAsync(pictureBox1.Height, pictureBox1.Width);
+            PictureBoxQuantized.Image = await drawer.DrawAsync();
+        }
+
+        private async void AfterInit(object sender, EventArgs args)
+        {
+            PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
+            // Quantizer must be populated first
+            SetQuantizedImage();
+        }
+
+        private void ProgressUpdate(object sender, ProgressEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("Progress: " + args.Progress);
+            ProgressBarQuantization.Invoke(new Action(() =>
+            {
+                ProgressBarQuantization.Value = args.Progress;
+            }));
         }
     }
 }

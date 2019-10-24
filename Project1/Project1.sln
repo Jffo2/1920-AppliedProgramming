@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project1", "Project1\Project1.csproj", "{F2EAC6C1-A8C8-4111-BF84-E5D59E481472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorQuantizer", "ColorQuantizer\ColorQuantizer.csproj", "{7781A44D-4DA7-4E85-9F41-0579CCC9A3A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessing", "ColorQuantizer\ImageProcessing.csproj", "{7781A44D-4DA7-4E85-9F41-0579CCC9A3A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

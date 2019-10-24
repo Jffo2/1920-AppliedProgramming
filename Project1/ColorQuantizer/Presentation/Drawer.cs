@@ -1,29 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using ImageProcessing.Logic;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
+using ImageProcessing.Models;
 using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
-namespace ColorQuantizer
+namespace ImageProcessing.Presentation
 {
-    public class Histogram
+    public abstract class Drawer : IDrawer
     {
-        public Dictionary<Color, int> ColorCount { get; }
+        public abstract event EventHandler<ProgressEventArgs> ProgressUpdate;
 
-        public Histogram(Dictionary<Color, int> colorCount)
+        protected readonly ImageStore imageStore;
+        public Drawer(ImageStore imageStore)
         {
-            ColorCount = colorCount;
+            this.imageStore = imageStore;
         }
 
-        public override string ToString()
-        {
-            string s = "";
-            foreach (KeyValuePair<Color, int> keyValuePair in ColorCount)
-            {
-                s += keyValuePair.Key.ToString() + ": " + keyValuePair.Value + "\r\n";
-            }
-            return s;
-        }
+        public abstract Bitmap Draw();
+        public abstract Task<Bitmap> DrawAsync();
 
-        public Bitmap Visualize(int height, int width)
+        public Bitmap VisualizeHistogram(int height, int width)
         {
             Bitmap bmp = new Bitmap(width, height);
             int padding = 10;
@@ -44,7 +43,8 @@ namespace ColorQuantizer
                 for (int channel = 0; channel <= 3; channel++)
                 {
                     var colorsOfChannel = GetChannelCount((Channel)channel);
-                    float ydelta = histogramSize / (float)Max(colorsOfChannel);
+                    float ydelta = histogramSize / (float)Util.Math.Max(colorsOfChannel);
+                    g.DrawString("Channel" + (channel + 1), new Font(FontFamily.GenericSansSerif, 8), new SolidBrush(System.Drawing.Color.Black), 2 * padding, (channel + 1) * padding + channel * histogramSize, StringFormat.GenericDefault);
                     for (int xoffset = 0; xoffset < 255; xoffset += 1)
                     {
                         g.DrawLine(new Pen(new SolidBrush(System.Drawing.Color.Red)), xoffset * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset] * ydelta, (xoffset + 1) * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset + 1] * ydelta);
@@ -55,29 +55,11 @@ namespace ColorQuantizer
             return bmp;
         }
 
-        private int Max(int[] values)
-        {
-            int max = 0;
-            foreach (int value in values)
-            {
-                if (value > max) max = value;
-            }
-            return max;
-        }
-
-        public Task<Bitmap> VisualizeAsync(int height, int width)
-        {
-            return Task.Run(() =>
-            {
-                return Visualize(height, width);
-            });
-        }
-
-        public int[] GetChannelCount(Channel channel)
+        private int[] GetChannelCount(Channel channel)
         {
             int[] count = new int[256];
 
-            foreach (KeyValuePair<Color, int> keyValue in ColorCount)
+            foreach (KeyValuePair<Models.Color, int> keyValue in imageStore.Histogram.ColorCount)
             {
                 count[channel == Channel.CHANNEL1 ? (keyValue.Key.Channel1) : (channel == Channel.CHANNEL2) ? keyValue.Key.Channel2 : keyValue.Key.Channel3] += keyValue.Value;
             }
@@ -85,12 +67,34 @@ namespace ColorQuantizer
             return count;
         }
 
-    }
+        public Task<Bitmap> VisualizeHistogramAsync(int height, int width)
+        {
+            return Task.Run(() =>
+            {
+                return VisualizeHistogram(height, width);
+            });
+        }
 
-    public enum Channel
+        public void CopyPalette(Bitmap b)
+        {
+            List<Models.Color> palette = imageStore.Quantizer.GetPalette();
+            ColorPalette newPalette = b.Palette;
+            for (int i = 0; i < palette.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine($"Adding {palette[i]} to the palette as color {i}");
+                newPalette.Entries[i] = System.Drawing.Color.FromArgb(255, palette[i].Channel1, palette[i].Channel2, palette[i].Channel3);
+            }
+            b.Palette = newPalette;
+        }
+
+    }
+    public class ProgressEventArgs : EventArgs
     {
-        CHANNEL1,
-        CHANNEL2,
-        CHANNEL3
+        public int Progress { get; }
+
+        public ProgressEventArgs(int progress)
+        {
+            Progress = progress;
+        }
     }
 }
