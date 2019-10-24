@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Drawing;
-using ImageProcessing.Logic.Quantizers;
+﻿using ImageProcessing.Logic.Quantizers;
 using ImageProcessing.Util;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace ImageProcessing.Logic
 {
@@ -61,31 +64,50 @@ namespace ImageProcessing.Logic
         {
             return Task.Run(() =>
             {
-                var colorCount = new Dictionary<Models.Color, int>();
+                var colorCount = new ConcurrentDictionary<Color, int>();
                 Bitmap i;
                 lock (Image)
                 {
                     i = Cloner.DeepClone(Image);
                 }
-                    for (int height = 0; height < i.Height; height++)
+                Task[] tasks = new Task[i.Height];
+                var totalHeight = i.Height;
+                var totalWidth = i.Width;
+                BitmapData data = i.LockBits(new Rectangle(0, 0, totalWidth, totalHeight), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                Int64 offset = data.Scan0.ToInt64();
+
+                for (int height = 0; height < totalHeight; height++)
+                {
+                    var h = height;
+                    Task t = Task.Run(() =>
                     {
-                        for (int width = 0; width < i.Width; width++)
+                        int[] line = new int[totalWidth];
+
+                        Marshal.Copy(new IntPtr(offset), line, 0, totalWidth);
+
+                        for (int width = 0; width < totalWidth; width++)
                         {
-                            var pixel = i.GetPixel(width, height);
-                            Models.Color c = new Models.Color(pixel.R, pixel.G, pixel.B);
-                            quantizer.AddColor(c);
-                            if (!colorCount.ContainsKey(c))
+                            Color color = Color.FromArgb(line[width]);
+
+                            lock (quantizer)
                             {
-                                colorCount.Add(c, 1);
+                                quantizer.AddColor(color);
+                            }
+                            if (!colorCount.ContainsKey(color))
+                            {
+                                colorCount.TryAdd(color, 1);
                             }
                             else
                             {
-                                colorCount[c]++;
+                                colorCount[color]++;
                             }
                         }
-                    }
-                
-                return new Histogram(colorCount);
+                        offset += data.Stride;
+                    });
+                    tasks[height] = t;
+                }
+                Task.WaitAll(tasks);
+                return new Histogram(new Dictionary<Color, int>(colorCount));
             });
         }
 

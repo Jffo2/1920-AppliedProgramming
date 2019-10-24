@@ -35,6 +35,7 @@
             this.PictureBoxHistogram = new System.Windows.Forms.PictureBox();
             this.PictureBoxQuantized = new System.Windows.Forms.PictureBox();
             this.ProgressBarQuantization = new System.Windows.Forms.ProgressBar();
+            this.LabelColorDistance = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).BeginInit();
@@ -102,11 +103,20 @@
             this.ProgressBarQuantization.Step = 2;
             this.ProgressBarQuantization.TabIndex = 5;
             // 
+            // LabelColorDistance
+            // 
+            this.LabelColorDistance.AutoSize = true;
+            this.LabelColorDistance.Location = new System.Drawing.Point(12, 777);
+            this.LabelColorDistance.Name = "LabelColorDistance";
+            this.LabelColorDistance.Size = new System.Drawing.Size(0, 13);
+            this.LabelColorDistance.TabIndex = 6;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1142, 773);
+            this.ClientSize = new System.Drawing.Size(1142, 802);
+            this.Controls.Add(this.LabelColorDistance);
             this.Controls.Add(this.ProgressBarQuantization);
             this.Controls.Add(this.PictureBoxQuantized);
             this.Controls.Add(this.PictureBoxHistogram);
@@ -133,6 +143,7 @@
         private System.Windows.Forms.PictureBox PictureBoxHistogram;
         private System.Windows.Forms.PictureBox PictureBoxQuantized;
         private System.Windows.Forms.ProgressBar ProgressBarQuantization;
+        private System.Windows.Forms.Label LabelColorDistance;
     }
 }
 

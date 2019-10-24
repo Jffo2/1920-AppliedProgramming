@@ -7,9 +7,9 @@ namespace ImageProcessing.Logic
 {
     public class Histogram
     {
-        public Dictionary<Models.Color, int> ColorCount { get; }
+        public Dictionary<System.Drawing.Color, int> ColorCount { get; }
 
-        public Histogram(Dictionary<Models.Color, int> colorCount)
+        public Histogram(Dictionary<System.Drawing.Color, int> colorCount)
         {
             ColorCount = colorCount;
         }
@@ -17,7 +17,7 @@ namespace ImageProcessing.Logic
         public override string ToString()
         {
             string s = "";
-            foreach (KeyValuePair<Models.Color, int> keyValuePair in ColorCount)
+            foreach (KeyValuePair<System.Drawing.Color, int> keyValuePair in ColorCount)
             {
                 s += keyValuePair.Key.ToString() + ": " + keyValuePair.Value + "\r\n";
             }

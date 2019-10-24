@@ -18,6 +18,8 @@ namespace ImageProcessing.Presentation
 
         public const int ROWS_PER_THREAD = 6;
 
+        private double TotalError;
+
         public SimpleDrawer(ImageStore imageStore) : base(imageStore)
         {
             
@@ -37,6 +39,7 @@ namespace ImageProcessing.Presentation
             {
                 throw new Exception("The Quantizer was not ready yet.");
             }
+            TotalError = 0;
             Bitmap bitmap;
             lock (imageStore.Image)
             {
@@ -92,6 +95,7 @@ namespace ImageProcessing.Presentation
                             {
                                 Color color = Color.FromArgb(sourceLine[index]);
                                 targetLine[index] = imageStore.Quantizer.GetPaletteIndex(color);
+                                TotalError += System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
                             }
 
                             Marshal.Copy(targetLine, 0, new IntPtr(targetOffsett), width);
@@ -114,6 +118,7 @@ namespace ImageProcessing.Presentation
                 }
 
                 Task.WaitAll(tasks);
+                AverageError = TotalError / total;
             }
             catch (Exception e)
             {

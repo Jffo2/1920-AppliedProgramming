@@ -18,6 +18,13 @@ namespace ImageProcessing.Models
             Channel3 = channel3;
         }
 
+        public Color(System.Drawing.Color c)
+        {
+            Channel1 = c.R;
+            Channel2 = c.G;
+            Channel3 = c.B;
+        }
+
         public override string ToString()
         {
             return $"({Channel1}, {Channel2}, {Channel3})";

@@ -35,9 +35,6 @@ namespace ImageProcessing.Logic.Quantizers
                 var rDelta = (byte)((maxR - minR) / 8.0);
                 var gDelta = (byte)((maxG - minG) / 8.0);
                 var bDelta = (byte)((maxB - minB) / 4.0);
-                System.Diagnostics.Debug.WriteLine($"min({minR},{minG},{minB})");
-                System.Diagnostics.Debug.WriteLine($"max({maxR},{maxG},{maxB})");
-                System.Diagnostics.Debug.WriteLine($"delta({rDelta},{gDelta},{bDelta})");
                 lock (palette)
                 {
                     for (int R = 0; R < 8; R++)
@@ -54,33 +51,31 @@ namespace ImageProcessing.Logic.Quantizers
             }
         }
 
-        public void AddColor(Models.Color c)
+        public void AddColor(System.Drawing.Color c)
         {
-            minR = (c.Channel1 < minR) ? c.Channel1 : minR;
-            maxR = (c.Channel1 > maxR) ? c.Channel1 : maxR;
+            minR = (c.R < minR) ? c.R : minR;
+            maxR = (c.R > maxR) ? c.R : maxR;
 
-            minG = (c.Channel2 < minG) ? c.Channel2 : minG;
-            maxG = (c.Channel2 > maxG) ? c.Channel2 : maxG;
+            minG = (c.G < minG) ? c.G : minG;
+            maxG = (c.G > maxG) ? c.G : maxG;
 
-            minB = (c.Channel3 < minB) ? c.Channel3 : minB;
-            maxB = (c.Channel3 > maxB) ? c.Channel3 : maxB;
+            minB = (c.B < minB) ? c.B : minB;
+            maxB = (c.B > maxB) ? c.B : maxB;
         }
 
         public byte GetPaletteIndex(Models.Color c)
         {
-            //System.Diagnostics.Debug.WriteLine($"Quantizer is calculating palette index");
             byte index = 0;
             Models.Color bestColor = palette[0];
             for (int i = 0; i < palette.Count; i++)
             {
-                if (Distance(palette[i], c) < Distance(bestColor, c))
+                if (Util.Math.Distance(palette[i], c) < Util.Math.Distance(bestColor, c))
                 {
-                    //System.Diagnostics.Debug.WriteLine($"Quantizer found shorter distance, adding color {palette[i]}");
                     bestColor = palette[i];
                     index = (byte)i;
                 }
             }
-            //System.Diagnostics.Debug.WriteLine($"Quantizer found best color at {index}");
+
             return index;
         }
 
@@ -92,15 +87,17 @@ namespace ImageProcessing.Logic.Quantizers
             });
         }
 
-        public int Distance(Models.Color color, Models.Color other)
-        {
-            return (color.Channel1 - other.Channel1) * (color.Channel1 - other.Channel1) + (color.Channel2 - other.Channel2) * (color.Channel2 - other.Channel2) + (color.Channel3 - other.Channel3) * (color.Channel3 - other.Channel3);
-        }
+        
 
         public byte GetPaletteIndex(System.Drawing.Color c)
         {
             Models.Color color = new Models.Color(c.R, c.G, c.B);
             return GetPaletteIndex(color);
+        }
+
+        public Models.Color GetColorByIndex(byte index)
+        {
+            return palette[index];
         }
     }
 }

@@ -11,6 +11,8 @@ namespace ImageProcessing.Presentation
 {
     public abstract class Drawer : IDrawer
     {
+        public double AverageError { get; protected set; }
+
         public abstract event EventHandler<ProgressEventArgs> ProgressUpdate;
 
         protected readonly ImageStore imageStore;
@@ -59,9 +61,9 @@ namespace ImageProcessing.Presentation
         {
             int[] count = new int[256];
 
-            foreach (KeyValuePair<Models.Color, int> keyValue in imageStore.Histogram.ColorCount)
+            foreach (KeyValuePair<System.Drawing.Color, int> keyValue in imageStore.Histogram.ColorCount)
             {
-                count[channel == Channel.CHANNEL1 ? (keyValue.Key.Channel1) : (channel == Channel.CHANNEL2) ? keyValue.Key.Channel2 : keyValue.Key.Channel3] += keyValue.Value;
+                count[channel == Channel.CHANNEL1 ? (keyValue.Key.R) : (channel == Channel.CHANNEL2) ? keyValue.Key.G : keyValue.Key.B] += keyValue.Value;
             }
 
             return count;

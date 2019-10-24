@@ -44,6 +44,7 @@ namespace Project1
         private async void SetQuantizedImage()
         {
             PictureBoxQuantized.Image = await drawer.DrawAsync();
+            LabelColorDistance.Text = ""+drawer.AverageError;
         }
 
         private async void AfterInit(object sender, EventArgs args)
@@ -55,10 +56,9 @@ namespace Project1
 
         private void ProgressUpdate(object sender, ProgressEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("Progress: " + args.Progress);
             ProgressBarQuantization.Invoke(new Action(() =>
             {
-                ProgressBarQuantization.Value = args.Progress;
+                ProgressBarQuantization.Value = (ProgressBarQuantization.Value>args.Progress)? ProgressBarQuantization.Value : args.Progress;
             }));
         }
     }
