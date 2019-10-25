@@ -1,4 +1,5 @@
-﻿using ImageProcessing.Logic.Quantizers;
+﻿using ImageProcessing.Logic.Ditherers;
+using ImageProcessing.Logic.Quantizers;
 using ImageProcessing.Util;
 using System;
 using System.Collections.Concurrent;
@@ -14,6 +15,7 @@ namespace ImageProcessing.Logic
     {
         private Bitmap image;
         private IQuantizer quantizer;
+        private IDitherer ditherer;
 
         public bool QuantizerReady { get; private set; }
 
@@ -32,6 +34,18 @@ namespace ImageProcessing.Logic
             }
         }
 
+        public IDitherer Ditherer
+        {
+            get
+            {
+                return ditherer;
+            }
+            set
+            {
+                ditherer = value ?? throw new ArgumentNullException();
+            }
+        }
+
         public IQuantizer Quantizer
         {
             get
@@ -47,10 +61,11 @@ namespace ImageProcessing.Logic
         public Histogram Histogram { get; set; }
 
 
-        public ImageStore(Bitmap image, IQuantizer quantizer)
+        public ImageStore(Bitmap image, IQuantizer quantizer, IDitherer ditherer)
         {
             Image = Cloner.DeepClone(image);
             Quantizer = quantizer;
+            Ditherer = ditherer;
         }
 
         public async void Init()

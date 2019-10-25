@@ -46,6 +46,21 @@ namespace ImageProcessing.Models
             hashCode = hashCode * -1521134295 + Channel3.GetHashCode();
             return hashCode;
         }
+
+        public static Color operator +(Color c, Color d)
+        {
+            if (c == null && d == null) return new Color(0, 0, 0);
+            if (c == null) return d;
+            if (d == null) return c;
+            var sum1 = c.Channel1 + d.Channel1;
+            var sum2 = c.Channel2 + d.Channel2;
+            var sum3 = c.Channel3 + d.Channel3;
+            return new Color((byte)(sum1 < 0 ? 0 : (sum1>255)? 255 : sum1), (byte)(sum2 < 0 ? 0 : (sum2 > 255) ? 255 : sum2), (byte)(sum3 < 0 ? 0 : (sum3 > 255) ? 255 : sum3));
+        }
+        public static Color operator +(Color c, int s)
+        {
+            return c + new Color((byte)s, (byte)s, (byte)s);
+        }
     }
 
     public enum Channel

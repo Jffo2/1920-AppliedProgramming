@@ -1,4 +1,5 @@
 ﻿using ImageProcessing.Logic;
+using ImageProcessing.Logic.Ditherers;
 using ImageProcessing.Logic.Quantizers;
 using ImageProcessing.Presentation;
 using System;
@@ -13,7 +14,7 @@ namespace Project1
     {
         private string ImagePath;
         private ImageStore imageStore;
-        private SimpleDrawer drawer;
+        private Drawer drawer;
 
         public Form1()
         {
@@ -29,15 +30,15 @@ namespace Project1
         {
             if (OpenFileDialogImageLoader.ShowDialog()==DialogResult.OK)
             {
+                ProgressBarQuantization.Value = 0;
                 ImagePath = OpenFileDialogImageLoader.FileName;
                 LabelPath.Text = ImagePath;
                 var image = new Bitmap(ImagePath);
                 PictureBoxLoadedImage.Image = image;
-                imageStore = new ImageStore(image, new SimpleQuantizer());
-                drawer = new SimpleDrawer(imageStore);
+                imageStore = new ImageStore(image, new SimpleQuantizer(),new FloydSteinbergDitherer());
+                drawer = new SynchronousDitheredDrawer(imageStore);
                 imageStore.InitFinished += AfterInit;
                 drawer.ProgressUpdate += ProgressUpdate;
-                
             }
         }
 
