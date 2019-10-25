@@ -6,13 +6,14 @@ namespace ImageProcessing.Models
 {
     public class Color : IEquatable<Color>
     {
-        public byte Channel1 { get; set; }
-        public byte Channel2 { get; set; }
-        public byte Channel3 { get; set; }
+        public int Channel1 { get; set; }
+        public int Channel2 { get; set; }
+        public int Channel3 { get; set; }
 
         public Color() { }
-        public Color(byte channel1, byte channel2, byte channel3)
+        public Color(int channel1, int channel2, int channel3)
         {
+            if (channel1 > 255 || channel2 > 255 || channel3 > 255 || channel1 < -255 || channel2 < -255 || channel3 < -255) throw new ArgumentException("Invalid range");
             Channel1 = channel1;
             Channel2 = channel2;
             Channel3 = channel3;
@@ -55,11 +56,16 @@ namespace ImageProcessing.Models
             var sum1 = c.Channel1 + d.Channel1;
             var sum2 = c.Channel2 + d.Channel2;
             var sum3 = c.Channel3 + d.Channel3;
-            return new Color((byte)(sum1 < 0 ? 0 : (sum1>255)? 255 : sum1), (byte)(sum2 < 0 ? 0 : (sum2 > 255) ? 255 : sum2), (byte)(sum3 < 0 ? 0 : (sum3 > 255) ? 255 : sum3));
+            return new Color((sum1 < -255 ? -255 : (sum1>255)? 255 : sum1), (sum2 < -255 ? -255 : (sum2 > 255) ? 255 : sum2), (sum3 < -255 ? -255 : (sum3 > 255) ? 255 : sum3));
         }
         public static Color operator +(Color c, int s)
         {
-            return c + new Color((byte)s, (byte)s, (byte)s);
+            return c + new Color(s, s, s);
+        }
+
+        public static int[] operator -(Color c, Color d)
+        {
+            return new int[]{ c.Channel1 - d.Channel1, c.Channel2-d.Channel2, c.Channel3 - d.Channel3};
         }
     }
 

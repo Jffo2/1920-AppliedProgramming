@@ -19,12 +19,13 @@ namespace ImageProcessing.Logic.Ditherers
             throw new NotImplementedException();
         }
 
-        void IDitherer.Dither(int distance, Models.Color[] ditherDistortionArray, long offset, long stride)
+        void IDitherer.Dither(Models.Color original, Models.Color palette, Models.Color[] ditherDistortionArray, long offset, long stride)
         {
-            ditherDistortionArray[offset + 1] += ((7 * distance) >> 4);
-            ditherDistortionArray[offset + stride - 1] += ((3 * distance) >> 4);
-            ditherDistortionArray[offset + stride] += ((5 * distance) >> 4);
-            ditherDistortionArray[offset + stride + 1] += ((1 * distance) >> 4);
+            var distances = original - palette;
+            ditherDistortionArray[offset + 1] += new Models.Color(((7 *distances[0]) >> 4), ((7 * distances[1]) >> 4), ((7 * distances[2]) >> 4));
+            ditherDistortionArray[offset + stride - 1] += new Models.Color(((3 * distances[0]) >> 4), ((3 * distances[1]) >> 4), ((3 * distances[2]) >> 4));
+            ditherDistortionArray[offset + stride] += new Models.Color(((5 * distances[0]) >> 4), ((5 * distances[1]) >> 4), ((5 * distances[2]) >> 4));
+            ditherDistortionArray[offset + stride + 1] += new Models.Color(((1 * distances[0]) >> 4), ((1 * distances[1]) >> 4), ((1 * distances[2]) >> 4));
         }
     }
 }

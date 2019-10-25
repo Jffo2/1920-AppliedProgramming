@@ -73,14 +73,16 @@ namespace ImageProcessing.Presentation
                         // Read the color from the source image
                         Color color = Color.FromArgb(sourceLine[index]);
                         // Add the dithering to the pixel
-                        var colorAsColor = new Models.Color(color) + ditherDistortion[index * row];
+                        var colorAsColor = new Models.Color(color) + ditherDistortion[index + row*width];
                         // Get the index of the color closest to the dithered pixel
                         targetLine[index] = imageStore.Quantizer.GetPaletteIndex(colorAsColor);
                         // Get the distance to dither the other pixels!
                         var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
                         if (index != 0 && index != width - 1 && row != height - 1)
+                        {
                             // TODO: Instead of using a single positive distance, add per pixel distance and allow it to be negative!
-                            ditherer.Dither((int)distance, ditherDistortion, row*width + index, width);
+                            ditherer.Dither(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, row * width + index, width);
+                        }
                         TotalError += distance;
                     }
 
