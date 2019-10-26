@@ -35,7 +35,7 @@ namespace Project1
                 LabelPath.Text = ImagePath;
                 var image = new Bitmap(ImagePath);
                 PictureBoxLoadedImage.Image = image;
-                imageStore = new ImageStore(image, new SimpleQuantizer(),new FloydSteinbergDitherer());
+                imageStore = new ImageStore(image, new BWQuantizer(),new JarvisJudiceNinkeDitherer());
                 drawer = new SynchronousDitheredDrawer(imageStore);
                 imageStore.InitFinished += AfterInit;
                 drawer.ProgressUpdate += ProgressUpdate;

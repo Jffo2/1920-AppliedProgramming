@@ -6,16 +6,8 @@ using System.Threading.Tasks;
 
 namespace ImageProcessing.Logic.Quantizers
 {
-    public class SimpleQuantizer : IQuantizer
+    public class SimpleQuantizer : Quantizer
     {
-        private readonly List<Models.Color> palette;
-
-        public List<Models.Color> GetPalette()
-        {
-            PopulatePalette();
-            return palette;
-        }
-
         private byte minR = 255;
         private byte maxR = 0;
         private byte minG = 255;
@@ -23,12 +15,12 @@ namespace ImageProcessing.Logic.Quantizers
         private byte minB = 255;
         private byte maxB = 0;
 
-        public SimpleQuantizer()
+        public SimpleQuantizer() : base()
         {
-            palette = new List<Models.Color>();
+            
         }
 
-        private void PopulatePalette()
+        protected override void PopulatePalette()
         {
             if (palette.Count == 0)
             {
@@ -51,7 +43,7 @@ namespace ImageProcessing.Logic.Quantizers
             }
         }
 
-        public void AddColor(System.Drawing.Color c)
+        public override void AddColor(System.Drawing.Color c)
         {
             minR = (c.R < minR) ? c.R : minR;
             maxR = (c.R > maxR) ? c.R : maxR;
@@ -63,41 +55,12 @@ namespace ImageProcessing.Logic.Quantizers
             maxB = (c.B > maxB) ? c.B : maxB;
         }
 
-        public byte GetPaletteIndex(Models.Color c)
-        {
-            byte index = 0;
-            Models.Color bestColor = palette[0];
-            for (int i = 0; i < palette.Count; i++)
-            {
-                if (Util.Math.Distance(palette[i], c) < Util.Math.Distance(bestColor, c))
-                {
-                    bestColor = palette[i];
-                    index = (byte)i;
-                }
-            }
-
-            return index;
-        }
-
-        public Task<byte> GetPaletteIndexAsync(Models.Color c)
+        public Task<int> GetPaletteIndexAsync(Models.Color c)
         {
             return Task.Run(() =>
             {
                 return GetPaletteIndex(c);
             });
-        }
-
-        
-
-        public byte GetPaletteIndex(System.Drawing.Color c)
-        {
-            Models.Color color = new Models.Color(c.R, c.G, c.B);
-            return GetPaletteIndex(color);
-        }
-
-        public Models.Color GetColorByIndex(byte index)
-        {
-            return palette[index];
         }
     }
 }

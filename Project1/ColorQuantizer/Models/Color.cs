@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ImageProcessing.Models
 {
@@ -56,7 +54,7 @@ namespace ImageProcessing.Models
             var sum1 = c.Channel1 + d.Channel1;
             var sum2 = c.Channel2 + d.Channel2;
             var sum3 = c.Channel3 + d.Channel3;
-            return new Color((sum1 < -255 ? -255 : (sum1>255)? 255 : sum1), (sum2 < -255 ? -255 : (sum2 > 255) ? 255 : sum2), (sum3 < -255 ? -255 : (sum3 > 255) ? 255 : sum3));
+            return new Color((sum1 < -255 ? -255 : (sum1 > 255) ? 255 : sum1), (sum2 < -255 ? -255 : (sum2 > 255) ? 255 : sum2), (sum3 < -255 ? -255 : (sum3 > 255) ? 255 : sum3));
         }
         public static Color operator +(Color c, int s)
         {
@@ -65,7 +63,7 @@ namespace ImageProcessing.Models
 
         public static int[] operator -(Color c, Color d)
         {
-            return new int[]{ c.Channel1 - d.Channel1, c.Channel2-d.Channel2, c.Channel3 - d.Channel3};
+            return new int[] { c.Channel1 - d.Channel1, c.Channel2 - d.Channel2, c.Channel3 - d.Channel3 };
         }
     }
 

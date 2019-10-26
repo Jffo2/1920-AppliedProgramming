@@ -94,7 +94,7 @@ namespace ImageProcessing.Presentation
                             for (int index = 0; index < width; index++)
                             {
                                 Color color = Color.FromArgb(sourceLine[index]);
-                                targetLine[index] = imageStore.Quantizer.GetPaletteIndex(color);
+                                targetLine[index] = (byte)imageStore.Quantizer.GetPaletteIndex(color);
                                 TotalError += System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
                             }
 
