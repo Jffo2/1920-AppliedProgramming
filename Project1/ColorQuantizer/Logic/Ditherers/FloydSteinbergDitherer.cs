@@ -27,21 +27,26 @@ namespace ImageProcessing.Logic.Ditherers
                 var distances = original - palette;
                 if (currentColumn != width - 1)
                 {
-                    ditherDistortionArray[offset + 1] += new Models.Color((7 * distances[0]) >> 4, (7 * distances[1]) >> 4, (7 * distances[2]) >> 4);
+                    ditherDistortionArray[offset + 1] += Apply(distances, 7); ;
                 }
                 if (currentRow != height - 1)
                 {
                     if (currentColumn != 0)
                     {
-                        ditherDistortionArray[offset + width - 1] += new Models.Color((3 * distances[0]) >> 4, (3 * distances[1]) >> 4, (3 * distances[2]) >> 4);
+                        ditherDistortionArray[offset + width - 1] += Apply(distances, 3);
                     }
-                    ditherDistortionArray[offset + width] += new Models.Color((5 * distances[0]) >> 4, (5 * distances[1]) >> 4, (5 * distances[2]) >> 4);
+                    ditherDistortionArray[offset + width] += Apply(distances, 5);
                     if (currentColumn != width - 1)
                     {
-                        ditherDistortionArray[offset + width + 1] += new Models.Color((1 * distances[0]) >> 4, (1 * distances[1]) >> 4, (1 * distances[2]) >> 4);
+                        ditherDistortionArray[offset + width + 1] += Apply(distances, 1);
                     }
                 }
             }
+        }
+
+        Models.Color Apply(int[] distances, int multiplier)
+        {
+            return new Models.Color((multiplier * distances[0]) >> 4, (multiplier * distances[1]) >> 4, (multiplier * distances[2]) >> 4);
         }
     }
 }

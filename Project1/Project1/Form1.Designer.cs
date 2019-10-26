@@ -36,9 +36,13 @@
             this.PictureBoxQuantized = new System.Windows.Forms.PictureBox();
             this.ProgressBarQuantization = new System.Windows.Forms.ProgressBar();
             this.LabelColorDistance = new System.Windows.Forms.Label();
+            this.PictureBoxQuantized2 = new System.Windows.Forms.PictureBox();
+            this.ProgressBarQuantization2 = new System.Windows.Forms.ProgressBar();
+            this.LabelColorDistance2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized2)).BeginInit();
             this.SuspendLayout();
             // 
             // PictureBoxLoadedImage
@@ -111,11 +115,40 @@
             this.LabelColorDistance.Size = new System.Drawing.Size(0, 13);
             this.LabelColorDistance.TabIndex = 6;
             // 
+            // PictureBoxQuantized2
+            // 
+            this.PictureBoxQuantized2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PictureBoxQuantized2.Location = new System.Drawing.Point(622, 414);
+            this.PictureBoxQuantized2.Name = "PictureBoxQuantized2";
+            this.PictureBoxQuantized2.Size = new System.Drawing.Size(497, 347);
+            this.PictureBoxQuantized2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBoxQuantized2.TabIndex = 7;
+            this.PictureBoxQuantized2.TabStop = false;
+            // 
+            // ProgressBarQuantization2
+            // 
+            this.ProgressBarQuantization2.Location = new System.Drawing.Point(622, 388);
+            this.ProgressBarQuantization2.Name = "ProgressBarQuantization2";
+            this.ProgressBarQuantization2.Size = new System.Drawing.Size(497, 23);
+            this.ProgressBarQuantization2.Step = 2;
+            this.ProgressBarQuantization2.TabIndex = 8;
+            // 
+            // LabelColorDistance2
+            // 
+            this.LabelColorDistance2.AutoSize = true;
+            this.LabelColorDistance2.Location = new System.Drawing.Point(619, 777);
+            this.LabelColorDistance2.Name = "LabelColorDistance2";
+            this.LabelColorDistance2.Size = new System.Drawing.Size(0, 13);
+            this.LabelColorDistance2.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1142, 802);
+            this.Controls.Add(this.LabelColorDistance2);
+            this.Controls.Add(this.ProgressBarQuantization2);
+            this.Controls.Add(this.PictureBoxQuantized2);
             this.Controls.Add(this.LabelColorDistance);
             this.Controls.Add(this.ProgressBarQuantization);
             this.Controls.Add(this.PictureBoxQuantized);
@@ -129,6 +162,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,6 +178,9 @@
         private System.Windows.Forms.PictureBox PictureBoxQuantized;
         private System.Windows.Forms.ProgressBar ProgressBarQuantization;
         private System.Windows.Forms.Label LabelColorDistance;
+        private System.Windows.Forms.PictureBox PictureBoxQuantized2;
+        private System.Windows.Forms.ProgressBar ProgressBarQuantization2;
+        private System.Windows.Forms.Label LabelColorDistance2;
     }
 }
 

@@ -28,19 +28,9 @@ namespace ImageProcessing.Logic.Quantizers
         public override int GetPaletteIndex(Models.Color c)
         {
             if (palette == null) PopulatePalette();
-            int index = 0;
-            Models.Color bestColor = palette[0];
-            c += new Models.Color(30, 30, 30);
-            for (int i = 0; i < palette.Count; i++)
-            {
-                if (Util.Math.Distance(palette[i], c) < Util.Math.Distance(bestColor, c))
-                {
-                    bestColor = palette[i];
-                    index = (byte)i;
-                }
-            }
+            var avg = c.Channel1 + c.Channel2 + c.Channel3;
 
-            return index;
+            return (avg/3 > 127)? 1 : 0;
         }
     }
 }

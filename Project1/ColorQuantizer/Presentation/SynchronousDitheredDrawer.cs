@@ -7,6 +7,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Linq;
 
 namespace ImageProcessing.Presentation
 {
@@ -79,7 +81,8 @@ namespace ImageProcessing.Presentation
                         targetLine[index] = (byte)imageStore.Quantizer.GetPaletteIndex(colorAsColor);
                         // Get the distance to dither the other pixels!
                         var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
-                            ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, row, width, height);
+                        ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, row, width, height);
+                        if (r==0) File.WriteAllLines($"Debugging\\ditherDistortionSelected{index}.txt", ditherDistortion.Take(4*width).Select(x => (x==null)? "0" : x.ToString()));
                         TotalError += distance;
                     }
 
@@ -104,7 +107,7 @@ namespace ImageProcessing.Presentation
                 canvas.UnlockBits(targetData);
             }
 
-            canvas.Save("result.gif");
+            canvas.Save($"result{imageStore.Quantizer.ToString()}.gif");
             return canvas;
         }
 

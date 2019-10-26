@@ -16,6 +16,9 @@ namespace Project1
         private ImageStore imageStore;
         private Drawer drawer;
 
+        private ImageStore imageStore2;
+        private Drawer drawer2;
+
         public Form1()
         {
             InitializeComponent();
@@ -31,6 +34,7 @@ namespace Project1
             if (OpenFileDialogImageLoader.ShowDialog()==DialogResult.OK)
             {
                 ProgressBarQuantization.Value = 0;
+                ProgressBarQuantization2.Value = 0;
                 ImagePath = OpenFileDialogImageLoader.FileName;
                 LabelPath.Text = ImagePath;
                 var image = new Bitmap(ImagePath);
@@ -39,6 +43,10 @@ namespace Project1
                 drawer = new SynchronousDitheredDrawer(imageStore);
                 imageStore.InitFinished += AfterInit;
                 drawer.ProgressUpdate += ProgressUpdate;
+                /*imageStore2 = new ImageStore(ImageProcessing.Util.Cloner.DeepClone(image), new BWQuantizer(), new FloydSteinbergDitherer());
+                drawer2 = new SynchronousDitheredDrawer(imageStore2);
+                imageStore2.InitFinished += AfterInit2;
+                drawer2.ProgressUpdate += ProgressUpdate2;*/
             }
         }
 
@@ -60,6 +68,20 @@ namespace Project1
             ProgressBarQuantization.Invoke(new Action(() =>
             {
                 ProgressBarQuantization.Value = (ProgressBarQuantization.Value>args.Progress)? ProgressBarQuantization.Value : args.Progress;
+            }));
+        }
+
+        private async void AfterInit2(object sender, EventArgs args)
+        {
+            PictureBoxQuantized2.Image = await drawer2.DrawAsync();
+            LabelColorDistance2.Text = "" + drawer2.AverageError;
+        }
+
+        private void ProgressUpdate2(object sender, ProgressEventArgs args)
+        {
+            ProgressBarQuantization2.Invoke(new Action(() =>
+            {
+                ProgressBarQuantization2.Value = (ProgressBarQuantization2.Value > args.Progress) ? ProgressBarQuantization2.Value : args.Progress;
             }));
         }
     }

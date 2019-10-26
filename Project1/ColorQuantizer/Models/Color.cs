@@ -23,6 +23,12 @@ namespace ImageProcessing.Models
             Channel2 = c.G;
             Channel3 = c.B;
         }
+        public Color(Models.Color c)
+        {
+            Channel1 = c.Channel1;
+            Channel2 = c.Channel2;
+            Channel3 = c.Channel3;
+        }
 
         public override string ToString()
         {
@@ -49,12 +55,12 @@ namespace ImageProcessing.Models
         public static Color operator +(Color c, Color d)
         {
             if (c == null && d == null) return new Color(0, 0, 0);
-            if (c == null) return d;
-            if (d == null) return c;
+            if (c == null) return new Color(d);
+            if (d == null) return new Color(c);
             var sum1 = c.Channel1 + d.Channel1;
             var sum2 = c.Channel2 + d.Channel2;
             var sum3 = c.Channel3 + d.Channel3;
-            return new Color((sum1 < -255 ? -255 : (sum1 > 255) ? 255 : sum1), (sum2 < -255 ? -255 : (sum2 > 255) ? 255 : sum2), (sum3 < -255 ? -255 : (sum3 > 255) ? 255 : sum3));
+            return new Color((sum1 < -255) ? -255 : (sum1 > 255) ? 255 : sum1, (sum2 < -255) ? -255 : (sum2 > 255) ? 255 : sum2, (sum3 < -255) ? -255 : (sum3 > 255) ? 255 : sum3);
         }
         public static Color operator +(Color c, int s)
         {
@@ -64,6 +70,11 @@ namespace ImageProcessing.Models
         public static int[] operator -(Color c, Color d)
         {
             return new int[] { c.Channel1 - d.Channel1, c.Channel2 - d.Channel2, c.Channel3 - d.Channel3 };
+        }
+
+        public static Color operator *(Color c, int s)
+        {
+            return new Color(c.Channel1 * s, c.Channel2 * s, c.Channel3 * s);
         }
     }
 
