@@ -5,7 +5,7 @@
 Sedert lang speelt de grootte van afbeelding een belangrijke rol. Vroeger speelde dit vooral een rol door het gebrek aan RAM of opslagplaats voor de afbeelding.
 Tegenwoordig vallen deze beperkingen minder zwaar maar zijn er nieuwe trends die een nood scheppen voor kleine afbeeldingen. Denk bijvoorbeeld aan de laadtijd van een website met meerdere afbeeldingen.
 Naarmate beeldschermen hogere resoluties ondersteunden werd de nood voor kwalitatieve doch compacte afbeeldingen groter. Er moest dus een verandering komen en gezocht worden naar een optimale balans.
-Het werken met kleurpaletten bleek een goede oplossing te zijn, deze techniek werd voor het eerst gebruikt in 1975 door Kajiya, Sutherland en Cheadle.
+Het werken met kleurpaletten bleek een goede oplossing te zijn, deze techniek werd voor het eerst gebruikt in 1975 door Kajiya, Sutherland en Cheadle.
 Tot op heden blijft deze techniek een oplossing bij het reduceren van opslagruimte van een afbeelding. Het reduceren van kleuren door middel van een kleurenpallet bleek echter niet te volstaan.
 Kleurenpaletten hadden moeite met het realistisch voorstellen van kleurovergangen. Dit is het moment waarop Dithering interessant werd. Deze techniek, waarvoor het idee ontstond tijdens WO2, laat toe om een valse diepte in de afbeelding te brengen.
 Gecombineerd vormen deze technieken een voldoend repertoire om afbeeldingen in grootte te beperken zonder essentiële informatie te verliezen.
@@ -61,4 +61,44 @@ Nadelen:
 Het veranderen van de originele kleur naar een paletkleur gaat opnieuw via de formule van Pythagoras
 
 ### Dithering
+Tijdens het quantization proces zullen op plaatsen waar kleur overgangen plaats vinden banden ontstaan. 
+Deze banden ontstaan omdat het palet niet voldoende kleuren bezit om de overgang vlot te laten verlopen. 
+Om dit tegen te gaan kan dithering toegepast worden. 
+Dithering zal pixels in de overgang beïnvloeden zodat deze naar een andere palet kleur omgezet worden dan waar ze origineel naar zouden omgezet worden. 
+Hierdoor zullen pixels niet eenduidig naar 1 kleur omgezet worden in een overgang en zal er geen band ontstaan. 
+Logischerwijs zal dithering dus vooraf lopen aan quantization. 
+Afbeeldingen die dithering ondergingen zullen een korrelig effect hebben. 
+In een eerste indruk zou opvallen dat de gemiddelde kleurafstand door dithering vergroot. 
+Dit zou volgens de definitie een afbeelding van lagere kwaliteit produceren. Het proces loopt echter anders. 
+De definitie houdt enkel rekening met wat op het computerscherm wordt weergegeven. 
+De menselijke ogen zullen echter pixel groepen waarnemen als een gemengde kleur. 
+De menselijke ogen kunnen namelijk niet genoeg detail waarnemen. 
+In theorie zou dithering dus op een computerscherm een hogere kleurafstand dan pure quantization halen, maar zou de waargenomen afbeelding een lagere kleurafstand hebben. 
+Deze theorie geldt enkel wanneer de gebruiker ver genoeg van de waar te nemen afbeelding zit, zodat de ogen de pixelgroepen kunnen mengen. 
+In praktijk zal dit echter niet altijd zijn en zal het post dithering effect waar te nemen zijn in de afbeelding. 
+Er zijn verschillende mogelijkheden voor het toepassen van dithering.
 
+#### Static en Random Dithering
+Bij static en random dithering worden pixels aangepast zonder context. 
+Het ditheren van een afbeelding op deze manier garandeert dus niet dat de waargenomen kleurafstand kleiner is dan de kleurafstand zonder dithering.
+Bijgevolg zijn deze algoritmes niet veel gebruikt.
+
+Voordelen:
+ - Snel
+
+Nadelen:
+ - Geen gegarandeerde verbetering
+ - Kan de kleurafstand drastisch slechter maken
+
+#### Bayer Dithering (Ordered dithering)
+Bayered dithering zal gebruik maken van een treshold map om pixels om te zetten. 
+Deze manier zorgt er dus voor dat de pixels niet volledig random aangepast worden en is een verbetering ten opzichte van Static en Random dithering.
+
+Voordelen:
+ - Accurater dan Static en Random dithering
+
+Nadelen:
+ - Treshold map moet berekend worden (Processing power) of vooraf opgeslagen worden (RAM)
+ - Houdt nog steeds weinig rekening met waargenomen kleurafstand
+
+#### Error diffused dithering
