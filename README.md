@@ -18,7 +18,7 @@ Bovenop het beperken van het aantal kleuren in de afbeelding wordt ook nog gebru
 
 Het reduceren van een 24bits afbeelding (16,777,215 kleuren) naar een palet noemt men Color Quantization of Color Depth Reduction. Dit process zal de grootste invloed hebben op de kwaliteit van de bekomen afbeelding.
 Om te spreken van kwaliteit is een definitie hiervan nodig. De best kwantificeerbare definitie voor kwaliteit berekent de gemiddelde kleurafstand van elke pixel in de bekomen afbeelding ten opzichte van de originele pixel.
-Een hogere kwaliteit betekent dus een lagere gemiddelde kleurafstand. Er zijn vele algoritmen ter beschikking voor het reduceren van de kleuren in een afbeelding.
+Een hogere kwaliteit betekent dus een lagere gemiddelde kleurafstand. Er zijn vele algoritmen ter beschikking voor het reduceren van de kleuren in een afbeelding. Enkele voorbeelden zijn:
 
 #### Eigen implementatie
 
