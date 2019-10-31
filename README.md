@@ -102,3 +102,21 @@ Nadelen:
  - Houdt nog steeds weinig rekening met waargenomen kleurafstand
 
 #### Error diffused dithering
+Error diffused dithering is de meest voorkomende vorm van dithering.
+Deze vorm houdt van omgezette pixel de afstand bij tot zijn origineel (R1-R2,G1-G2,B1-B2).
+De afstand die hierdoor bekomen wordt zal worden doorgegeven aan omliggende pixels.
+De afstand zal met een factor bij de omliggende pixels opgeteld worden.
+Hierdoor zullen deze omliggende pixels wanneer zij gequantizeerd worden frequent naar een andere kleur omgezet worden.
+Doordat deze afstand zowel negatief als positief kan zijn, zullen dus afwisselende kleuren het resultaat zijn van de omzetting van dezelfde pixelwaarde.
+Doordat afwisselend gewerkt zal worden zal ook de gemiddelde waargenomenkleurafstand kleiner worden.
+Dit verklaart dan ook waarom deze manier het meest gebruikt wordt.
+De bekendste vorm van Error diffused dithering is het Floyd-Steinberg algoritme.
+
+Voordelen:
+ - Accurate gemiddelde waargenomen kleurafstand
+ - Meest natuurlijk aanvoelend
+
+Nadelen:
+ - Vergt meer processing power en kan niet vooraf berekend worden
+
+### Opbouw van de code
