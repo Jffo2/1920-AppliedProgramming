@@ -7,10 +7,6 @@ namespace ImageProcessing.Logic.Ditherers
 {
     public class JarvisJudiceNinkeDitherer : IDitherer
     {
-        public void Dither(int distance, BitmapData data)
-        {
-            throw new NotImplementedException();
-        }
 
         public void Dither(Models.Color original, Models.Color palette, Models.Color[] ditherDistortionArray, long currentColumn, long currentRow, long width, long height)
         {
@@ -101,9 +97,14 @@ namespace ImageProcessing.Logic.Ditherers
             return new Models.Color((multiplier * distances[0]) / 48, (multiplier * distances[1]) / 48, (multiplier * distances[2]) / 48);
         }
 
-        public Rectangle GetRelativeRect()
+        public int GetBehind()
         {
-            throw new NotImplementedException();
+            return 2;
+        }
+
+        public override string ToString()
+        {
+            return "JJN";
         }
     }
 }

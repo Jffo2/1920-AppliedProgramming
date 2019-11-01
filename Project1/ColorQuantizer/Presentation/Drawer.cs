@@ -89,6 +89,11 @@ namespace ImageProcessing.Presentation
             b.Palette = newPalette;
         }
 
+        public void Save(Bitmap b)
+        {
+            b.Save($"result-{this.ToString()}-{imageStore.Quantizer.ToString()}-{imageStore.Ditherer.ToString()}.gif");
+        }
+
     }
     public class ProgressEventArgs : EventArgs
     {

@@ -15,7 +15,7 @@ namespace ImageProcessing.Presentation
 
         private double TotalError;
 
-        private const int THREADS_AT_SAME_TIME = 5;
+        private const int THREADS_AT_SAME_TIME = 6;
 
         public AsynchronousDitheredDrawer(ImageStore imageStore) : base(imageStore)
         {
@@ -77,7 +77,7 @@ namespace ImageProcessing.Presentation
                         {
                             if (id != 0)
                             {
-                                while (index>(progress[id-1] + behind))
+                                while (index>(progress[id-1] - behind))
                                 {
                                     System.Threading.Thread.Sleep(1);
                                 }
@@ -108,6 +108,7 @@ namespace ImageProcessing.Presentation
                     });
 
                     tasks[row] = t;
+                    t.ConfigureAwait(false);
                     sourceOffset += sourceData.Stride;
                     targetOffset += targetData.Stride;
                 }
@@ -115,8 +116,8 @@ namespace ImageProcessing.Presentation
                 {
                     tasks[i].Start();
                 }
-                AverageError = TotalError / total;
                 Task.WaitAll(tasks);
+                AverageError = TotalError / total;
             }
 
             finally

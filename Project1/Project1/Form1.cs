@@ -40,13 +40,13 @@ namespace Project1
                 var image = new Bitmap(ImagePath);
                 PictureBoxLoadedImage.Image = image;
                 imageStore = new ImageStore(image, new BWQuantizer(),new JarvisJudiceNinkeDitherer());
-                drawer = new SynchronousDitheredDrawer(imageStore);
+                drawer = new AsynchronousDitheredDrawer(imageStore);
                 imageStore.InitFinished += AfterInit;
                 drawer.ProgressUpdate += ProgressUpdate;
-                /*imageStore2 = new ImageStore(ImageProcessing.Util.Cloner.DeepClone(image), new BWQuantizer(), new FloydSteinbergDitherer());
-                drawer2 = new SynchronousDitheredDrawer(imageStore2);
+                imageStore2 = new ImageStore(ImageProcessing.Util.Cloner.DeepClone(image), new BWQuantizer(), new FloydSteinbergDitherer());
+                drawer2 = new SimpleDrawer(imageStore2);
                 imageStore2.InitFinished += AfterInit2;
-                drawer2.ProgressUpdate += ProgressUpdate2;*/
+                drawer2.ProgressUpdate += ProgressUpdate2;
             }
         }
 

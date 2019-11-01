@@ -9,16 +9,6 @@ namespace ImageProcessing.Logic.Ditherers
 {
     public class FloydSteinbergDitherer : IDitherer
     {
-        public void Dither(int distance, BitmapData data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Rectangle GetRelativeRect()
-        {
-            throw new NotImplementedException();
-        }
-
         void IDitherer.Dither(Models.Color original, Models.Color palette, Models.Color[] ditherDistortionArray, long currentColumn, long currentRow, long width, long height)
         {
             lock (ditherDistortionArray)
@@ -47,6 +37,11 @@ namespace ImageProcessing.Logic.Ditherers
         Models.Color Apply(int[] distances, int multiplier)
         {
             return new Models.Color((multiplier * distances[0]) >> 4, (multiplier * distances[1]) >> 4, (multiplier * distances[2]) >> 4);
+        }
+
+        public int GetBehind()
+        {
+            return 1;
         }
     }
 }

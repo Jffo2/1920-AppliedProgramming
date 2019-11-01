@@ -82,7 +82,6 @@ namespace ImageProcessing.Presentation
                         // Get the distance to dither the other pixels!
                         var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
                         ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, row, width, height);
-                        if (r==0) File.WriteAllLines($"Debugging\\ditherDistortionSelected{index}.txt", ditherDistortion.Take(4*width).Select(x => (x==null)? "0" : x.ToString()));
                         TotalError += distance;
                     }
 

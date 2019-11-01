@@ -8,8 +8,8 @@ namespace ImageProcessing.Logic.Ditherers
 {
     public interface IDitherer
     {
-        void Dither(int distance, BitmapData data);
+        int GetBehind();
         void Dither(Models.Color original, Models.Color palette, Models.Color[] ditherDistortionArray, long currentColumn, long currentRow, long width, long height);
-        Rectangle GetRelativeRect();
+        
     }
 }
