@@ -104,10 +104,8 @@ namespace ImageProcessing.Logic
                         {
                             Color color = Color.FromArgb(line[width]);
 
-                            lock (quantizer)
-                            {
-                                quantizer.AddColor(color);
-                            }
+                            quantizer.AddColor(color);
+
                             if (!colorCount.ContainsKey(color))
                             {
                                 colorCount.TryAdd(color, 1);

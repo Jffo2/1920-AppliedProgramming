@@ -104,7 +104,10 @@ namespace ImageProcessing.Presentation
                         {
                             tasks[id + THREADS_AT_SAME_TIME].Start();
                         }
-                        ProgressUpdate?.Invoke(this, new ProgressEventArgs((int)(completed / (float)bitmap.Height * 100)));
+                        lock (ProgressUpdate)
+                        {
+                            ProgressUpdate?.Invoke(this, new ProgressEventArgs((int)(completed / (float)bitmap.Height * 100)));
+                        }
                     });
 
                     tasks[row] = t;

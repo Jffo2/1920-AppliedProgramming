@@ -9,12 +9,14 @@ namespace ImageProcessing.Logic.Quantizers
     public abstract class Quantizer : IQuantizer
     {
         protected readonly List<Models.Color> palette;
+        private readonly Dictionary<Models.Color, int> cache;
 
         protected abstract void PopulatePalette();
 
         public Quantizer()
         {
             palette = new List<Models.Color>();
+            cache = new Dictionary<Models.Color, int>();
         }
 
         public abstract void AddColor(System.Drawing.Color c);
@@ -27,13 +29,14 @@ namespace ImageProcessing.Logic.Quantizers
 
         public List<Models.Color> GetPalette()
         {
-            PopulatePalette();
+            if (palette.Count==0) PopulatePalette();
             return palette;
         }
 
         public virtual int GetPaletteIndex(Models.Color c)
         {
-            if (palette == null) PopulatePalette();
+            if (palette.Count==0) PopulatePalette();
+            if (cache.ContainsKey(c)) return cache[c];
             int index = 0;
             Models.Color bestColor = palette[0];
             for (int i = 0; i < palette.Count; i++)
@@ -44,7 +47,7 @@ namespace ImageProcessing.Logic.Quantizers
                     index = (byte)i;
                 }
             }
-
+            cache[c] = index;
             return index;
         }
 
