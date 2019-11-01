@@ -60,6 +60,20 @@ Nadelen:
 
 Het veranderen van de originele kleur naar een paletkleur gaat opnieuw via de formule van Pythagoras
 
+### HSL
+
+Een andere manier voor het opstellen van het palet is om te werken met het HSL spectrum.
+Uit het HSL spectrum kan veel besloten worden. 
+Als een afbeelding veel unieke Hue's bezit dan zal dit een kleurrijke afbeelding zijn en moeten er vooral verscheiden kleuren in het palet aanwezig zijn.
+Als er vooral unieke Saturation waarden zijn dan zal dit een afbeelding zijn met vooral veel overgangen en moeten verschillende tinten van dezelfde kleur aanwezig zijn in het palet.
+Als er vooral unieke Luminance waarden zijn dan zal dit een afbeelding met veel schaduwen en details zijn en zal in het palet hierop gefocust moeten worden.
+
+Voordelen:
+ - Houdt rekening met de specialisatie van de afbeelding
+
+Nadelen:
+ - Indien de afbeelding in zowel H, S en L veel unieke waarden heeft zal de gemiddelde kleurafstand toenemen
+
 ### Dithering
 Tijdens het quantization proces zullen op plaatsen waar kleur overgangen plaats vinden banden ontstaan. 
 Deze banden ontstaan omdat het palet niet voldoende kleuren bezit om de overgang vlot te laten verlopen. 
@@ -120,3 +134,30 @@ Nadelen:
  - Vergt meer processing power en kan niet vooraf berekend worden
 
 ### Opbouw van de code
+De code is opgebouwd volgens het Dependency Injection patroon en is vooral geconcentreerd in een Class Library.
+De applicatie bevat ook verschillende lagen.
+ - Logic: Hier bevindt zich de logica van de applicatie. Deze laag bevat bijvoorbeeld de ditherers en quantizers.
+ - Presentation: Hier bevinden zich Drawer klassen. Dit zijn klassen die afbeeldingen (grafisch, vandaar presentatie laag) genereren door gebruik te maken van de logica laag.
+ - Models: Hierin bevindt zich de Color klasse die gebruikt wordt voor berekeningen met kleuren waar de Color klasse van System.Drawing te kort schiet.
+ - Util: Hier kunnen helper klassen gevonden worden zoals een Math klasse voor veelgebruikte wiskundige berekeningen (denk aan de kleurafstand).
+
+Het project bevat ook een WindowsForms applicatie die een UI aanbiedt aan de gebruiker om eenvoudig te kunnen werken met de Class Library.
+De Class Library bevat een centrale klasse. Dit is de ImageStore klasse. Deze klasse wordt gedefinieerd door een afbeelding, een quantizer en een ditherer.
+De ImageStore klasse houdt informatie bij over een afbeelding. Ze berekent een histogram en vult de quantizer op met kleuren.
+Een event wordt aangereikt aan andere klassen dat triggert wanneer het histogram en de quantizer klaar zijn.
+Om tijd te besparen worden het histogram en de quantizer vanuit verschillende threads opgevuld.
+Hier eindigt de job van de ImageStore. Deze verandert niets aan de afbeelding en houdt enkel de info bij.
+Om quantization toe te passen op de afbeelding zal een nieuwe afbeelding getekend moeten worden.
+Dit is de taak van een Drawer klasse. Verschillende drawer klassen worden aangereikt: met- en zonder dithering, synchroon en asynchroon.
+Een drawer klasse wordt gedefinieerd door een ImageStore object.
+De drawer klasse bevat verschillende methoden waarvan twee centraal staan.
+Een methode om het histogram te visualiseren, en een methode om een geditherede, gequantizeerde afbeelding te genereren.
+Het genereren van de afbeelding gaat als volgt:
+ 1. Lees een pixel uit de originele afbeelding
+ 2. Kijk of dithering is toegepast op de huidige pixel
+ 3. Zoek de dichtsbijzijnde pixel in het palet en schrijf deze naar de te genereren afbeelding
+ 4. Bereken kleurafstand en pas dithering toe, dithering wordt opgeslagen in een overlay matrix
+ 5. Herhaal vanaf stap 1 voor de overige pixels
+ 6. Sla de afbeelding op als gif
+
+### Experimentatie
