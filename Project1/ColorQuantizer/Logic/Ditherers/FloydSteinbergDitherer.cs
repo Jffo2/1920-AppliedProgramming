@@ -43,5 +43,10 @@ namespace ImageProcessing.Logic.Ditherers
         {
             return 1;
         }
+
+        public override string ToString()
+        {
+            return "FloydSteinberg";
+        }
     }
 }

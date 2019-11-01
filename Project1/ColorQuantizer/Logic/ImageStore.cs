@@ -85,43 +85,52 @@ namespace ImageProcessing.Logic
                 {
                     i = Cloner.DeepClone(Image);
                 }
-                Task[] tasks = new Task[i.Height];
+                
                 var totalHeight = i.Height;
                 var totalWidth = i.Width;
                 BitmapData data = i.LockBits(new Rectangle(0, 0, totalWidth, totalHeight), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                Int64 offset = data.Scan0.ToInt64();
+                var offset = data.Scan0.ToInt64();
+                int dataStride = data.Stride;
 
-                for (int height = 0; height < totalHeight; height++)
-                {
-                    var h = height;
-                    Task t = Task.Run(() =>
-                    {
-                        int[] line = new int[totalWidth];
-
-                        Marshal.Copy(new IntPtr(offset), line, 0, totalWidth);
-
-                        for (int width = 0; width < totalWidth; width++)
-                        {
-                            Color color = Color.FromArgb(line[width]);
-
-                            quantizer.AddColor(color);
-
-                            if (!colorCount.ContainsKey(color))
-                            {
-                                colorCount.TryAdd(color, 1);
-                            }
-                            else
-                            {
-                                colorCount[color]++;
-                            }
-                        }
-                        offset += data.Stride;
-                    });
-                    tasks[height] = t;
-                }
+                var tasks = PopulateAll(totalHeight, totalWidth, offset, dataStride, colorCount);
+                
                 Task.WaitAll(tasks);
                 return new Histogram(new Dictionary<Color, int>(colorCount));
             });
+        }
+
+        private Task[] PopulateAll(int totalHeight, int totalWidth, long offset, int stride, ConcurrentDictionary<Color, int> colorCount)
+        {
+            Task[] tasks = new Task[totalHeight];
+            for (int height = 0; height < totalHeight; height++)
+            {
+                var h = height;
+                Task t = Task.Run(() =>
+                {
+                    int[] line = new int[totalWidth];
+
+                    Marshal.Copy(new IntPtr(offset), line, 0, totalWidth);
+
+                    for (int width = 0; width < totalWidth; width++)
+                    {
+                        Color color = Color.FromArgb(line[width]);
+
+                        quantizer.AddColor(color);
+
+                        if (!colorCount.ContainsKey(color))
+                        {
+                            colorCount.TryAdd(color, 1);
+                        }
+                        else
+                        {
+                            colorCount[color]++;
+                        }
+                    }
+                    offset += stride;
+                });
+                tasks[height] = t;
+            }
+            return tasks;
         }
 
     }

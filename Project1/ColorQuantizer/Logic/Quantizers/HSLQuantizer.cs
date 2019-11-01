@@ -8,7 +8,7 @@ namespace ImageProcessing.Logic.Quantizers
 {
     public class HSLQuantizer : Quantizer
     {
-        private readonly Dictionary<Color, int> colorCount;
+        private Dictionary<Color, int> colorCount;
 
         private const int PALETTE_MAX_COUNT = 256;
 
@@ -47,7 +47,7 @@ namespace ImageProcessing.Logic.Quantizers
             {
                 palette.Add(new Models.Color(c));
             }
-
+            colorCount = null;
         }
 
         private IEnumerable<Color> Cut(IEnumerable<Color> colorList)

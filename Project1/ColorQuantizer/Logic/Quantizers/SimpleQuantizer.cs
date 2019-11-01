@@ -15,11 +15,6 @@ namespace ImageProcessing.Logic.Quantizers
         private byte minB = 255;
         private byte maxB = 0;
 
-        public SimpleQuantizer() : base()
-        {
-            
-        }
-
         protected override void PopulatePalette()
         {
             if (palette.Count == 0)
@@ -53,14 +48,6 @@ namespace ImageProcessing.Logic.Quantizers
 
             minB = (c.B < minB) ? c.B : minB;
             maxB = (c.B > maxB) ? c.B : maxB;
-        }
-
-        public Task<int> GetPaletteIndexAsync(Models.Color c)
-        {
-            return Task.Run(() =>
-            {
-                return GetPaletteIndex(c);
-            });
         }
     }
 }

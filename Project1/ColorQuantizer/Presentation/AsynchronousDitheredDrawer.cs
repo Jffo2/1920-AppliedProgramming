@@ -14,8 +14,7 @@ namespace ImageProcessing.Presentation
         public override event EventHandler<ProgressEventArgs> ProgressUpdate;
 
         private double TotalError;
-
-        private const int THREADS_AT_SAME_TIME = 6;
+        private int completed;
 
         public AsynchronousDitheredDrawer(ImageStore imageStore) : base(imageStore)
         {
@@ -53,74 +52,9 @@ namespace ImageProcessing.Presentation
                 long targetOffset = targetData.Scan0.ToInt64();
                 int width = bitmap.Width;
                 int height = bitmap.Height;
-                int completed = 0;
-                long total = bitmap.Width * bitmap.Height;
-                Models.Color[] ditherDistortion = new Models.Color[total];
-                int[] progress = new int[height];
-                Task[] tasks = new Task[height];
-                int behind = imageStore.Ditherer.GetBehind() + 1;
-
-                for (int row = 0; row < bitmap.Height; row++)
-                {
-                    var sourceOffsett = sourceOffset;
-                    var targetOffsett = targetOffset;
-                    // Re initialize the source and target rows
-                    byte[] targetLine = new byte[width];
-                    int[] sourceLine = new int[width];
-                    var id = row;
-
-                    Task t = new Task(() =>
-                    {
-                        Marshal.Copy(new IntPtr(sourceOffsett), sourceLine, 0, width);
-
-                        for (int index = 0; index < width; index++)
-                        {
-                            if (id != 0)
-                            {
-                                while (index>(progress[id-1] - behind))
-                                {
-                                    System.Threading.Thread.Sleep(1);
-                                }
-                            }
-                            // Read the color from the source image
-                            Color color = Color.FromArgb(sourceLine[index]);
-                            // Add the dithering to the pixel
-                            var colorAsColor = new Models.Color(color) + ditherDistortion[index + id * width];
-                            // Get the index of the color closest to the dithered pixel
-                            targetLine[index] = (byte)imageStore.Quantizer.GetPaletteIndex(colorAsColor);
-                            // Get the distance to dither the other pixels!
-                            var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
-                            ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, id, width, height);
-                            TotalError += distance;
-                            progress[id]++;
-                        }
-
-                        progress[id] += width;
-
-                        Marshal.Copy(targetLine, 0, new IntPtr(targetOffsett), width);
-                        // Update progress
-                        completed++;
-                        if (id < (height - THREADS_AT_SAME_TIME))
-                        {
-                            tasks[id + THREADS_AT_SAME_TIME].Start();
-                        }
-                        lock (ProgressUpdate)
-                        {
-                            ProgressUpdate?.Invoke(this, new ProgressEventArgs((int)(completed / (float)bitmap.Height * 100)));
-                        }
-                    });
-
-                    tasks[row] = t;
-                    t.ConfigureAwait(false);
-                    sourceOffset += sourceData.Stride;
-                    targetOffset += targetData.Stride;
-                }
-                for (byte i = 0; i < THREADS_AT_SAME_TIME; i++)
-                {
-                    tasks[i].Start();
-                }
-                Task.WaitAll(tasks);
-                AverageError = TotalError / total;
+                
+                
+                ProcessPixels(height, width, sourceOffset, targetOffset, sourceData.Stride, targetData.Stride, ditherer);
             }
 
             finally
@@ -141,6 +75,90 @@ namespace ImageProcessing.Presentation
         public override string ToString()
         {
             return "ASynchronousDitheredDrawer";
+        }
+
+        private void ProcessPixels(int height, int width, long sourceOffset, long targetOffset, int sourceStride, int targetStride, IDitherer ditherer)
+        {
+            int behind = imageStore.Ditherer.GetBehind() + 1;
+
+            var tasks = GetTasks(height, width, sourceOffset, targetOffset, sourceStride, targetStride, ditherer, behind);
+            
+            Task.WaitAll(tasks);
+            lock (ProgressUpdate)
+            {
+                ProgressUpdate?.Invoke(this, new ProgressEventArgs(100));
+            }
+            AverageError = TotalError / (width*height);
+        }
+
+        private Task[] GetTasks(int height, int width, long sourceOffset, long targetOffset, long sourceStride, int targetStride, IDitherer ditherer, int behind)
+        {
+            Models.Color[] ditherDistortion = new Models.Color[width*height];
+            
+            int[] progress = new int[height];
+            Task[] tasks = new Task[height];
+            for (int row = 0; row < height; row++)
+            {
+                completed =  0 ;
+
+                Task t = GenerateTask(sourceOffset, targetOffset, width, height, row, behind, progress, ditherDistortion, ditherer);
+
+                tasks[row] = t;
+                t.ConfigureAwait(false);
+                t.Start();
+                sourceOffset += sourceStride;
+                targetOffset += targetStride;
+            }
+            return tasks;
+        }
+
+        private Task GenerateTask(long sourceOffsett, long targetOffsett, int width, int height, int row, int behind, int[] progress, Models.Color[] ditherDistortion, IDitherer ditherer)
+        {
+            // Re initialize the source and target rows
+            byte[] targetLine = new byte[width];
+            int[] sourceLine = new int[width];
+            var id = row;
+            
+
+            Task t = new Task(() =>
+            {
+                Marshal.Copy(new IntPtr(sourceOffsett), sourceLine, 0, width);
+
+                for (int index = 0; index < width; index++)
+                {
+                    if (id != 0)
+                    {
+                        while (index > (progress[id - 1] - behind))
+                        {
+                            System.Threading.Thread.Sleep(1);
+                        }
+                    }
+                    // Read the color from the source image
+                    Color color = Color.FromArgb(sourceLine[index]);
+                    // Add the dithering to the pixel
+                    var colorAsColor = new Models.Color(color) + ditherDistortion[index + id * width];
+                    // Get the index of the color closest to the dithered pixel
+                    targetLine[index] = (byte)imageStore.Quantizer.GetPaletteIndex(colorAsColor);
+                    // Get the distance to dither the other pixels!
+                    var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
+                    ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, id, width, height);
+                    TotalError += distance;
+                    progress[id]++;
+                }
+
+                progress[id] += width;
+
+                Marshal.Copy(targetLine, 0, new IntPtr(targetOffsett), width);
+                // Update progress
+                completed++;
+
+                lock (ProgressUpdate)
+                {
+                    ProgressUpdate?.Invoke(this, new ProgressEventArgs((int)(completed / (float)height * 100)));
+                }
+            });
+
+            return t;
         }
     }
 }
