@@ -2,6 +2,7 @@
 
 namespace ImageProcessing.Models
 {
+    [Serializable]
     public class Color : IEquatable<Color>
     {
         public int Channel1 { get; set; }

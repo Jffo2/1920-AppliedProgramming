@@ -6,6 +6,7 @@ using System.Text;
 using ImageProcessing.Models;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
+using ImageProcessing.Util;
 
 namespace ImageProcessing.Presentation
 {
@@ -24,6 +25,41 @@ namespace ImageProcessing.Presentation
         public abstract Bitmap Draw();
         public abstract Task<Bitmap> DrawAsync();
 
+        public Bitmap VisualizePallet(int height, int width)
+        {
+            if (!imageStore.QuantizerReady) throw new Exception("Quantizer not ready!");
+            Bitmap bmp = new Bitmap(width, height);
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                var pallet = Cloner.DeepClone(imageStore.Quantizer.GetPalette());
+                int maxRows = System.Math.Max(pallet.Count / 16,1);
+                int maxColumns = System.Math.Min(pallet.Count, 16);
+                int xDelta = width / 16;
+                int yDelta = height / 16;
+
+                for (int row = 0; row < maxRows; row++)
+                {
+                    for (int column = 0; column < maxColumns; column++)
+                    {
+                        Models.Color c = pallet[row * 16 + column];
+                        System.Drawing.Color color = System.Drawing.Color.FromArgb(255,c.Channel1, c.Channel2, c.Channel3);
+                        g.FillRectangle(new SolidBrush(color), column * xDelta, row * yDelta, (column + 1) * xDelta, (row + 1) * yDelta);
+                    }
+                }
+            }
+
+            return bmp;
+        }
+
+        public Task<Bitmap> VisualizePalletAsync(int height, int width)
+        {
+            return Task.Run(() =>
+            {
+                return VisualizePallet(height, width);
+            });
+        }
+        
         public Bitmap VisualizeHistogram(int height, int width)
         {
             Bitmap bmp = new Bitmap(width, height);

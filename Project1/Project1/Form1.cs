@@ -34,21 +34,15 @@ namespace Project1
             if (OpenFileDialogImageLoader.ShowDialog()==DialogResult.OK)
             {
                 ProgressBarQuantization.Value = 0;
-                ProgressBarQuantization2.Value = 0;
                 ImagePath = OpenFileDialogImageLoader.FileName;
                 LabelPath.Text = ImagePath;
                 var image = new Bitmap(ImagePath);
                 PictureBoxLoadedImage.Image = image;
 
-                imageStore = new ImageStore(image, new SimpleQuantizer(),new FloydSteinbergDitherer());
+                imageStore = new ImageStore(image, new HSLQuantizer(),new FloydSteinbergDitherer());
                 drawer = new AsynchronousDitheredDrawer(imageStore);
                 imageStore.InitFinished += AfterInit;
                 drawer.ProgressUpdate += ProgressUpdate;
-                
-                imageStore2 = new ImageStore(ImageProcessing.Util.Cloner.DeepClone(image), new HSLQuantizer(), new JarvisJudiceNinkeDitherer());
-                drawer2 = new AsynchronousDitheredDrawer(imageStore2);
-                imageStore2.InitFinished += AfterInit2;
-                drawer2.ProgressUpdate += ProgressUpdate2;
             }
         }
 
@@ -58,11 +52,19 @@ namespace Project1
             LabelColorDistance.Text = ""+drawer.AverageError;
         }
 
+        private async void SetPallet()
+        {
+            PictureBoxPallet.Image = await drawer.VisualizePalletAsync(PictureBoxPallet.Height, PictureBoxPallet.Width);
+        }
+
         private async void AfterInit(object sender, EventArgs args)
         {
             PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
             // Quantizer must be populated first
             SetQuantizedImage();
+
+            SetPallet();
+
         }
 
         private void ProgressUpdate(object sender, ProgressEventArgs args)
@@ -70,20 +72,6 @@ namespace Project1
             ProgressBarQuantization.Invoke(new Action(() =>
             {
                 ProgressBarQuantization.Value = (ProgressBarQuantization.Value>args.Progress)? ProgressBarQuantization.Value : args.Progress;
-            }));
-        }
-
-        private async void AfterInit2(object sender, EventArgs args)
-        {
-            PictureBoxQuantized2.Image = await drawer2.DrawAsync();
-            LabelColorDistance2.Text = "" + drawer2.AverageError;
-        }
-
-        private void ProgressUpdate2(object sender, ProgressEventArgs args)
-        {
-            ProgressBarQuantization2.Invoke(new Action(() =>
-            {
-                ProgressBarQuantization2.Value = (ProgressBarQuantization2.Value > args.Progress) ? ProgressBarQuantization2.Value : args.Progress;
             }));
         }
     }

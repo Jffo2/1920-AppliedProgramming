@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -36,18 +35,20 @@ namespace ImageProcessing.Logic.Quantizers
         {
             if (colorCount == null) throw new Exception("Histogram was not ready");
             Random rd = new Random(666);
-
             var colors = Cut(colorCount.OrderBy(keypair => rd.NextDouble()).Select(keypair => keypair.Key));
 
             if (colors.Count() > PALETTE_MAX_COUNT)
             {
-                colors = colors.OrderByDescending(color => colorCount[color]).Take(256);
+                colors = colors.OrderByDescending(color => colorCount[color]).Take(PALETTE_MAX_COUNT);
             }
-            foreach (Color c in colors)
+            lock (palette)
             {
-                palette.Add(new Models.Color(c));
+                palette.Clear();
+                foreach (Color c in colors)
+                {
+                    palette.Add(new Models.Color(c));
+                }
             }
-            colorCount = null;
         }
 
         private IEnumerable<Color> Cut(IEnumerable<Color> colorList)
