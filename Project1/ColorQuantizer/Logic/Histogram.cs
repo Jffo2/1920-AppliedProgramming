@@ -7,8 +7,15 @@ namespace ImageProcessing.Logic
 {
     public class Histogram
     {
+        /// <summary>
+        /// The actual histogram
+        /// </summary>
         public Dictionary<System.Drawing.Color, int> ColorCount { get; }
 
+        /// <summary>
+        /// Constructor, assign the histogram
+        /// </summary>
+        /// <param name="colorCount">the histogram</param>
         public Histogram(Dictionary<System.Drawing.Color, int> colorCount)
         {
             ColorCount = colorCount;

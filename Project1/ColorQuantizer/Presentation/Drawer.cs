@@ -62,6 +62,7 @@ namespace ImageProcessing.Presentation
         
         public Bitmap VisualizeHistogram(int height, int width)
         {
+            System.Drawing.Color[] drawingColors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue };
             Bitmap bmp = new Bitmap(width, height);
             int padding = 10;
             var histogramSize = (height - padding * 3) / 3;
@@ -78,14 +79,14 @@ namespace ImageProcessing.Presentation
 
                 var xdelta = (width - 2 * padding) / (float)255;
 
-                for (int channel = 0; channel <= 3; channel++)
+                for (int channel = 0; channel < 3; channel++)
                 {
                     var colorsOfChannel = GetChannelCount((Channel)channel);
                     float ydelta = histogramSize / (float)Util.Math.Max(colorsOfChannel);
                     g.DrawString("Channel" + (channel + 1), new Font(FontFamily.GenericSansSerif, 8), new SolidBrush(System.Drawing.Color.Black), 2 * padding, (channel + 1) * padding + channel * histogramSize, StringFormat.GenericDefault);
                     for (int xoffset = 0; xoffset < 255; xoffset += 1)
                     {
-                        g.DrawLine(new Pen(new SolidBrush(System.Drawing.Color.Red)), xoffset * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset] * ydelta, (xoffset + 1) * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset + 1] * ydelta);
+                        g.DrawLine(new Pen(new SolidBrush(drawingColors[channel])), xoffset * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset] * ydelta, (xoffset + 1) * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset + 1] * ydelta);
                     }
                 }
 

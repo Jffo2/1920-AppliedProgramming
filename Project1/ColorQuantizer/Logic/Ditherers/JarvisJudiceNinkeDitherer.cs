@@ -8,23 +8,22 @@ namespace ImageProcessing.Logic.Ditherers
     public class JarvisJudiceNinkeDitherer : IDitherer
     {
 
+        /// <summary>
+        /// Spreads the dithering to surrounding pixels according to the Jarvis Judice Ninke algorithm
+        /// </summary>
+        /// <param name="original">the original pixel</param>
+        /// <param name="palette">the color the original pixel was mapped to</param>
+        /// <param name="ditherDistortionArray">a reference to the overlay array that keeps track of dither distortion</param>
+        /// <param name="currentColumn">the column of the pixel</param>
+        /// <param name="currentRow">the row of the pixel</param>
+        /// <param name="width">the width of the image</param>
+        /// <param name="height">the height of the image</param>
         public void Dither(Models.Color original, Models.Color palette, Models.Color[] ditherDistortionArray, long currentColumn, long currentRow, long width, long height)
         {
             lock (ditherDistortionArray)
             {
                 var offset = currentRow * width + currentColumn;
                 var distances = original - palette;
-
-                if (currentRow==0)
-                {
-                    File.WriteAllText("Distances.txt", "");
-                }
-                if (currentRow == 320)
-                {
-                    // TODO: remove
-                    
-                    File.AppendAllText("Distances.txt", original.ToString() + " - " + palette.ToString() + " = " + $"([{distances[0]},{distances[1]},{distances[2]}]\r\n");
-                }
 
                 // Same row
                 if (currentColumn < width - 1)
@@ -92,11 +91,21 @@ namespace ImageProcessing.Logic.Ditherers
             }
         }
 
-        Models.Color Apply(int[] distances, int multiplier)
+        /// <summary>
+        /// Calculates the dither distortion
+        /// </summary>
+        /// <param name="distances">The distances in R, G and B from the original to the mapped pixel</param>
+        /// <param name="multiplier">the dithering numerator</param>
+        /// <returns>A color object that contains dither distortion values for R, G and B</returns>
+        private Models.Color Apply(int[] distances, int multiplier)
         {
             return new Models.Color((multiplier * distances[0]) / 48, (multiplier * distances[1]) / 48, (multiplier * distances[2]) / 48);
         }
 
+        /// <summary>
+        /// How many pixels to the left of the current pixel will be affected by the dither distortion
+        /// </summary>
+        /// <returns>the amount of pixels as an int</returns>
         public int GetBehind()
         {
             return 2;
