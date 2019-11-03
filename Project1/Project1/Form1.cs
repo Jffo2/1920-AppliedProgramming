@@ -60,11 +60,10 @@ namespace Project1
         private async void AfterInit(object sender, EventArgs args)
         {
             PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
-            // Quantizer must be populated first
-            SetQuantizedImage();
 
             SetPallet();
-
+            // Quantizer must be populated first
+            SetQuantizedImage();
         }
 
         private void ProgressUpdate(object sender, ProgressEventArgs args)

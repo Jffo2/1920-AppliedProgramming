@@ -33,20 +33,24 @@ namespace ImageProcessing.Logic.Quantizers
 
         protected override void PopulatePalette()
         {
-            if (colorCount == null) throw new Exception("Histogram was not ready");
-            Random rd = new Random(666);
-            var colors = Cut(colorCount.OrderBy(keypair => rd.NextDouble()).Select(keypair => keypair.Key));
-
-            if (colors.Count() > PALETTE_MAX_COUNT)
+            lock (colorCount)
             {
-                colors = colors.OrderByDescending(color => colorCount[color]).Take(PALETTE_MAX_COUNT);
-            }
-            lock (palette)
-            {
-                palette.Clear();
-                foreach (Color c in colors)
+                lock (palette)
                 {
-                    palette.Add(new Models.Color(c));
+                    if (colorCount == null) throw new Exception("Histogram was not ready");
+                    Random rd = new Random(666);
+                    var colors = Cut(colorCount.OrderBy(keypair => rd.NextDouble()).Select(keypair => keypair.Key));
+
+                    if (colors.Count() > PALETTE_MAX_COUNT)
+                    {
+                        colors = colors.OrderByDescending(color => colorCount[color]).Take(PALETTE_MAX_COUNT);
+                    }
+                
+                    palette.Clear();
+                    foreach (Color c in colors)
+                    {
+                        palette.Add(new Models.Color(c));
+                    }
                 }
             }
         }

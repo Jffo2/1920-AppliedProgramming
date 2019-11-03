@@ -120,7 +120,6 @@
             this.PictureBoxPallet.Location = new System.Drawing.Point(622, 414);
             this.PictureBoxPallet.Name = "PictureBoxPallet";
             this.PictureBoxPallet.Size = new System.Drawing.Size(497, 347);
-            this.PictureBoxPallet.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBoxPallet.TabIndex = 7;
             this.PictureBoxPallet.TabStop = false;
             // 

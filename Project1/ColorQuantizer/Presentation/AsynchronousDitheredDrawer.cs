@@ -97,10 +97,9 @@ namespace ImageProcessing.Presentation
             
             int[] progress = new int[height];
             Task[] tasks = new Task[height];
+            completed = 0;
             for (int row = 0; row < height; row++)
             {
-                completed =  0 ;
-
                 Task t = GenerateTask(sourceOffset, targetOffset, width, height, row, behind, progress, ditherDistortion, ditherer);
 
                 tasks[row] = t;
