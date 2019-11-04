@@ -243,7 +243,7 @@
             this.Controls.Add(this.ButtonLoadImage);
             this.Controls.Add(this.PictureBoxLoadedImage);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Image Quantizer by Jorn Schampheleer";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).EndInit();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+// Based on https://www.codeproject.com/Articles/66341/A-Simple-Yet-Quite-Powerful-Palette-Quantizer-in-C
 namespace ImageProcessing.Logic.Quantizers
 {
     public class HSLQuantizer : Quantizer
