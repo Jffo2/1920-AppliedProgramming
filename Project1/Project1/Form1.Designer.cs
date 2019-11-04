@@ -44,6 +44,8 @@
             this.ComboBoxDithererSelection = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.ComboBoxDrawerSelection = new System.Windows.Forms.ComboBox();
+            this.ButtonSaveImage = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxLoadedImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxHistogram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxQuantized)).BeginInit();
@@ -203,11 +205,28 @@
             this.ComboBoxDrawerSelection.Size = new System.Drawing.Size(186, 21);
             this.ComboBoxDrawerSelection.TabIndex = 15;
             // 
+            // ButtonSaveImage
+            // 
+            this.ButtonSaveImage.Enabled = false;
+            this.ButtonSaveImage.Location = new System.Drawing.Point(434, 767);
+            this.ButtonSaveImage.Name = "ButtonSaveImage";
+            this.ButtonSaveImage.Size = new System.Drawing.Size(75, 23);
+            this.ButtonSaveImage.TabIndex = 16;
+            this.ButtonSaveImage.Text = "Save Image";
+            this.ButtonSaveImage.UseVisualStyleBackColor = true;
+            this.ButtonSaveImage.Click += new System.EventHandler(this.ButtonSaveImage_Click);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "Gif|*.gif";
+            this.saveFileDialog1.Title = "Save Image";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1144, 802);
+            this.Controls.Add(this.ButtonSaveImage);
             this.Controls.Add(this.ComboBoxDrawerSelection);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.ComboBoxDithererSelection);
@@ -253,6 +272,8 @@
         private System.Windows.Forms.ComboBox ComboBoxDithererSelection;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox ComboBoxDrawerSelection;
+        private System.Windows.Forms.Button ButtonSaveImage;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

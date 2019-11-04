@@ -68,7 +68,6 @@ namespace ImageProcessing.Presentation
                 canvas.UnlockBits(targetData);
             }
 
-            Save(canvas);
             return canvas;
         }
 

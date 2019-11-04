@@ -76,6 +76,7 @@ namespace Project1
         {
             if (OpenFileDialogImageLoader.ShowDialog()==DialogResult.OK)
             {
+                ButtonSaveImage.Enabled = false;
                 Quantizer quantizer = GetQuantizer();
                 IDitherer ditherer = GetDitherer();
 
@@ -99,6 +100,7 @@ namespace Project1
         {
             PictureBoxQuantized.Image = await drawer.DrawAsync();
             LabelColorDistance.Text = ""+drawer.AverageError;
+            ButtonSaveImage.Enabled = true;
         }
 
         /// <summary>
@@ -139,6 +141,14 @@ namespace Project1
         private void Label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ButtonSaveImage_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog()==DialogResult.OK)
+            {
+                PictureBoxQuantized.Image.Save(saveFileDialog1.FileName);
+            }
         }
     }
 }
