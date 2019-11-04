@@ -85,7 +85,6 @@ namespace ImageProcessing.Presentation
                 canvas.UnlockBits(targetData);
             }
 
-            canvas.Save("result.gif");
             return canvas;
 
         }

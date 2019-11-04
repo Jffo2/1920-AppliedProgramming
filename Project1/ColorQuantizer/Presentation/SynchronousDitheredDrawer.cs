@@ -70,7 +70,6 @@ namespace ImageProcessing.Presentation
                 canvas.UnlockBits(targetData);
             }
 
-            canvas.Save($"result{imageStore.Quantizer.ToString()}.gif");
             return canvas;
         }
 
