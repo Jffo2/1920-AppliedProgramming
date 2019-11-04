@@ -12,22 +12,44 @@ namespace ImageProcessing.Presentation
 {
     public abstract class Drawer : IDrawer
     {
+        /// <summary>
+        /// A field containing the Average euclidean distance between an original pixel and it's quantized counterpart
+        /// </summary>
         public double AverageError { get; protected set; }
 
+        /// <summary>
+        /// An event that fires when a progress update is available
+        /// </summary>
         public abstract event EventHandler<ProgressEventArgs> ProgressUpdate;
 
+        /// <summary>
+        /// The ImageStore containing all info to draw/quantize/dither
+        /// </summary>
         protected readonly ImageStore imageStore;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="imageStore">the ImageStore containing all info about the image to be drawn</param>
         public Drawer(ImageStore imageStore)
         {
             this.imageStore = imageStore;
         }
 
+       
         public abstract Bitmap Draw();
         public abstract Task<Bitmap> DrawAsync();
 
+        /// <summary>
+        /// Visualize the palette
+        /// </summary>
+        /// <param name="height">height of the palette to be drawn in pixels</param>
+        /// <param name="width">width of the palette to be drawn in pixels</param>
+        /// <returns>a bitmap visualizing the palette</returns>
         public Bitmap VisualizePallet(int height, int width)
         {
             if (!imageStore.QuantizerReady) throw new Exception("Quantizer not ready!");
+
             Bitmap bmp = new Bitmap(width, height);
 
             using (Graphics g = Graphics.FromImage(bmp))
@@ -35,8 +57,8 @@ namespace ImageProcessing.Presentation
                 var pallet = Cloner.DeepClone(imageStore.Quantizer.GetPalette());
                 int maxRows = System.Math.Max(pallet.Count / 16,1);
                 int maxColumns = System.Math.Min(pallet.Count, 16);
-                int xDelta = width / 16;
-                int yDelta = height / 16;
+                int xDelta = width / maxColumns;
+                int yDelta = height / maxRows;
 
                 for (int row = 0; row < maxRows; row++)
                 {
@@ -52,6 +74,12 @@ namespace ImageProcessing.Presentation
             return bmp;
         }
 
+        /// <summary>
+        /// Start palette visualization on a different thread
+        /// </summary>
+        /// <param name="height">height of the palette to be drawn in pixels</param>
+        /// <param name="width">width of the palette to be drawn in pixels</param>
+        /// <returns></returns>
         public Task<Bitmap> VisualizePalletAsync(int height, int width)
         {
             return Task.Run(() =>
@@ -59,7 +87,13 @@ namespace ImageProcessing.Presentation
                 return VisualizePallet(height, width);
             });
         }
-        
+
+        /// <summary>
+        /// Generate a bitmap containing a visual representation of the histogram
+        /// </summary>
+        /// <param name="height">height of the histogram to be drawn in pixels</param>
+        /// <param name="width">width of the histogram to be drawn in pixels</param>
+        /// <returns>a bitmap visualizing the histogram</returns>
         public Bitmap VisualizeHistogram(int height, int width)
         {
             System.Drawing.Color[] drawingColors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue };
@@ -68,6 +102,7 @@ namespace ImageProcessing.Presentation
             var histogramSize = (height - padding * 3) / 3;
             using (Graphics g = Graphics.FromImage(bmp))
             {
+                // Draw the axis'
                 g.DrawLine(new Pen(new SolidBrush(System.Drawing.Color.Black)), padding, padding + histogramSize, padding, padding);
                 g.DrawLine(new Pen(new SolidBrush(System.Drawing.Color.Black)), padding, padding + histogramSize, width - padding, padding + histogramSize);
 
@@ -81,19 +116,29 @@ namespace ImageProcessing.Presentation
 
                 for (int channel = 0; channel < 3; channel++)
                 {
+                    // Get the histogram for just one channel
                     var colorsOfChannel = GetChannelCount((Channel)channel);
+
                     float ydelta = histogramSize / (float)Util.Math.Max(colorsOfChannel);
+
+                    // Display a title for the graph
                     g.DrawString("Channel" + (channel + 1), new Font(FontFamily.GenericSansSerif, 8), new SolidBrush(System.Drawing.Color.Black), 2 * padding, (channel + 1) * padding + channel * histogramSize, StringFormat.GenericDefault);
+
+                    // Draw all points
                     for (int xoffset = 0; xoffset < 255; xoffset += 1)
                     {
                         g.DrawLine(new Pen(new SolidBrush(drawingColors[channel])), xoffset * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset] * ydelta, (xoffset + 1) * xdelta + padding, (padding + histogramSize) * (channel + 1) - colorsOfChannel[xoffset + 1] * ydelta);
                     }
                 }
-
             }
             return bmp;
         }
 
+        /// <summary>
+        /// Calculate the histogram for one channel
+        /// </summary>
+        /// <param name="channel">the channel for which to calculate</param>
+        /// <returns>A list of points where the index is the x coordinate and value is the frequency and thus y value</returns>
         private int[] GetChannelCount(Channel channel)
         {
             int[] count = new int[256];
@@ -106,6 +151,12 @@ namespace ImageProcessing.Presentation
             return count;
         }
 
+        /// <summary>
+        /// Generate a bitmap containing a visual representation of the histogram async
+        /// </summary>
+        /// <param name="height">height of the histogram to be drawn in pixels</param>
+        /// <param name="width">width of the histogram to be drawn in pixels</param>
+        /// <returns>a bitmap visualizing the histogram</returns>
         public Task<Bitmap> VisualizeHistogramAsync(int height, int width)
         {
             return Task.Run(() =>
@@ -114,6 +165,10 @@ namespace ImageProcessing.Presentation
             });
         }
 
+        /// <summary>
+        /// Copy the palette generated in the quantizer to a bitmap
+        /// </summary>
+        /// <param name="b"></param>
         public void CopyPalette(Bitmap b)
         {
             List<Models.Color> palette = imageStore.Quantizer.GetPalette();
@@ -126,6 +181,10 @@ namespace ImageProcessing.Presentation
             b.Palette = newPalette;
         }
 
+        /// <summary>
+        /// Save the image
+        /// </summary>
+        /// <param name="b">the bitmap to save</param>
         public void Save(Bitmap b)
         {
             b.Save($"result-{this.ToString()}-{imageStore.Quantizer.ToString()}-{imageStore.Ditherer.ToString()}.gif");

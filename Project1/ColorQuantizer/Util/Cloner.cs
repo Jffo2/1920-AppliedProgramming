@@ -9,6 +9,12 @@ namespace ImageProcessing.Util
 {
     public static class Cloner
     {
+        /// <summary>
+        /// Creates a deepcopy of a serializable object
+        /// </summary>
+        /// <typeparam name="T">a serializable type</typeparam>
+        /// <param name="source">the object to deepcopy</param>
+        /// <returns></returns>
         public static T DeepClone<T>(T source)
         {
             if (!typeof(T).IsSerializable)

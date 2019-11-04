@@ -24,11 +24,16 @@ namespace Project1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Make sure the value of the comboboxes cannot be null
             ComboBoxQuantizerSelection.SelectedIndex = 0;
             ComboBoxDithererSelection.SelectedIndex = 0;
             ComboBoxDrawerSelection.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Find the quantizer selected in the combobox
+        /// </summary>
+        /// <returns>the requested quantizer</returns>
         private Quantizer GetQuantizer()
         {
             Quantizer quantizer;
@@ -39,6 +44,10 @@ namespace Project1
             return quantizer;
         }
 
+        /// <summary>
+        /// Find the ditherer selected in the combobox
+        /// </summary>
+        /// <returns>the requested ditherer</returns>
         private IDitherer GetDitherer()
         {
             IDitherer ditherer;
@@ -48,6 +57,11 @@ namespace Project1
             return ditherer;
         }
 
+        /// <summary>
+        /// Find the drawer selected in the combobox
+        /// </summary>
+        /// <param name="imageStore">the imagestore the drawer will be drawing</param>
+        /// <returns>the requested drawer</returns>
         private Drawer GetDrawer(ImageStore imageStore)
         {
             Drawer drawer;
@@ -65,8 +79,6 @@ namespace Project1
                 Quantizer quantizer = GetQuantizer();
                 IDitherer ditherer = GetDitherer();
 
-                
-
                 ProgressBarQuantization.Value = 0;
                 ImagePath = OpenFileDialogImageLoader.FileName;
                 LabelPath.Text = ImagePath;
@@ -80,26 +92,42 @@ namespace Project1
             }
         }
 
+        /// <summary>
+        /// Asks the drawer to generate a bitmap and set the PictureBox to said image
+        /// </summary>
         private async void SetQuantizedImage()
         {
             PictureBoxQuantized.Image = await drawer.DrawAsync();
             LabelColorDistance.Text = ""+drawer.AverageError;
         }
 
+        /// <summary>
+        /// Asks the drawer to generate a bitmap that contains a visual representation of the palette and set the PictureBox to display this image
+        /// </summary>
         private async void SetPallet()
         {
             PictureBoxPallet.Image = await drawer.VisualizePalletAsync(PictureBoxPallet.Height, PictureBoxPallet.Width);
         }
 
+        /// <summary>
+        /// Called after the imageStore has finished initializing the quantizer and histogram
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private async void AfterInit(object sender, EventArgs args)
         {
+            // Draw the histogram
             PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
 
             SetPallet();
-            // Quantizer must be populated first
             SetQuantizedImage();
         }
 
+        /// <summary>
+        /// Update the value of the progressbar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void ProgressUpdate(object sender, ProgressEventArgs args)
         {
             ProgressBarQuantization.Invoke(new Action(() =>
