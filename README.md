@@ -151,13 +151,17 @@ Om quantization toe te passen op de afbeelding zal een nieuwe afbeelding geteken
 Dit is de taak van een Drawer klasse. Verschillende drawer klassen worden aangereikt: met- en zonder dithering, synchroon en asynchroon.
 Een drawer klasse wordt gedefinieerd door een ImageStore object.
 De drawer klasse bevat verschillende methoden waarvan twee centraal staan.
-Een methode om het histogram te visualiseren, en een methode om een geditherede, gequantizeerde afbeelding te genereren.
+Een methode om het histogram te visualiseren en een methode om een geditherede, gequantizeerde afbeelding te genereren.
 Het genereren van de afbeelding gaat als volgt:
  1. Lees een pixel uit de originele afbeelding
  2. Kijk of dithering is toegepast op de huidige pixel
  3. Zoek de dichtsbijzijnde pixel in het palet en schrijf deze naar de te genereren afbeelding
  4. Bereken kleurafstand en pas dithering toe, dithering wordt opgeslagen in een overlay matrix
  5. Herhaal vanaf stap 1 voor de overige pixels
- 6. Sla de afbeelding op als gif
 
 ### Experimentatie
+De applicatie laat voldoende ruimte tot experimentatie voor de eindgebruiker.
+De eindgebruiker kan kiezen welke quantizer, ditherer en drawer gebruikt wordt voor het quantization proces.
+Elke combinatie van voorgaande parameters kan de kwaliteit van de bekomen afbeelding alsook de snelheid van het berekenen veranderen.
+Om een goed beeld te krijgen van welke invloed de verschillende parameters waarop hebben werden enkele experimenten opgesteld.
+#### Vergelijken van Simple Quantizer met HSL Quantizer
