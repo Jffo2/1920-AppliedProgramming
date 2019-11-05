@@ -206,4 +206,4 @@ De test zal uitgevoerd worden op een computer met een Intel i7 5820K met 6 cores
 Resultaten kunnen afwijken op andere setups. 
 Een computer met minder threads zal minder voordeel hebben bij de Asynchronous Dithered Drawer.
 De Synchronous Dithered Drawer deed 4 minuten 27 seconden over een referentie 4K afbeelding met een RAM verbruik piek bij 332MB.
-De Asynchronous Dithered Drawer
+De Asynchronous Dithered Drawer deed 50 seconden over dezelfde referentie 4K afbeelding met een RAM verbruik piek bij 236MB.
