@@ -20,7 +20,7 @@ Het reduceren van een 24bits afbeelding (16,777,215 kleuren) naar een palet noem
 Om te spreken van kwaliteit is een definitie hiervan nodig. De best kwantificeerbare definitie voor kwaliteit berekent de gemiddelde kleurafstand van elke pixel in de bekomen afbeelding ten opzichte van de originele pixel.
 Een hogere kwaliteit betekent dus een lagere gemiddelde kleurafstand. Er zijn vele algoritmen ter beschikking voor het reduceren van de kleuren in een afbeelding. Enkele voorbeelden zijn:
 
-#### Eigen implementatie
+#### Eigen implementatie (Simple Quantizer)
 
 Een eerste manier voor het opstellen van een palet gaat als volgt. Er van uit gaande dat elke pixel een waarde voor R, G en B bevat wordt van alle pixels de extrema bij gehouden.
 Volgende waarden worden opgeslagen
@@ -133,7 +133,7 @@ Voordelen:
 Nadelen:
  - Vergt meer processing power en kan niet vooraf berekend worden
 
-### Opbouw van de code
+## Opbouw van de code
 De code is opgebouwd volgens het Dependency Injection patroon en is vooral geconcentreerd in een Class Library.
 De applicatie bevat ook verschillende lagen.
  - Logic: Hier bevindt zich de logica van de applicatie. Deze laag bevat bijvoorbeeld de ditherers en quantizers.
@@ -159,9 +159,15 @@ Het genereren van de afbeelding gaat als volgt:
  4. Bereken kleurafstand en pas dithering toe, dithering wordt opgeslagen in een overlay matrix
  5. Herhaal vanaf stap 1 voor de overige pixels
 
-### Experimentatie
+## Experimentatie
 De applicatie laat voldoende ruimte tot experimentatie voor de eindgebruiker.
 De eindgebruiker kan kiezen welke quantizer, ditherer en drawer gebruikt wordt voor het quantization proces.
 Elke combinatie van voorgaande parameters kan de kwaliteit van de bekomen afbeelding alsook de snelheid van het berekenen veranderen.
 Om een goed beeld te krijgen van welke invloed de verschillende parameters waarop hebben werden enkele experimenten opgesteld.
-#### Vergelijken van Simple Quantizer met HSL Quantizer
+Enkel relevante experimenten en enkel relevante parameters van de experimenten zullen besproken worden.
+### Vergelijken van Simple Quantizer met HSL Quantizer
+In deze test is voornamelijk de kwaliteit van de bekomen afbeelding belangrijk.
+Op vlak van RAM zal de Simple Quantizer het laagste verbruik kennen.
+Dit omdat de HSL Quantizer alle kleuren van de afbeelding in een dictionary zal moeten bijhouden alvorens te kunnen selecteren op unieke waarden.
+Als schaal voor de kwaliteit van de bekomen afbeelding hanteren we nog steeds de vooraf opgestelde definitie.
+![Simple Quantizer vs. HSL Quantizer](img/SimpleQuantizer_vs_HSLQuantizer.png "Test Resultaten Simple Quantizer vs. HSL Quantizer")
