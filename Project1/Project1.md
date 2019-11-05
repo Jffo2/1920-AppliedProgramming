@@ -171,3 +171,39 @@ Op vlak van RAM zal de Simple Quantizer het laagste verbruik kennen.
 Dit omdat de HSL Quantizer alle kleuren van de afbeelding in een dictionary zal moeten bijhouden alvorens te kunnen selecteren op unieke waarden.
 Als schaal voor de kwaliteit van de bekomen afbeelding hanteren we nog steeds de vooraf opgestelde definitie.
 ![Simple Quantizer vs. HSL Quantizer](VerslagImages/SimpleQuantizer_vs_HSLQuantizer.png "Test Resultaten Simple Quantizer vs. HSL Quantizer")
+De HSL Quantizer komt als beste uit deze test.
+Dit kan ook simpel beredeneerd worden.
+De Simple Quantizer geeft geen garantie dat kleuren in het palet voorkomen in de originele afbeelding.
+Hierdoor kan een grote afwijking ontstaan tussen de originele afbeelding en de gegenereerde afbeelding.
+De HSL Quantizer, in tegenstelling, zal wel kleuren gebruiken in het palet die aanwezig zijn in de originele afbeelding.
+Hierdoor kan deze Quantizer een gemiddeld lagere afstand garanderen.
+### Vergelijken van Floyd Steinberg Ditherer met Jarvis Judice Ninke Ditherer
+In deze test zullen verschillende criteria gehanteerd worden ter vergelijking.
+De test zal uitgevoerd worden in combinatie met de BW quantizer omdat het effect van dithering het best zichtbaar is in een pallet met twee contrasterende kleuren.
+De criteria zijn:
+1. De witte oppervlakte zonder ditherpatroon in een afbeelding. 
+   Onder normale omstandigheden zal bij zwart wit de kleurafstand steeds significant zijn.
+   Indien er dus oppervlakten ontstaan zonder ditherpatroon zal dit wijzen op een slechte dither methode.
+2. De overgang van dither patronen. 
+   Hoe slechter de overgang van het ditherpatroon, des te duidelijker zal de randvorming bij quantization zijn. 
+   Dit effect is het omgekeerde van wat het doel van dithering.
+
+![Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer](VerslagImages/SimpleQuantizer_vs_HSLQuantizer.png "Test Resultaten Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer")
+In deze testen is de beste ditherer op basis van onze criteria de Jarvis Judice Ninke Ditherer.
+Deze zal een betere overgang teweeg brengen doordat de error diffusion gradueler is en over meer pixels verspreid wordt.
+De afbeelding met Jarvis Judice Ninke Dithering heeft ook duidelijk de minst aaneensluitende witruimtes.
+In theorie zou Floyd Steinberg sneller zijn doordat hier de diffused error gedeeld wordt door een macht van 2. 
+Hierdoor kan bitshifting gebruikt worden wat sneller is dan integer of floating point operations.
+In de praktijk werd in deze applicatie toch met floating points gewerkt om de dither distortion nauwkeuriger bij te houden.
+Dit leverde een aanzienlijke verbetering op in het algoritme.
+### Vergelijken van Synchronous Dithered Drawer met Asynchronous Dithered Drawer
+In deze test zal vooral RAM verbruik en looptijd in kaart gebracht worden.
+Het enige verschil tussen deze drawers is dat de Synchronous Dithered Drawer op een enkele thread uitgevoerd zal worden.
+De Asynchronous Dithered Drawer zal echter elke rij van de afbeelding op een aparte thread laten uitvoeren.
+Beide algoritmes zullen getest worden in combinatie met de HSL Quantizer en Floyd Steinberg Dithering.
+Deze test zou even goed met andere parameters uitgevoerd kunnen worden.
+De test zal uitgevoerd worden op een computer met een Intel i7 5820K met 6 cores, 12 threads, 4.2Ghz clock speed en 16gb ram
+Resultaten kunnen afwijken op andere setups. 
+Een computer met minder threads zal minder voordeel hebben bij de Asynchronous Dithered Drawer.
+De Synchronous Dithered Drawer deed 4 minuten 27 seconden over een referentie 4K afbeelding met een RAM verbruik piek bij 332MB.
+De Asynchronous Dithered Drawer
