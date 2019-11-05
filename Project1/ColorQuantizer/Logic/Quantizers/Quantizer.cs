@@ -15,11 +15,6 @@ namespace ImageProcessing.Logic.Quantizers
         protected readonly List<Models.Color> palette;
 
         /// <summary>
-        /// A simple cache implementation that maps a known color to the index in the palette
-        /// </summary>
-        private readonly ConcurrentDictionary<Models.Color, int> cache;
-
-        /// <summary>
         /// Initialize the palette
         /// </summary>
         protected abstract void PopulatePalette();
@@ -30,7 +25,6 @@ namespace ImageProcessing.Logic.Quantizers
         public Quantizer()
         {
             palette = new List<Models.Color>();
-            cache = new ConcurrentDictionary<Models.Color, int>();
         }
 
         /// <summary>
@@ -70,8 +64,6 @@ namespace ImageProcessing.Logic.Quantizers
         {
             // If the palette is not yet initialized, populate it with the colors
             if (palette.Count==0) PopulatePalette();
-            // If the closest color's index has already been calculated get it from the cache
-            if (cache.ContainsKey(c)) return cache[c];
             int index = 0;
             Models.Color bestColor = palette[0];
             // Loop over the palette to find the closest color
@@ -83,8 +75,6 @@ namespace ImageProcessing.Logic.Quantizers
                     index = (byte)i;
                 }
             }
-            // Add the color to the cache with it's index
-            cache.TryAdd(c, index);
             return index;
         }
 
@@ -95,8 +85,7 @@ namespace ImageProcessing.Logic.Quantizers
         /// <returns>the index of the closest color in the palette</returns>
         public int GetPaletteIndex(System.Drawing.Color c)
         {
-            Models.Color color = new Models.Color(c.R, c.G, c.B);
-            return GetPaletteIndex(color);
+            return GetPaletteIndex(new Models.Color(c));
         }
     }
 }
