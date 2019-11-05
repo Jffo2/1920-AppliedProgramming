@@ -14,7 +14,7 @@ namespace ImageProcessing.Util
         /// <returns>an integer representing the distance in euclidean space</returns>
         public static int Distance(Models.Color color, Models.Color other)
         {
-            return (color.Channel1 - other.Channel1) * (color.Channel1 - other.Channel1) + (color.Channel2 - other.Channel2) * (color.Channel2 - other.Channel2) + (color.Channel3 - other.Channel3) * (color.Channel3 - other.Channel3);
+            return (int)((color.Channel1 - other.Channel1) * (color.Channel1 - other.Channel1) + (color.Channel2 - other.Channel2) * (color.Channel2 - other.Channel2) + (color.Channel3 - other.Channel3) * (color.Channel3 - other.Channel3));
         }
 
         /// <summary>

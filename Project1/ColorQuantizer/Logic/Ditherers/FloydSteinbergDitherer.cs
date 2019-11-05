@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Text;
-using ImageProcessing.Models;
-
-namespace ImageProcessing.Logic.Ditherers
+﻿namespace ImageProcessing.Logic.Ditherers
 {
     public class FloydSteinbergDitherer : IDitherer
     {
@@ -25,7 +18,7 @@ namespace ImageProcessing.Logic.Ditherers
             lock (ditherDistortionArray)
             {
                 var offset = currentRow * width + currentColumn;
-                var distances = original - palette;
+                float[] distances = original - palette;
 
                 // To the right
                 if (currentColumn != width - 1)
@@ -50,16 +43,16 @@ namespace ImageProcessing.Logic.Ditherers
                 }
             }
         }
-        
+
         /// <summary>
         /// Calculates the dither distortion
         /// </summary>
         /// <param name="distances">The distances in R, G and B from the original to the mapped pixel</param>
         /// <param name="multiplier">the dithering numerator</param>
         /// <returns>A color object that contains dither distortion values for R, G and B</returns>
-        private Models.Color Apply(int[] distances, int multiplier)
+        private Models.Color Apply(float[] distances, int multiplier)
         {
-            return new Models.Color((multiplier * distances[0]) >> 4, (multiplier * distances[1]) >> 4, (multiplier * distances[2]) >> 4);
+            return new Models.Color((multiplier * distances[0]) / 16.0f, (multiplier * distances[1]) / 16.0f, (multiplier * distances[2]) / 16.0f);
         }
 
         /// <summary>

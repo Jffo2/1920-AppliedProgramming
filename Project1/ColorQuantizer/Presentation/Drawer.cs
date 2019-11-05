@@ -65,7 +65,7 @@ namespace ImageProcessing.Presentation
                     for (int column = 0; column < maxColumns; column++)
                     {
                         Models.Color c = pallet[row * 16 + column];
-                        System.Drawing.Color color = System.Drawing.Color.FromArgb(255,c.Channel1, c.Channel2, c.Channel3);
+                        System.Drawing.Color color = System.Drawing.Color.FromArgb(255,(int)c.Channel1, (int)c.Channel2, (int)c.Channel3);
                         g.FillRectangle(new SolidBrush(color), column * xDelta, row * yDelta, (column + 1) * xDelta, (row + 1) * yDelta);
                     }
                 }
@@ -176,7 +176,7 @@ namespace ImageProcessing.Presentation
             for (int i = 0; i < palette.Count; i++)
             {
                 System.Diagnostics.Debug.WriteLine($"Adding {palette[i]} to the palette as color {i}");
-                newPalette.Entries[i] = System.Drawing.Color.FromArgb(255, palette[i].Channel1, palette[i].Channel2, palette[i].Channel3);
+                newPalette.Entries[i] = System.Drawing.Color.FromArgb(255, (int)palette[i].Channel1, (int)palette[i].Channel2, (int)palette[i].Channel3);
             }
             b.Palette = newPalette;
         }

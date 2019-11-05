@@ -1,9 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-
-namespace ImageProcessing.Logic.Ditherers
+﻿namespace ImageProcessing.Logic.Ditherers
 {
     public class JarvisJudiceNinkeDitherer : IDitherer
     {
@@ -23,7 +18,7 @@ namespace ImageProcessing.Logic.Ditherers
             lock (ditherDistortionArray)
             {
                 var offset = currentRow * width + currentColumn;
-                var distances = original - palette;
+                float[] distances = original - palette;
 
                 // Same row
                 if (currentColumn < width - 1)
@@ -52,17 +47,17 @@ namespace ImageProcessing.Logic.Ditherers
                     }
 
                     // To the right
-                    if (currentColumn < width - 1)
+                    if (currentColumn < (width - 1))
                     {
                         ditherDistortionArray[offset + width + 1] += Apply(distances, 5);
-                        if (currentColumn < width - 2)
+                        if (currentColumn < (width - 2))
                         {
                             ditherDistortionArray[offset + width + 2] += Apply(distances, 3);
                         }
                     }
 
                     // 2 rows below
-                    if (currentRow < height - 2)
+                    if (currentRow < (height - 2))
                     {
                         // Center
                         ditherDistortionArray[offset + 2 * width] += Apply(distances, 5);
@@ -78,10 +73,10 @@ namespace ImageProcessing.Logic.Ditherers
                         }
 
                         // To the right
-                        if (currentColumn < width - 1)
+                        if (currentColumn < (width - 1))
                         {
                             ditherDistortionArray[offset + 2 * width + 1] += Apply(distances, 3);
-                            if (currentColumn < width - 2)
+                            if (currentColumn < (width - 2))
                             {
                                 ditherDistortionArray[offset + 2 * width + 2] += Apply(distances, 1);
                             }
@@ -97,9 +92,9 @@ namespace ImageProcessing.Logic.Ditherers
         /// <param name="distances">The distances in R, G and B from the original to the mapped pixel</param>
         /// <param name="multiplier">the dithering numerator</param>
         /// <returns>A color object that contains dither distortion values for R, G and B</returns>
-        private Models.Color Apply(int[] distances, int multiplier)
+        private Models.Color Apply(float[] distances, int multiplier)
         {
-            return new Models.Color((multiplier * distances[0]) / 48, (multiplier * distances[1]) / 48, (multiplier * distances[2]) / 48);
+            return new Models.Color((multiplier * distances[0]) / 48.0f, (multiplier * distances[1]) / 48.0f, (multiplier * distances[2]) / 48.0f);
         }
 
         /// <summary>
