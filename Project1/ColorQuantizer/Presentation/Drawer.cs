@@ -171,7 +171,7 @@ namespace ImageProcessing.Presentation
         /// <param name="b"></param>
         public void CopyPalette(Bitmap b)
         {
-            List<Models.Color> palette = imageStore.Quantizer.GetPalette();
+            List<Models.Color> palette = Cloner.DeepClone(imageStore.Quantizer.GetPalette());
             ColorPalette newPalette = b.Palette;
             for (int i = 0; i < palette.Count; i++)
             {

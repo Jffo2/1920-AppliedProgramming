@@ -119,7 +119,7 @@ namespace Project1
         private async void AfterInit(object sender, EventArgs args)
         {
             // Draw the histogram
-            PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
+           PictureBoxHistogram.Image = await drawer.VisualizeHistogramAsync(PictureBoxHistogram.Height, PictureBoxHistogram.Width);
 
             SetPallet();
             SetQuantizedImage();

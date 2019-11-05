@@ -114,27 +114,24 @@ namespace ImageProcessing.Logic
             return Task.Run(() =>
             {
                 var colorCount = new ConcurrentDictionary<Color, int>();
-                Bitmap i;
-                // Clone the image first, to make it threadsafe
+                // Lock the image first, to make it threadsafe
                 lock (Image)
                 {
-                    i = Cloner.DeepClone(Image);
+                    var totalHeight = Image.Height;
+                    var totalWidth = Image.Width;
+
+                    // Prepare bits for reading
+                    BitmapData data = Image.LockBits(new Rectangle(0, 0, totalWidth, totalHeight), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                    var offset = data.Scan0.ToInt64();
+                    int dataStride = data.Stride;
+
+                    // Generate a bunch of "threads" that can each read a line from the image, to read a lot of lines at the same time
+                    var tasks = PopulateAll(totalHeight, totalWidth, offset, dataStride, colorCount);
+                
+                    // Wait for the threads to finish
+                    Task.WaitAll(tasks);
+                    Image.UnlockBits(data);
                 }
-                
-                var totalHeight = i.Height;
-                var totalWidth = i.Width;
-
-                // Prepare bits for reading
-                BitmapData data = i.LockBits(new Rectangle(0, 0, totalWidth, totalHeight), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                var offset = data.Scan0.ToInt64();
-                int dataStride = data.Stride;
-
-                // Generate a bunch of "threads" that can each read a line from the image, to read a lot of lines at the same time
-                var tasks = PopulateAll(totalHeight, totalWidth, offset, dataStride, colorCount);
-                
-                // Wait for the threads to finish
-                Task.WaitAll(tasks);
-
                 return new Histogram(new Dictionary<Color, int>(colorCount));
             });
         }
@@ -150,23 +147,25 @@ namespace ImageProcessing.Logic
         /// <returns></returns>
         private Task[] PopulateAll(int totalHeight, int totalWidth, long offset, int stride, ConcurrentDictionary<Color, int> colorCount)
         {
+            long modifiedOffset = offset;
             // Keep a list of all tasks
             Task[] tasks = new Task[totalHeight];
 
             for (int height = 0; height < totalHeight; height++)
             {
-                var h = height;
+                // Copy the value, otherwise this is not threadsafe
+                var offsett = modifiedOffset;
                 Task t = Task.Run(() =>
                 {
                     int[] line = new int[totalWidth];
 
-                    Marshal.Copy(new IntPtr(offset), line, 0, totalWidth);
+                    Marshal.Copy(new IntPtr(offsett), line, 0, totalWidth);
 
                     // Register the row to the quantizer and add it to the histogram
                     AddRow(totalWidth, line, colorCount);
                     
-                    offset += stride;
                 });
+                modifiedOffset += stride;
                 // Add the task to the list
                 tasks[height] = t;
             }
@@ -189,14 +188,7 @@ namespace ImageProcessing.Logic
 
                 quantizer.AddColor(color);
 
-                if (!colorCount.ContainsKey(color))
-                {
-                    colorCount.TryAdd(color, 1);
-                }
-                else
-                {
-                    colorCount[color]++;
-                }
+                colorCount.AddOrUpdate(color, 1, (c, count) => count + 1);
             }
         }
     }

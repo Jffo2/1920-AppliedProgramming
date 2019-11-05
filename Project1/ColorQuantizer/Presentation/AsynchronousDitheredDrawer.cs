@@ -33,14 +33,12 @@ namespace ImageProcessing.Presentation
             }
 
             TotalError = 0;
-            Bitmap bitmap;
             IDitherer ditherer = imageStore.Ditherer;
-            // Clone the image for thread-safeness
+            // Lock the image for thread-safeness
             lock (imageStore.Image)
             {
-                bitmap = Cloner.DeepClone(imageStore.Image);
+                return GenerateBitmap(imageStore.Image, ditherer);
             }
-            return GenerateBitmap(bitmap, ditherer);
         }
 
         private Bitmap GenerateBitmap(Bitmap bitmap, IDitherer ditherer)
@@ -186,6 +184,8 @@ namespace ImageProcessing.Presentation
                     var distance = System.Math.Sqrt(Util.Math.Distance(new Models.Color(color), imageStore.Quantizer.GetColorByIndex(targetLine[index])));
                     ditherer.Dither(colorAsColor, imageStore.Quantizer.GetColorByIndex(targetLine[index]), ditherDistortion, index, id, width, height);
                     TotalError += distance;
+                    // Free up memory by deleting this entry in the dither distortion matrix
+                    ditherDistortion[index + id * width] = null;
                     progress[id]++;
                 }
                 // Increase this significantly so task below this can get to the end

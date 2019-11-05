@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 
 // Based on https://www.codeproject.com/Articles/66341/A-Simple-Yet-Quite-Powerful-Palette-Quantizer-in-C
 namespace ImageProcessing.Logic.Quantizers
@@ -11,19 +13,19 @@ namespace ImageProcessing.Logic.Quantizers
         /// <summary>
         /// Histogram like dictionary keeping track of the colors and their frequency
         /// </summary>
-        private Dictionary<Color, int> colorCount;
+        private readonly ConcurrentDictionary<Color, int> colorCount;
 
         /// <summary>
         /// The amount of colors in the palette, for our assignment this is 256
         /// </summary>
-        private const int PALETTE_MAX_COUNT = 256;
+        private static readonly int PALETTE_MAX_COUNT = 256;
 
         /// <summary>
         /// Initialize the histogram
         /// </summary>
         public HSLQuantizer() : base()
         {
-            colorCount = new Dictionary<Color, int>();
+            colorCount = new ConcurrentDictionary<Color, int>();
         }
 
         /// <summary>
@@ -34,14 +36,7 @@ namespace ImageProcessing.Logic.Quantizers
         {
             lock (colorCount)
             {
-                if (!colorCount.ContainsKey(c))
-                {
-                    colorCount.Add(c, 1);
-                }
-                else
-                {
-                    colorCount[c]++;
-                }
+                colorCount.AddOrUpdate(c, 1, (color, count) => count + 1);
             }
         }
 
@@ -58,9 +53,11 @@ namespace ImageProcessing.Logic.Quantizers
 
                     // Use a random to order the colors
                     Random rd = new Random(666);
-                    
+
+                    IEnumerable<Color> colors = colorCount.Select(keypair => keypair.Key).OrderBy(key => key.ToArgb()).OrderBy(key => rd.NextDouble());
+
                     // Cut the colors
-                    var colors = Cut(colorCount.OrderBy(keypair => rd.NextDouble()).Select(keypair => keypair.Key));
+                    colors = Cut(colors);
 
                     // if there are still too many colors in the palette, order them by frequency and take the first 256
                     if (colors.Count() > PALETTE_MAX_COUNT)
@@ -83,7 +80,7 @@ namespace ImageProcessing.Logic.Quantizers
         /// </summary>
         /// <param name="colorList">the histogram</param>
         /// <returns>The list of unique colors that will become the palette</returns>
-        private IEnumerable<Color> Cut(IEnumerable<Color> colorList)
+        private static IEnumerable<Color> Cut(IEnumerable<Color> colorList)
         {
             // If there's less or equal to the allowed amount of colors, we're done
             if (colorList.Count() <= PALETTE_MAX_COUNT) return colorList;
@@ -126,7 +123,7 @@ namespace ImageProcessing.Logic.Quantizers
         /// <param name="comp1">the comparator of another parameter</param>
         /// <param name="comp2">the comparator of another parameter</param>
         /// <returns>The list of unique colors that will become the palette</returns>
-        private IEnumerable<Color> Cut2(IEnumerable<Color> colorList, IEqualityComparer<Color> comp1, IEqualityComparer<Color> comp2)
+        private static IEnumerable<Color> Cut2(IEnumerable<Color> colorList, IEqualityComparer<Color> comp1, IEqualityComparer<Color> comp2)
         {
             // If there's less or equal to the allowed amount of colors, we're done
             if (colorList.Count() <= PALETTE_MAX_COUNT) return colorList;
@@ -152,7 +149,7 @@ namespace ImageProcessing.Logic.Quantizers
         /// <param name="colorList">the histogram with at least 2 parameters unique</param>
         /// <param name="comp">the comparator for the last non-unique parameter</param>
         /// <returns>The list of unique colors that will become the palette</returns>
-        private IEnumerable<Color> Cut3(IEnumerable<Color> colorList, IEqualityComparer<Color> comp)
+        private static IEnumerable<Color> Cut3(IEnumerable<Color> colorList, IEqualityComparer<Color> comp)
         {
             if (colorList.Count() <= PALETTE_MAX_COUNT) return colorList;
             return colorList.Distinct(comp);

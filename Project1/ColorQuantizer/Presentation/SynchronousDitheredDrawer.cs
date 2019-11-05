@@ -34,29 +34,34 @@ namespace ImageProcessing.Presentation
                 throw new Exception("The Quantizer was not ready yet.");
             }
             TotalError = 0;
-            Bitmap bitmap;
             IDitherer ditherer = imageStore.Ditherer;
+            Bitmap canvas;
+            BitmapData sourceData;
+            BitmapData targetData;
+            int width;
+            int height;
             lock (imageStore.Image)
             {
-                bitmap = Cloner.DeepClone(imageStore.Image);
+                width = imageStore.Image.Width;
+                height = imageStore.Image.Height;
+
+                Rectangle bounds = Rectangle.FromLTRB(0, 0, imageStore.Image.Width, imageStore.Image.Height);
+
+                // Lock source bits for reading
+                sourceData = imageStore.Image.LockBits(bounds, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+                // Lock target bits for writing
+                canvas = new Bitmap(imageStore.Image.Width, imageStore.Image.Height, PixelFormat.Format8bppIndexed);
+                targetData = canvas.LockBits(bounds, ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+
             }
-            Rectangle bounds = Rectangle.FromLTRB(0, 0, bitmap.Width, bitmap.Height);
-
-            // Lock source bits for reading
-            BitmapData sourceData = bitmap.LockBits(bounds, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-            // Lock target bits for writing
-            Bitmap canvas = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format8bppIndexed);
-            BitmapData targetData = canvas.LockBits(bounds, ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
 
             // Copy the palette to the target bitmap
             CopyPalette(canvas);
 
             try
             {
-                int width = bitmap.Width;
-                int height = bitmap.Height;
-                long total = bitmap.Width * bitmap.Height;
+                long total = width * height;
                 Models.Color[] ditherDistortion = new Models.Color[total];
 
                 LoopRows(width, height, sourceData, targetData, ditherDistortion, ditherer);
@@ -66,7 +71,10 @@ namespace ImageProcessing.Presentation
             
             finally
             {
-                bitmap.UnlockBits(sourceData);
+                lock (imageStore.Image)
+                {
+                    imageStore.Image.UnlockBits(sourceData);
+                }
                 canvas.UnlockBits(targetData);
             }
 
