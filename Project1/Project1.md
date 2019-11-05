@@ -188,7 +188,7 @@ De criteria zijn:
    Hoe slechter de overgang van het ditherpatroon, des te duidelijker zal de randvorming bij quantization zijn. 
    Dit effect is het omgekeerde van wat het doel van dithering.
 
-![Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer](VerslagImages/SimpleQuantizer_vs_HSLQuantizer.png "Test Resultaten Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer")
+![Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer](VerslagImages/FloydSteinberg_vs_JarvisJudiceNinke.png "Test Resultaten Floyd Steinberg Ditherer vs. Jarvis Judice Ninke Ditherer")
 In deze testen is de beste ditherer op basis van onze criteria de Jarvis Judice Ninke Ditherer.
 Deze zal een betere overgang teweeg brengen doordat de error diffusion gradueler is en over meer pixels verspreid wordt.
 De afbeelding met Jarvis Judice Ninke Dithering heeft ook duidelijk de minst aaneensluitende witruimtes.
