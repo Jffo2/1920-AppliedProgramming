@@ -138,7 +138,7 @@ Nadelen:
  - Vergt meer processing power en kan niet vooraf berekend worden
 
 ## Opbouw van de code
-De code is opgebouwd volgens het Dependency Injection patroon [[9](https://www.tutorialsteacher.com/ioc/dependency-injection)] en is vooral geconcentreerd in een Class Library.
+De code is opgebouwd volgens het Dependency Injection patroon [[9](https://martinfowler.com/articles/injection.html)] en is vooral geconcentreerd in een Class Library.
 De applicatie bevat ook verschillende lagen.
  - Logic: Hier bevindt zich de logica van de applicatie. Deze laag bevat bijvoorbeeld de ditherers en quantizers.
  - Presentation: Hier bevinden zich Drawer klassen. Dit zijn klassen die afbeeldingen (grafisch, vandaar presentatie laag) genereren door gebruik te maken van de logica laag.
@@ -223,13 +223,13 @@ De vergelijking van de Synchronous Dithered Drawer met de Asynchronous Dithered 
 Het resultaat is een afbeelding die gereduceerd is in grootte en die vanop een afstand geen verschillen vertoont met de originele afbeelding.
 
 ## Bronvermelding
- - [1][https://en.wikipedia.org/wiki/Indexed_color](https://en.wikipedia.org/wiki/Indexed_color)
- - [2][https://en.wikipedia.org/wiki/Dither](https://en.wikipedia.org/wiki/Dither)
- - [3][https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF)
- - [4][https://en.wikipedia.org/wiki/Euclidean_distance](https://en.wikipedia.org/wiki/Euclidean_distance)
- - [5][https://en.wikipedia.org/wiki/HSL_and_HSV](https://en.wikipedia.org/wiki/HSL_and_HSV)
- - [6][https://en.wikipedia.org/wiki/Ordered_dithering](https://en.wikipedia.org/wiki/Ordered_dithering)
- - [7][https://en.wikipedia.org/wiki/Error_diffusion](https://en.wikipedia.org/wiki/Error_diffusion)
- - [8][https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering](https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering)
- - [9][https://www.tutorialsteacher.com/ioc/dependency-injection](https://www.tutorialsteacher.com/ioc/dependency-injection)
- - [10][https://people.freedesktop.org/~joonas/tmp/wu.pdf](https://people.freedesktop.org/~joonas/tmp/wu.pdf)
+ - [1] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Indexed_color](https://en.wikipedia.org/wiki/Indexed_color)
+ - [2] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Dither](https://en.wikipedia.org/wiki/Dither)
+ - [3] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF)
+ - [4] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Euclidean_distance](https://en.wikipedia.org/wiki/Euclidean_distance)
+ - [5] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/HSL_and_HSV](https://en.wikipedia.org/wiki/HSL_and_HSV)
+ - [6] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Ordered_dithering](https://en.wikipedia.org/wiki/Ordered_dithering)
+ - [7] Wikipedia. 2018. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Error_diffusion](https://en.wikipedia.org/wiki/Error_diffusion)
+ - [8] Wikipedia. 2019. Indexed Color. Geraadpleegd op 6 november 2019 via [https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering](https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering)
+ - [9] Martin Fowler. 2004. Inversion of Control Containers and the Dependency Injection pattern. Geraadpleegd op 6 november 2019 via [https://martinfowler.com/articles/injection.html](https://martinfowler.com/articles/injection.html)
+ - [10] Xialion Wu. 1991. Color Quantization by Dynamic Programming and Principal Analysis. Geraadpleegd op 6 novebmer 2019 via [https://people.freedesktop.org/~joonas/tmp/wu.pdf](https://people.freedesktop.org/~joonas/tmp/wu.pdf)
