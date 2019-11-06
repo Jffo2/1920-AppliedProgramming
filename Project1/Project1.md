@@ -3,13 +3,15 @@
 ## Inleiding
 
 Sedert lang speelt de grootte van afbeelding een belangrijke rol. Vroeger speelde dit vooral een rol door het gebrek aan RAM of opslagplaats voor de afbeelding.
-Tegenwoordig vallen deze beperkingen minder zwaar maar zijn er nieuwe trends die een nood scheppen voor kleine afbeeldingen. Denk bijvoorbeeld aan de laadtijd van een website met meerdere afbeeldingen.
-Naarmate beeldschermen hogere resoluties ondersteunden werd de nood voor kwalitatieve doch compacte afbeeldingen groter. Er moest dus een verandering komen en gezocht worden naar een optimale balans.
-Het werken met kleurpaletten bleek een goede oplossing te zijn, deze techniek werd voor het eerst gebruikt in 1975 door Kajiya, Sutherland en Cheadle.
+Tegenwoordig vallen deze beperkingen minder zwaar maar zijn er nieuwe trends die een nood scheppen voor kleine afbeeldingen. 
+Denk bijvoorbeeld aan de laadtijd van een website met meerdere afbeeldingen.
+Naarmate beeldschermen hogere resoluties ondersteunden werd de nood voor kwalitatieve doch compacte afbeeldingen groter. 
+Er moest dus een verandering komen en gezocht worden naar een optimale balans.
+Het werken met kleurpaletten bleek een goede oplossing te zijn, deze techniek werd voor het eerst gebruikt in 1975 door Kajiya, Sutherland en Cheadle [[1](https://en.wikipedia.org/wiki/Indexed_color)].
 Tot op heden blijft deze techniek een oplossing bij het reduceren van opslagruimte van een afbeelding. Het reduceren van kleuren door middel van een kleurenpallet bleek echter niet te volstaan.
-Kleurenpaletten hadden moeite met het realistisch voorstellen van kleurovergangen. Dit is het moment waarop Dithering interessant werd. Deze techniek, waarvoor het idee ontstond tijdens WO2, laat toe om een valse diepte in de afbeelding te brengen.
+Kleurenpaletten hadden moeite met het realistisch voorstellen van kleurovergangen. Dit is het moment waarop Dithering interessant werd. Deze techniek, waarvoor het idee ontstond tijdens WO2 [[2](https://en.wikipedia.org/wiki/Dither)], laat toe om een valse diepte in de afbeelding te brengen.
 Gecombineerd vormen deze technieken een voldoend repertoire om afbeeldingen in grootte te beperken zonder essentiële informatie te verliezen.
-Deze manier van opslaan wordt nog steeds gebruikt in het GIF (Graphics Interchange Format) dat een palette van 256 kleuren toelaat voor gebruik in de afbeelding.
+Deze manier van opslaan wordt nog steeds gebruikt in het GIF [[3](https://en.wikipedia.org/wiki/GIF)] (Graphics Interchange Format) dat een palette van 256 kleuren toelaat voor gebruik in de afbeelding.
 Bovenop het beperken van het aantal kleuren in de afbeelding wordt ook nog gebruik gemaakt van een lossless compressie.
 
 ## Wetenschappelijk onderzoek
@@ -41,7 +43,7 @@ Voordelen:
 Nadelen:
  - Bij het indelen in kubussen kan een kubus volledig leeg zijn, de kleur op deze hoekpunten zal dus niet gebruikt worden en is verloren.
 
-Het veranderen van de originele kleur naar een paletkleur gaat via de formule van Pythagoras. Alle kleuren van het palet worden aanschouwd en de kleur die het dichts ligt in de RGB kleurenruimte bij de originele kleur wordt gekozen.
+Het veranderen van de originele kleur naar een paletkleur gaat via de formule van Pythagoras [[4](https://en.wikipedia.org/wiki/Euclidean_distance)]. Alle kleuren van het palet worden aanschouwd en de kleur die het dichts ligt in de RGB kleurenruimte bij de originele kleur wordt gekozen.
 
 ### Zwart Wit
 
@@ -63,7 +65,7 @@ Het veranderen van de originele kleur naar een paletkleur gaat opnieuw via de fo
 ### HSL
 
 Een andere manier voor het opstellen van het palet is om te werken met het HSL spectrum.
-Uit het HSL spectrum kan veel besloten worden. 
+Uit het HSL spectrum [[5](https://en.wikipedia.org/wiki/HSL_and_HSV)] kan veel besloten worden. 
 Als een afbeelding veel unieke Hue's bezit dan zal dit een kleurrijke afbeelding zijn en moeten er vooral verscheiden kleuren in het palet aanwezig zijn.
 Als er vooral unieke Saturation waarden zijn dan zal dit een afbeelding zijn met vooral veel overgangen en moeten verschillende tinten van dezelfde kleur aanwezig zijn in het palet.
 Als er vooral unieke Luminance waarden zijn dan zal dit een afbeelding met veel schaduwen en details zijn en zal in het palet hierop gefocust moeten worden.
@@ -74,7 +76,7 @@ Voordelen:
 Nadelen:
  - Indien de afbeelding in zowel H, S en L veel unieke waarden heeft zal de gemiddelde kleurafstand toenemen
 
-### Dithering
+### Dithering [[2](https://en.wikipedia.org/wiki/Dither)]
 Tijdens het quantization proces zullen op plaatsen waar kleur overgangen plaats vinden banden ontstaan. 
 Deze banden ontstaan omdat het palet niet voldoende kleuren bezit om de overgang vlot te laten verlopen. 
 Om dit tegen te gaan kan dithering toegepast worden. 
@@ -104,7 +106,7 @@ Nadelen:
  - Geen gegarandeerde verbetering
  - Kan de kleurafstand drastisch slechter maken
 
-#### Bayer Dithering (Ordered dithering)
+#### Bayer Dithering (Ordered dithering) [[6](https://en.wikipedia.org/wiki/Ordered_dithering)]
 Bayered dithering zal gebruik maken van een treshold map om pixels om te zetten. 
 Deze manier zorgt er dus voor dat de pixels niet volledig random aangepast worden en is een verbetering ten opzichte van Static en Random dithering.
 
@@ -115,7 +117,7 @@ Nadelen:
  - Treshold map moet berekend worden (Processing power) of vooraf opgeslagen worden (RAM)
  - Houdt nog steeds weinig rekening met waargenomen kleurafstand
 
-#### Error diffused dithering
+#### Error diffused dithering [[7](https://en.wikipedia.org/wiki/Error_diffusion)]
 Error diffused dithering is de meest voorkomende vorm van dithering.
 Deze vorm houdt van omgezette pixel de afstand bij tot zijn origineel (R1-R2, G1-G2, B1-B2).
 De afstand die hierdoor bekomen wordt zal worden doorgegeven aan omliggende pixels.
@@ -124,7 +126,7 @@ Hierdoor zullen deze omliggende pixels wanneer zij gequantizeerd worden frequent
 Doordat deze afstand zowel negatief als positief kan zijn, zullen dus afwisselende kleuren het resultaat zijn van de omzetting van dezelfde pixelwaarde.
 Doordat afwisselend gewerkt zal worden zal ook de gemiddelde waargenomenkleurafstand kleiner worden.
 Dit verklaart dan ook waarom deze manier het meest gebruikt wordt.
-De bekendste vorm van Error diffused dithering is het Floyd-Steinberg algoritme.
+De bekendste vorm van Error diffused dithering is het Floyd-Steinberg algoritme [[8](https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering)]
 Dit algoritme zal de error vermenigvuldigen met een factor en verspreiden volgens volgende matrix.
 ![Floyd Steinberg Dithering](VerslagImages/FloydSteinbergAlgoritme.png "Het Floyd Steinberg algoritme")
 
@@ -136,7 +138,7 @@ Nadelen:
  - Vergt meer processing power en kan niet vooraf berekend worden
 
 ## Opbouw van de code
-De code is opgebouwd volgens het Dependency Injection patroon en is vooral geconcentreerd in een Class Library.
+De code is opgebouwd volgens het Dependency Injection patroon [[9](https://www.tutorialsteacher.com/ioc/dependency-injection)] en is vooral geconcentreerd in een Class Library.
 De applicatie bevat ook verschillende lagen.
  - Logic: Hier bevindt zich de logica van de applicatie. Deze laag bevat bijvoorbeeld de ditherers en quantizers.
  - Presentation: Hier bevinden zich Drawer klassen. Dit zijn klassen die afbeeldingen (grafisch, vandaar presentatie laag) genereren door gebruik te maken van de logica laag.
@@ -204,7 +206,7 @@ Het enige verschil tussen deze drawers is dat de Synchronous Dithered Drawer op 
 De Asynchronous Dithered Drawer zal echter elke rij van de afbeelding op een aparte thread laten uitvoeren.
 Beide algoritmes zullen getest worden in combinatie met de HSL Quantizer en Floyd Steinberg Dithering.
 Deze test zou even goed met andere parameters uitgevoerd kunnen worden.
-De test zal uitgevoerd worden op een computer met een Intel i7 5820K met 6 cores, 12 threads, 4.2Ghz clock speed en 16gb ram
+De test zal uitgevoerd worden op een computer met een Intel i7 5820K met 6 cores, 12 threads, 4.2 Ghz clock speed en 16 GB ram
 Resultaten kunnen afwijken op andere setups. 
 Een computer met minder threads zal minder voordeel hebben bij de Asynchronous Dithered Drawer.
 De Synchronous Dithered Drawer deed 4 minuten 27 seconden over een referentie 4K afbeelding met een RAM verbruik piek bij 332MB.
@@ -213,9 +215,21 @@ De Asynchronous Dithered Drawer deed 50 seconden over dezelfde referentie 4K afb
 De vraagstelling aan het begin was de mogelijkheid tot implementatie van een Color Quantization Algoritme dat kon exporteren naar GIF afbeeldingen.
 Het besluit is dat dit zeker mogelijk is.
 De applicatie is in staat een afbeelding te reduceren tot 256 kleuren en een beschaafde gemiddeld waargenomen kleurafstand te behouden.
-Betere algoritmes voor quantisering zijn beschikbaar op het internet zoals het Xaolin Wu algoritme.
+Betere algoritmes voor quantisering zijn beschikbaar op het internet zoals het Xiaolin Wu algoritme [[10](https://people.freedesktop.org/~joonas/tmp/wu.pdf)].
 Deze algoritmes zullen een lagere gemiddeld waargenomen kleurafstand bekomen maar vragen meer rekenkracht en RAM en zijn moeilijker te implementeren.
 In de toekomst zou kunnen overwogen worden deze algoritmes toe te voegen aan de applicatie.
 In de reflectie moet zeker ook gesproken worden over de snelheidstoename die bereikt is door asynchroon te werken.
 De vergelijking van de Synchronous Dithered Drawer met de Asynchronous Dithered Drawer toont dat de Asynchronous Dithered Drawer het zelfde resultaat kan bekomen in 1/4 van de tijd.
 Het resultaat is een afbeelding die gereduceerd is in grootte en die vanop een afstand geen verschillen vertoont met de originele afbeelding.
+
+## Bronvermelding
+ - [1][https://en.wikipedia.org/wiki/Indexed_color](https://en.wikipedia.org/wiki/Indexed_color)
+ - [2][https://en.wikipedia.org/wiki/Dither](https://en.wikipedia.org/wiki/Dither)
+ - [3][https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF)
+ - [4][https://en.wikipedia.org/wiki/Euclidean_distance](https://en.wikipedia.org/wiki/Euclidean_distance)
+ - [5][https://en.wikipedia.org/wiki/HSL_and_HSV](https://en.wikipedia.org/wiki/HSL_and_HSV)
+ - [6][https://en.wikipedia.org/wiki/Ordered_dithering](https://en.wikipedia.org/wiki/Ordered_dithering)
+ - [7][https://en.wikipedia.org/wiki/Error_diffusion](https://en.wikipedia.org/wiki/Error_diffusion)
+ - [8][https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering](https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering)
+ - [9][https://www.tutorialsteacher.com/ioc/dependency-injection](https://www.tutorialsteacher.com/ioc/dependency-injection)
+ - [10][https://people.freedesktop.org/~joonas/tmp/wu.pdf](https://people.freedesktop.org/~joonas/tmp/wu.pdf)
