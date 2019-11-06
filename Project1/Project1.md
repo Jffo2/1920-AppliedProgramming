@@ -125,6 +125,8 @@ Doordat deze afstand zowel negatief als positief kan zijn, zullen dus afwisselen
 Doordat afwisselend gewerkt zal worden zal ook de gemiddelde waargenomenkleurafstand kleiner worden.
 Dit verklaart dan ook waarom deze manier het meest gebruikt wordt.
 De bekendste vorm van Error diffused dithering is het Floyd-Steinberg algoritme.
+Dit algoritme zal de error vermenigvuldigen met een factor en verspreiden volgens volgende matrix.
+![Floyd Steinberg Dithering](VerslagImages/FloydSteinbergAlgoritme.png "Het Floyd Steinberg algoritme")
 
 Voordelen:
  - Accurate gemiddelde waargenomen kleurafstand
@@ -216,3 +218,4 @@ Deze algoritmes zullen een lagere gemiddeld waargenomen kleurafstand bekomen maa
 In de toekomst zou kunnen overwogen worden deze algoritmes toe te voegen aan de applicatie.
 In de reflectie moet zeker ook gesproken worden over de snelheidstoename die bereikt is door asynchroon te werken.
 De vergelijking van de Synchronous Dithered Drawer met de Asynchronous Dithered Drawer toont dat de Asynchronous Dithered Drawer het zelfde resultaat kan bekomen in 1/4 van de tijd.
+Het resultaat is een afbeelding die gereduceerd is in grootte en die vanop een afstand geen verschillen vertoont met de originele afbeelding.
