@@ -16,7 +16,7 @@ Bovenop het beperken van het aantal kleuren in de afbeelding wordt ook nog gebru
 
 ### Color Quantization
 
-Het reduceren van een 24bits afbeelding (16,777,215 kleuren) naar een palet noemt men Color Quantization of Color Depth Reduction. Dit process zal de grootste invloed hebben op de kwaliteit van de bekomen afbeelding.
+Het reduceren van een 24bits afbeelding (16,777,215 kleuren) naar een palet noemt men Color Quantization of Color Depth Reduction. Dit proces zal de grootste invloed hebben op de kwaliteit van de bekomen afbeelding.
 Om te spreken van kwaliteit is een definitie hiervan nodig. De best kwantificeerbare definitie voor kwaliteit berekent de gemiddelde kleurafstand van elke pixel in de bekomen afbeelding ten opzichte van de originele pixel.
 Een hogere kwaliteit betekent dus een lagere gemiddelde kleurafstand. Er zijn vele algoritmen ter beschikking voor het reduceren van de kleuren in een afbeelding. Enkele voorbeelden zijn:
 
@@ -45,7 +45,7 @@ Het veranderen van de originele kleur naar een paletkleur gaat via de formule va
 
 ### Zwart Wit
 
-De meest drastische vorm van van Color Depth Reduction is bij overgang naar een palet met slechts 2 kleuren. De bekendste vorm is wellicht de omzetting van kleurenafbeeldingen naar zwart-wit afbeeldingen.
+De meest drastische vorm van Color Depth Reduction is bij overgang naar een palet met slechts 2 kleuren. De bekendste vorm is wellicht de omzetting van kleurenafbeeldingen naar zwart-wit afbeeldingen.
 Het palet bestaat op dit moment uit 2 kleuren
  1. Zwart (0,0,0)
  2. Wit (255,255,255)
@@ -117,7 +117,7 @@ Nadelen:
 
 #### Error diffused dithering
 Error diffused dithering is de meest voorkomende vorm van dithering.
-Deze vorm houdt van omgezette pixel de afstand bij tot zijn origineel (R1-R2,G1-G2,B1-B2).
+Deze vorm houdt van omgezette pixel de afstand bij tot zijn origineel (R1-R2, G1-G2, B1-B2).
 De afstand die hierdoor bekomen wordt zal worden doorgegeven aan omliggende pixels.
 De afstand zal met een factor bij de omliggende pixels opgeteld worden.
 Hierdoor zullen deze omliggende pixels wanneer zij gequantizeerd worden frequent naar een andere kleur omgezet worden.
@@ -155,7 +155,7 @@ Een methode om het histogram te visualiseren en een methode om een geditherede, 
 Het genereren van de afbeelding gaat als volgt:
  1. Lees een pixel uit de originele afbeelding
  2. Kijk of dithering is toegepast op de huidige pixel
- 3. Zoek de dichtsbijzijnde pixel in het palet en schrijf deze naar de te genereren afbeelding
+ 3. Zoek de dichtstbijzijnde pixel in het palet en schrijf deze naar de te genereren afbeelding
  4. Bereken kleurafstand en pas dithering toe, dithering wordt opgeslagen in een overlay matrix
  5. Herhaal vanaf stap 1 voor de overige pixels
 
@@ -207,3 +207,12 @@ Resultaten kunnen afwijken op andere setups.
 Een computer met minder threads zal minder voordeel hebben bij de Asynchronous Dithered Drawer.
 De Synchronous Dithered Drawer deed 4 minuten 27 seconden over een referentie 4K afbeelding met een RAM verbruik piek bij 332MB.
 De Asynchronous Dithered Drawer deed 50 seconden over dezelfde referentie 4K afbeelding met een RAM verbruik piek bij 236MB.
+## Besluit en kritische reflectie
+De vraagstelling aan het begin was de mogelijkheid tot implementatie van een Color Quantization Algoritme dat kon exporteren naar GIF afbeeldingen.
+Het besluit is dat dit zeker mogelijk is.
+De applicatie is in staat een afbeelding te reduceren tot 256 kleuren en een beschaafde gemiddeld waargenomen kleurafstand te behouden.
+Betere algoritmes voor quantisering zijn beschikbaar op het internet zoals het Xaolin Wu algoritme.
+Deze algoritmes zullen een lagere gemiddeld waargenomen kleurafstand bekomen maar vragen meer rekenkracht en RAM en zijn moeilijker te implementeren.
+In de toekomst zou kunnen overwogen worden deze algoritmes toe te voegen aan de applicatie.
+In de reflectie moet zeker ook gesproken worden over de snelheidstoename die bereikt is door asynchroon te werken.
+De vergelijking van de Synchronous Dithered Drawer met de Asynchronous Dithered Drawer toont dat de Asynchronous Dithered Drawer het zelfde resultaat kan bekomen in 1/4 van de tijd.
