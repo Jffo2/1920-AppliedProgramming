@@ -83,7 +83,7 @@
             // 
             // OpenFileDialogImageLoader
             // 
-            this.OpenFileDialogImageLoader.Filter = "Bitmap files|*.bmp|PNG files|*.png";
+            this.OpenFileDialogImageLoader.Filter = "Bitmap files|*.bmp|PNG files|*.png|JPG files|*.jpg";
             this.OpenFileDialogImageLoader.InitialDirectory = ".";
             // 
             // PictureBoxHistogram
