@@ -156,7 +156,8 @@
             this.ComboBoxQuantizerSelection.Items.AddRange(new object[] {
             "Simple Quantizer",
             "HSL Quantizer",
-            "BW Quantizer"});
+            "BW Quantizer",
+            "Median Cut"});
             this.ComboBoxQuantizerSelection.Location = new System.Drawing.Point(73, 5);
             this.ComboBoxQuantizerSelection.Name = "ComboBoxQuantizerSelection";
             this.ComboBoxQuantizerSelection.Size = new System.Drawing.Size(139, 21);

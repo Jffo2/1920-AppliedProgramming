@@ -40,6 +40,7 @@ namespace Project1
             if (ComboBoxQuantizerSelection.SelectedIndex == 0) quantizer = new SimpleQuantizer();
             else if (ComboBoxQuantizerSelection.SelectedIndex == 1) quantizer = new HSLQuantizer();
             else if (ComboBoxQuantizerSelection.SelectedIndex == 2) quantizer = new BWQuantizer();
+            else if (ComboBoxQuantizerSelection.SelectedIndex == 3) quantizer = new MedianCut();
             else throw new Exception("Invalid Quantizer option!");
             return quantizer;
         }
