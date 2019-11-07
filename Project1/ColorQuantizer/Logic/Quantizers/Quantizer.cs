@@ -51,8 +51,11 @@ namespace ImageProcessing.Logic.Quantizers
         public List<Models.Color> GetPalette()
         {
             // If the palette is not yet initialized, populate it with the colors
-            if (palette.Count==0) PopulatePalette();
-            return palette;
+            lock (palette)
+            {
+                if (palette.Count == 0) PopulatePalette();
+                return palette;
+            }
         }
 
         /// <summary>

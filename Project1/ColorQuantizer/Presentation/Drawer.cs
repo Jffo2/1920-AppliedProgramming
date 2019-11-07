@@ -54,7 +54,8 @@ namespace ImageProcessing.Presentation
 
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                var pallet = Cloner.DeepClone(imageStore.Quantizer.GetPalette());
+                var palette = imageStore.Quantizer.GetPalette();
+                var pallet = Cloner.DeepClone(palette);
                 int maxRows = System.Math.Max(pallet.Count / 16,1);
                 int maxColumns = System.Math.Min(pallet.Count, 16);
                 int xDelta = width / maxColumns;

@@ -175,7 +175,7 @@ namespace ImageProcessing.Logic
         }
 
         /// <summary>
-        /// Add eqch color in a row to the histogram and register them to the quantizer
+        /// Add each color in a row to the histogram and register them to the quantizer
         /// </summary>
         /// <param name="totalWidth">the width of the row</param>
         /// <param name="line">the row</param>
