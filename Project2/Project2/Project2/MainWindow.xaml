@@ -15,14 +15,17 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="HeightSelector" Grid.Column="0" Padding="6">
                 <ComboBoxItem IsSelected="True">Dokters per km2</ComboBoxItem>
                 <ComboBoxItem>Sterfgevallen</ComboBoxItem>
             </ComboBox>
 
-            <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="1" Padding="6"/>
+            <TextBox Text="0" MaxLength="2" Grid.Column="1" Padding="20 6" x:Name="TextBoxChangeModel"/>
+
+            <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="2" Padding="6"/>
         </Grid>
-        <Image x:Name="PolyGonImageBox" Source="model.png"/>
+        <Image x:Name="PolyGonImageBox" Stretch="Uniform" Grid.Row="1"/>
     </Grid>
 </Window>

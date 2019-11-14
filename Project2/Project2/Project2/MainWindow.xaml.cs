@@ -23,6 +23,7 @@ namespace Project2
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
@@ -39,8 +40,21 @@ namespace Project2
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
                 Visualizer visualizer = new Visualizer(fileGeoJsonLoader);
+                TextBoxChangeModel.TextChanged += ChangeModel;
+                TextBoxChangeModel.Text = "1";
             }
             
+        }
+
+        private void ChangeModel(object sender, EventArgs e)
+        {
+            try
+            {
+                PolyGonImageBox.Source = new BitmapImage(new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + $"./model{TextBoxChangeModel.Text}.png"));
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Invalid");
+            }
         }
     }
 }
