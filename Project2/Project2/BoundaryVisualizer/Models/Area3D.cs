@@ -1,4 +1,5 @@
 ﻿
+using BoundaryVisualizer.Util;
 using GeoJSON.Net.Geometry;
 using System;
 using System.Collections.Generic;
@@ -60,17 +61,39 @@ namespace BoundaryVisualizer.Models
                         }
 
                         List<PointF> scarcePoints = EliminatePoints(points);
-                        VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
-                        
+                        System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
+                        List<Triangle> triangles = GetTriangles(scarcePoints);
+                        //VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
+                        VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                     }
                 }
             }
             return b;
         }
 
+        private List<Triangle> GetTriangles(List<PointF> points)
+        {
+            List<PointF> tmpPoints = Cloner.DeepClone(points);
+            List<Triangle> triangles = new List<Triangle>();
+            int oldPointsLength = 1;
+
+            while (oldPointsLength!=0)
+            {
+                oldPointsLength = tmpPoints.Count;
+                for (int i = 0; i<tmpPoints.Count; i++)
+                {
+                    Triangle t = new Triangle(tmpPoints[i], tmpPoints[(i + 1) % tmpPoints.Count], tmpPoints[(i + 2) % tmpPoints.Count]);
+                    if (t.Angle<Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i+1) % tmpPoints.Count); break; }
+                }
+                System.Diagnostics.Debug.WriteLine(tmpPoints.Count);
+            }
+
+            return triangles;
+        }
+
         private List<PointF> EliminatePoints(List<PointF> points)
         {
-            return DouglasPeucker(points.GetRange(0, points.Count-1), 0.2);
+            return DouglasPeucker(points.GetRange(0, points.Count - 1), 0.0);
         }
 
         private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
@@ -100,44 +123,12 @@ namespace BoundaryVisualizer.Models
             }
             else
             {
-                resultList.Add(points[0]); 
-                resultList.Add(points[points.Count-1]);
+                resultList.Add(points[0]);
+                resultList.Add(points[points.Count - 1]);
             }
 
             return resultList;
         }
-
-        /*
-        function DouglasPeucker(PointList[], epsilon)
-            // Find the point with the maximum distance
-            dmax = 0
-            index = 0
-            end = length(PointList)
-            for i = 2 to ( end - 1) {
-                d = perpendicularDistance(PointList[i], Line(PointList[1], PointList[end])) 
-                if ( d > dmax ) {
-                    index = i
-                    dmax = d
-                }
-            }
-    
-            ResultList[] = empty;
-    
-            // If max distance is greater than epsilon, recursively simplify
-            if ( dmax > epsilon ) {
-                // Recursive call
-                recResults1[] = DouglasPeucker(PointList[1...index], epsilon)
-                recResults2[] = DouglasPeucker(PointList[index...end], epsilon)
-
-                // Build the result list
-                ResultList[] = {recResults1[1...length(recResults1)-1], recResults2[1...length(recResults2)]}
-            } else {
-                ResultList[] = {PointList[1], PointList[end]}
-            }
-            // Return the result
-            return ResultList[]
-        end
-    */
 
         private double PerpendicularDistance(PointF point, PointF linePoint1, PointF linePoint2)
         {
@@ -154,6 +145,18 @@ namespace BoundaryVisualizer.Models
             {
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
             }
+        }
+
+        private void VisualizeTriangles(Graphics g, List<Triangle> triangles, Color c)
+        {
+            Brush b = new SolidBrush(c);
+            Pen p = new Pen(Color.Black);
+            foreach (Triangle t in triangles)
+            {
+                g.FillPolygon(b, new PointF[] { t.Point1, t.MiddlePoint, t.Point2, t.Point1 });
+                g.DrawPolygon(p, new PointF[] { t.Point1, t.MiddlePoint, t.Point2, t.Point1 });
+            }
+            b.Dispose();
         }
 
         private PointF GetPointFromCoordinates(int mapWidth, int mapHeight, IPosition point)
