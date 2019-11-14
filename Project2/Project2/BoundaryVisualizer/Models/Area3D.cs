@@ -1,4 +1,5 @@
-﻿using GeoJSON.Net.Geometry;
+﻿
+using GeoJSON.Net.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,11 +19,8 @@ namespace BoundaryVisualizer.Models
         private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon)
         {
             int side = 400;
-            float? latDivisor = null;
-            float? lonDivisor = null;
             Color[] colors = { Color.Red, Color.Green, Color.Blue, Color.Cyan, Color.Lime, Color.Magenta, Color.Black, Color.Coral, Color.Salmon, Color.Silver };
             Bitmap b = new Bitmap(side, side);
-            //Polygon p = multiPolygon.Coordinates.OrderBy((poly) => poly.Coordinates.Count).First();
             using (Graphics g = Graphics.FromImage(b))
             {
                 g.FillRectangle(new SolidBrush(Color.Orange), 0, 0, side, side);
@@ -61,8 +59,9 @@ namespace BoundaryVisualizer.Models
 
                         }
 
-                        VisualizeLineString(g, points, colors[i%colors.Length]);
-
+                        List<PointF> scarcePoints = EliminatePoints(points);
+                        VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
+                        
                     }
                 }
             }
@@ -71,7 +70,41 @@ namespace BoundaryVisualizer.Models
 
         private List<PointF> EliminatePoints(List<PointF> points)
         {
-            return null;
+            return DouglasPeucker(points.GetRange(0, points.Count-1), 0.2);
+        }
+
+        private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
+        {
+            double dmax = 0;
+            int index = 0;
+            int length = points.Count;
+            for (int i = 1; i < length - 1; i++)
+            {
+                double d = PerpendicularDistance(points[i], points[0], points[length - 1]);
+                if (d > dmax)
+                {
+                    index = i;
+                    dmax = d;
+                }
+            }
+
+            List<PointF> resultList = new List<PointF>();
+
+            if (dmax > epsilon)
+            {
+                List<PointF> recursiveResults1 = DouglasPeucker(points.GetRange(0, index + 1), epsilon);
+                List<PointF> recursiveResults2 = DouglasPeucker(points.GetRange(index, length - index), epsilon);
+
+                resultList.AddRange(recursiveResults1.GetRange(0, recursiveResults1.Count - 1));
+                resultList.AddRange(recursiveResults2);
+            }
+            else
+            {
+                resultList.Add(points[0]); 
+                resultList.Add(points[points.Count-1]);
+            }
+
+            return resultList;
         }
 
         /*
@@ -105,6 +138,15 @@ namespace BoundaryVisualizer.Models
             return ResultList[]
         end
     */
+
+        private double PerpendicularDistance(PointF point, PointF linePoint1, PointF linePoint2)
+        {
+            var a = linePoint1.Y - linePoint2.Y;
+            var b = linePoint2.X - linePoint1.X;
+            var c = linePoint1.X * linePoint2.Y - linePoint2.X * linePoint1.Y;
+
+            return Math.Abs((a * point.X + b * point.Y + c)) / (Math.Sqrt(a * a + b * b));
+        }
         private void VisualizeLineString(Graphics g, List<PointF> points, Color c)
         {
             Brush b = new SolidBrush(c);

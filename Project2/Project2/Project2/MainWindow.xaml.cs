@@ -2,19 +2,8 @@
 using BoundaryVisualizer.Logic;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Project2
 {
@@ -43,7 +32,7 @@ namespace Project2
                 TextBoxChangeModel.TextChanged += ChangeModel;
                 TextBoxChangeModel.Text = "1";
             }
-            
+
         }
 
         private void ChangeModel(object sender, EventArgs e)
@@ -51,9 +40,11 @@ namespace Project2
             try
             {
                 PolyGonImageBox.Source = new BitmapImage(new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + $"./model{TextBoxChangeModel.Text}.png"));
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show("Invalid");
+                if (TextBoxChangeModel.Text != "")
+                    MessageBox.Show("Invalid");
             }
         }
     }
