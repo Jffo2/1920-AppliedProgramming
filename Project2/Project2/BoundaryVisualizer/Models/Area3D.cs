@@ -60,9 +60,9 @@ namespace BoundaryVisualizer.Models
 
                         }
 
-                        List<PointF> scarcePoints = EliminatePoints(points);
-                        System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        List<Triangle> triangles = GetTriangles(scarcePoints);
+                        //List<PointF> scarcePoints = EliminatePoints(points);
+                        //System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
+                        List<Triangle> triangles = GetTriangles(points);
                         //VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                     }
@@ -77,23 +77,29 @@ namespace BoundaryVisualizer.Models
             List<Triangle> triangles = new List<Triangle>();
             int oldPointsLength = 1;
 
-            while (oldPointsLength!=0)
+            while (oldPointsLength!=tmpPoints.Count)
             {
                 oldPointsLength = tmpPoints.Count;
                 for (int i = 0; i<tmpPoints.Count; i++)
                 {
                     Triangle t = new Triangle(tmpPoints[i], tmpPoints[(i + 1) % tmpPoints.Count], tmpPoints[(i + 2) % tmpPoints.Count]);
-                    if (t.Angle<Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i+1) % tmpPoints.Count); break; }
+                    if (t.Angle<=Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i+1) % tmpPoints.Count); break; }
+                    //else System.Diagnostics.Debug.WriteLine(t.Angle);
                 }
                 System.Diagnostics.Debug.WriteLine(tmpPoints.Count);
             }
-
+            Bitmap b = new Bitmap(400, 400);
+            using (Graphics g = Graphics.FromImage(b))
+            {
+                VisualizeLineString(g, tmpPoints, Color.Red);
+            }
+            b.Save("LeftoverPoints.png");
             return triangles;
         }
 
         private List<PointF> EliminatePoints(List<PointF> points)
         {
-            return DouglasPeucker(points.GetRange(0, points.Count - 1), 0.0);
+            return DouglasPeucker(points.GetRange(0, points.Count - 1), 0.5);
         }
 
         private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
