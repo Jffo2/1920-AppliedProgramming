@@ -28,7 +28,7 @@ namespace Project2
             if (openFileDialog.ShowDialog() == true)
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
-                Visualizer visualizer = new Visualizer(fileGeoJsonLoader);
+                Visualizer visualizer = new Visualizer(new MockGeoJsonLoader());
                 TextBoxChangeModel.TextChanged += ChangeModel;
                 TextBoxChangeModel.Text = "1";
             }

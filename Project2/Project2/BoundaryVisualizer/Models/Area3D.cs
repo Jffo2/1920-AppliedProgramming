@@ -57,12 +57,12 @@ namespace BoundaryVisualizer.Models
                             var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY);
 
                             points.Add(normalizedPoint);
-
+                            System.Diagnostics.Debug.WriteLine(normalizedPoint);
                         }
 
-                        //List<PointF> scarcePoints = EliminatePoints(points);
-                        //System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        List<Triangle> triangles = GetTriangles(points);
+                        List<PointF> scarcePoints = EliminatePoints(points);
+                        System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
+                        List<Triangle> triangles = GetTriangles(scarcePoints);
                         //VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                     }
@@ -77,16 +77,16 @@ namespace BoundaryVisualizer.Models
             List<Triangle> triangles = new List<Triangle>();
             int oldPointsLength = 1;
 
-            while (oldPointsLength!=tmpPoints.Count)
+            while (oldPointsLength != tmpPoints.Count)
             {
                 oldPointsLength = tmpPoints.Count;
-                for (int i = 0; i<tmpPoints.Count; i++)
+                for (int i = 0; i < tmpPoints.Count; i++)
                 {
                     Triangle t = new Triangle(tmpPoints[i], tmpPoints[(i + 1) % tmpPoints.Count], tmpPoints[(i + 2) % tmpPoints.Count]);
-                    if (t.Angle<=Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i+1) % tmpPoints.Count); break; }
-                    //else System.Diagnostics.Debug.WriteLine(t.Angle);
+                    if (t.Angle <= Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i + 1) % tmpPoints.Count); break; }
+                    System.Diagnostics.Debug.WriteLine("" + tmpPoints[i] + tmpPoints[(i + 1) % tmpPoints.Count] + tmpPoints[(i + 2) % tmpPoints.Count]);
+                    System.Diagnostics.Debug.WriteLine(t.Angle);
                 }
-                System.Diagnostics.Debug.WriteLine(tmpPoints.Count);
             }
             Bitmap b = new Bitmap(400, 400);
             using (Graphics g = Graphics.FromImage(b))
@@ -99,7 +99,7 @@ namespace BoundaryVisualizer.Models
 
         private List<PointF> EliminatePoints(List<PointF> points)
         {
-            return DouglasPeucker(points.GetRange(0, points.Count - 1), 0.5);
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 0.02));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
@@ -187,7 +187,7 @@ namespace BoundaryVisualizer.Models
 
             var yScale = (maxX - minX) > (maxY - minY) ? maxX - minX : maxY - minY;
 
-            return new PointF(((float)(x - minX)) * (400.0f / (yScale)), ((float)(y - minY)) * (400.0f / (yScale)));
+            return new PointF(((float)(x - minX)) * (390.0f / (yScale))+5, ((float)(y - minY)) * (390.0f / (yScale))+5);
         }
     }
 }

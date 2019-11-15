@@ -36,7 +36,7 @@ namespace BoundaryVisualizer.Models
                 if (val == 0) return TriangleOrientation.COLINEAR; // colinear 
 
                 // clock or counterclock wise 
-                return (val > 0) ?  TriangleOrientation.CLOCKWISE : TriangleOrientation.COUNTER_CLOCKWISE;
+                return (val < 0) ?  TriangleOrientation.CLOCKWISE : TriangleOrientation.COUNTER_CLOCKWISE;
             }
         }
 
