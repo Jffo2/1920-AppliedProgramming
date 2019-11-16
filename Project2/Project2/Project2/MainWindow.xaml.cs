@@ -2,6 +2,7 @@
 using BoundaryVisualizer.Logic;
 using Microsoft.Win32;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -18,7 +19,7 @@ namespace Project2
             InitializeComponent();
         }
 
-        private void BrowseGeoJsonFile(object sender, RoutedEventArgs e)
+        private async void BrowseGeoJsonFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
@@ -28,7 +29,11 @@ namespace Project2
             if (openFileDialog.ShowDialog() == true)
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
-                Visualizer visualizer = new Visualizer(new MockGeoJsonLoader());
+                //Visualizer visualizer = new Visualizer(new MockGeoJsonLoader());
+                await Task.Run(() =>
+                {
+                    Visualizer visualizer = new Visualizer(fileGeoJsonLoader);
+                });
                 TextBoxChangeModel.TextChanged += ChangeModel;
                 TextBoxChangeModel.Text = "1";
             }

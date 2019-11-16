@@ -54,7 +54,6 @@ namespace BoundaryVisualizer.Models
             PointF vector2 = new PointF(Point2.X - MiddlePoint.X, Point2.Y - MiddlePoint.Y);
             double num = (vector1.X * vector2.X + vector1.Y * vector2.Y);
             double den = Math.Sqrt(Square(vector1.X) + Square(vector1.Y)) * Math.Sqrt(Square(vector2.X) + Square(vector2.Y));
-            // TODO: Acos always returns the convexe angle, we have to find a way to know if our points are making a convexe angle or not tho
             var convexAngle = Math.Acos(num / den);
             
             return (Orientation == TriangleOrientation.CLOCKWISE) ? 2 * Math.PI - convexAngle : convexAngle;

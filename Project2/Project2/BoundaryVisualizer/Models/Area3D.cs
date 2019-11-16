@@ -1,10 +1,12 @@
 ﻿
+using BoundaryVisualizer.Logic;
 using BoundaryVisualizer.Util;
 using GeoJSON.Net.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 
 namespace BoundaryVisualizer.Models
 {
@@ -45,10 +47,12 @@ namespace BoundaryVisualizer.Models
                         if (minY2 < minY) minY = minY2;
                     }
                 }
-                for (int i = 0; i < multiPolygon.Coordinates.Count; i++)
+                var o = multiPolygon.Coordinates.OrderBy(coords => coords.Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max());
+                for (int i = 0; i < o.Count(); i++)
                 {
-                    foreach (LineString lstring in multiPolygon.Coordinates[i].Coordinates)
+                    foreach (LineString lstring in o.ElementAt(i).Coordinates)
                     {
+                        if (lstring.Coordinates.Count != o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) continue;
                         List<PointF> points = new List<PointF>();
                         foreach (IPosition point in lstring.Coordinates)
                         {
@@ -57,49 +61,64 @@ namespace BoundaryVisualizer.Models
                             var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY);
 
                             points.Add(normalizedPoint);
-                            System.Diagnostics.Debug.WriteLine(normalizedPoint);
+                            //System.Diagnostics.Debug.WriteLine(normalizedPoint);
                         }
-
                         List<PointF> scarcePoints = EliminatePoints(points);
+                        if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
                         System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        List<Triangle> triangles = GetTriangles(scarcePoints);
-                        //VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
+                        //List<Triangle> triangles = GetTriangles(scarcePoints);
+                        List<List<PointF>> trianglePoints = Triangulator.Triangulate(scarcePoints, true);
+
+                        if (trianglePoints == null) { i = multiPolygon.Coordinates.Count; break; }
+                        List<Triangle> triangles = new List<Triangle>();
+                        foreach (List<PointF> tripoints in trianglePoints)
+                        {
+                            triangles.Add(new Triangle(tripoints[0], tripoints[1], tripoints[2]));
+                        }
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
+                        VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
+
                     }
                 }
             }
             return b;
         }
 
+        private bool IsPolygonClockwise(List<PointF> points)
+        {
+            double sum = 0.0;
+            for (int i = 0; i < points.Count; i++)
+            {
+                checked
+                {
+                    sum += (points[(i + 1) % points.Count].X - points[i].X) * (points[(i + 1) % points.Count].Y + points[i].Y);
+                }
+            }
+            return sum < 0.0;
+        }
+
         private List<Triangle> GetTriangles(List<PointF> points)
         {
             List<PointF> tmpPoints = Cloner.DeepClone(points);
             List<Triangle> triangles = new List<Triangle>();
-            int oldPointsLength = 1;
-
-            while (oldPointsLength != tmpPoints.Count)
+            int oldCount = 1;
+            while (tmpPoints.Count != oldCount)
             {
-                oldPointsLength = tmpPoints.Count;
+                oldCount = tmpPoints.Count;
+                bool foundFirstEar = false;
                 for (int i = 0; i < tmpPoints.Count; i++)
                 {
                     Triangle t = new Triangle(tmpPoints[i], tmpPoints[(i + 1) % tmpPoints.Count], tmpPoints[(i + 2) % tmpPoints.Count]);
-                    if (t.Angle <= Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i + 1) % tmpPoints.Count); break; }
-                    System.Diagnostics.Debug.WriteLine("" + tmpPoints[i] + tmpPoints[(i + 1) % tmpPoints.Count] + tmpPoints[(i + 2) % tmpPoints.Count]);
-                    System.Diagnostics.Debug.WriteLine(t.Angle);
+                    if (t.Angle <= Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i + 1) % tmpPoints.Count); i += 2; if (foundFirstEar == true || tmpPoints.Count==3) break; else foundFirstEar = true; }
                 }
             }
-            Bitmap b = new Bitmap(400, 400);
-            using (Graphics g = Graphics.FromImage(b))
-            {
-                VisualizeLineString(g, tmpPoints, Color.Red);
-            }
-            b.Save("LeftoverPoints.png");
+            //triangles.Add(new Triangle(tmpPoints[0], tmpPoints[1], tmpPoints[2]));
             return triangles;
         }
 
         private List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 0.02));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 5));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
@@ -147,8 +166,12 @@ namespace BoundaryVisualizer.Models
         private void VisualizeLineString(Graphics g, List<PointF> points, Color c)
         {
             Brush b = new SolidBrush(c);
+            int index = 0;
             foreach (PointF point in points)
             {
+                g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
+                //System.Diagnostics.Debug.WriteLine("Point" + index + ": " + point);
+                index++;
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
             }
         }
@@ -164,6 +187,7 @@ namespace BoundaryVisualizer.Models
             }
             b.Dispose();
         }
+
 
         private PointF GetPointFromCoordinates(int mapWidth, int mapHeight, IPosition point)
         {
