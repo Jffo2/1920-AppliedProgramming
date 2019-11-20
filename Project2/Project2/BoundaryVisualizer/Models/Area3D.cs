@@ -67,8 +67,8 @@ namespace BoundaryVisualizer.Models
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
                         System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
                         //List<Triangle> triangles = 
-                        VisualizeTriangles(g, triangles, colors[i % colors.Length]);
-                        VisualizeLineString(g, points, Color.White);
+                        //VisualizeTriangles(g, triangles, colors[i % colors.Length]);
+                        VisualizeLineString(g, scarcePoints, Color.White);
 
                     }
                 }
@@ -144,6 +144,8 @@ namespace BoundaryVisualizer.Models
                 index++;
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
             }
+            var lowestVertex = CustomTriangulator.GetLowestVertex(points);
+            g.FillEllipse(new SolidBrush(Color.Red), lowestVertex.X, lowestVertex.Y, 2, 2);
         }
 
         private void VisualizeTriangles(Graphics g, List<Triangle> triangles, Color c)
@@ -181,7 +183,7 @@ namespace BoundaryVisualizer.Models
 
             var yScale = (maxX - minX) > (maxY - minY) ? maxX - minX : maxY - minY;
 
-            return new PointF(((float)(x - minX)) * (390.0f / (yScale))+5, ((float)(y - minY)) * (390.0f / (yScale))+5);
+            return new PointF((x - minX) * (390.0f / (yScale))+5, (y - minY) * (390.0f / (yScale))+5);
         }
     }
 }
