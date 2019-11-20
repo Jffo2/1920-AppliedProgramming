@@ -11,20 +11,19 @@ namespace BoundaryVisualizer.Logic
         /// Calculate list of convex polygons or triangles.
         /// </summary>
         /// <param name="Polygon">Input polygon without self-intersections (it can be checked with SelfIntersection().</param>
-        /// <param name="triangulate">true: splitting on triangles; false: splitting on convex polygons.</param>
         /// <returns></returns>
-        public static List<List<PointF>> Triangulate(List<PointF> Polygon, bool triangulate = false)
+        public static List<List<PointF>> Triangulate(List<PointF> Polygon)
         {
             var result = new List<List<PointF>>();
             var tempPolygon = new List<PointF>(Polygon);
-            var convPolygon = new List<PointF>();
+            List<PointF> convPolygon;
 
             int begin_ind = 0;
             int cur_ind;
-            int begin_ind1;
             int N = Polygon.Count;
             int Range;
 
+            // If the polygon is clockwise, reverse it so it's ordered counter clockwise
             if (Square(tempPolygon) < 0)
                 tempPolygon.Reverse();
 
@@ -32,37 +31,20 @@ namespace BoundaryVisualizer.Logic
             {
                 int tries = 0;
                 convPolygon = new List<PointF>();
+                // Search for a triangle that's not concave and does not intersect
                 while ((PMSquare(tempPolygon[begin_ind], tempPolygon[(begin_ind + 1) % N],
                           tempPolygon[(begin_ind + 2) % N]) < 0) ||
                           (Intersect(tempPolygon, begin_ind, (begin_ind + 1) % N, (begin_ind + 2) % N) == true))
                 {
-                    if (tries == 25) return null;
                     begin_ind++;
-                    
+                    if (tries == 25) return result;
                     if (begin_ind == N) tries++;
-                    
                     begin_ind %= N;
                 }
                 cur_ind = (begin_ind + 1) % N;
                 convPolygon.Add(tempPolygon[begin_ind]);
                 convPolygon.Add(tempPolygon[cur_ind]);
                 convPolygon.Add(tempPolygon[(begin_ind + 2) % N]);
-
-                if (triangulate == false)
-                {
-                    begin_ind1 = cur_ind;
-                    while ((PMSquare(tempPolygon[cur_ind], tempPolygon[(cur_ind + 1) % N],
-                                    tempPolygon[(cur_ind + 2) % N]) > 0) && ((cur_ind + 2) % N != begin_ind))
-                    {
-                        if ((Intersect(tempPolygon, begin_ind, (cur_ind + 1) % N, (cur_ind + 2) % N) == true) ||
-                            (PMSquare(tempPolygon[begin_ind], tempPolygon[(begin_ind + 1) % N],
-                                      tempPolygon[(cur_ind + 2) % N]) < 0))
-                            break;
-                        convPolygon.Add(tempPolygon[(cur_ind + 2) % N]);
-                        cur_ind++;
-                        cur_ind %= N;
-                    }
-                }
 
                 Range = cur_ind - begin_ind;
                 if (Range > 0)
@@ -84,6 +66,11 @@ namespace BoundaryVisualizer.Logic
             return result;
         }
 
+        /// <summary>
+        /// Check if a polygon intersects with itself
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
         public static int SelfIntersection(List<PointF> polygon)
         {
             if (polygon.Count < 3)
@@ -106,6 +93,11 @@ namespace BoundaryVisualizer.Logic
             return -1;
         }
 
+        /// <summary>
+        /// Check if polygon is clockwise oriented or counter clockwise
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
         public static float Square(List<PointF> polygon)
         {
             float S = 0;
@@ -147,6 +139,15 @@ namespace BoundaryVisualizer.Logic
             return 0;
         }
 
+        /// <summary>
+        /// Check if the triangle doesn't intersect the polygon
+        /// https://algs4.cs.princeton.edu/91primitives/
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <param name="vertex1Ind"></param>
+        /// <param name="vertex2Ind"></param>
+        /// <param name="vertex3Ind"></param>
+        /// <returns></returns>
         static bool Intersect(List<PointF> polygon, int vertex1Ind, int vertex2Ind, int vertex3Ind)
         {
             float s1, s2, s3;
@@ -165,16 +166,40 @@ namespace BoundaryVisualizer.Logic
             return false;
         }
 
+        /// <summary>
+        /// Check if two points are clockwise oriented or counter clockwise
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         static float PMSquare(PointF p1, PointF p2)
         {
             return (p2.X * p1.Y - p1.X * p2.Y);
         }
 
+        /// <summary>
+        /// Check if three points are clockwise oriented or counter clockwise
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         static float PMSquare(PointF p1, PointF p2, PointF p3)
         {
-            return (p3.X - p1.X) * (p2.Y - p1.Y) - (p2.X - p1.X) * (p3.Y - p1.Y);
+            //return -1*((p2.Y - p1.Y) * (p3.X - p2.X) - (p2.X - p1.X) * (p3.Y - p2.Y));
+            //return (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y);
+            var result = (p3.X - p1.X) * (p2.Y - p1.Y) - (p2.X - p1.X) * (p3.Y - p1.Y);
+            return result;
         }
 
+        /// <summary>
+        /// Check if the lines between two points intersect and find the intersection point in O
+        /// </summary>
+        /// <param name="A1"></param>
+        /// <param name="A2"></param>
+        /// <param name="B1"></param>
+        /// <param name="B2"></param>
+        /// <param name="O"></param>
+        /// <returns></returns>
         static int LineIntersect(PointF A1, PointF A2, PointF B1, PointF B2, ref PointF O)
         {
             float a1 = A2.Y - A1.Y;
@@ -191,6 +216,7 @@ namespace BoundaryVisualizer.Logic
             O.Y = (a1 * d2 - a2 * d1) / t;
             O.X = (b2 * d1 - b1 * d2) / t;
 
+            //If the point is to the right of the rightmost point or to the left of the leftmost point it can't intersect
             if (A1.X > A2.X)
             {
                 if ((O.X < A2.X) || (O.X > A1.X))
@@ -202,6 +228,7 @@ namespace BoundaryVisualizer.Logic
                     return 0;
             }
 
+            // If the point is above the upmost point or below the lowest point it can't intersect
             if (A1.Y > A2.Y)
             {
                 if ((O.Y < A2.Y) || (O.Y > A1.Y))
@@ -213,6 +240,7 @@ namespace BoundaryVisualizer.Logic
                     return 0;
             }
 
+            //If the point is to the right of the rightmost point or to the left of the leftmost point it can't intersect
             if (B1.X > B2.X)
             {
                 if ((O.X < B2.X) || (O.X > B1.X))
@@ -224,6 +252,7 @@ namespace BoundaryVisualizer.Logic
                     return 0;
             }
 
+            // If the point is above the upmost point or below the lowest point it can't intersect
             if (B1.Y > B2.Y)
             {
                 if ((O.Y < B2.Y) || (O.Y > B1.Y))
@@ -235,6 +264,7 @@ namespace BoundaryVisualizer.Logic
                     return 0;
             }
 
+            // They intersect in O
             return 1;
         }
     }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace BoundaryVisualizer.Models
 {
@@ -20,6 +18,14 @@ namespace BoundaryVisualizer.Models
 
         public PointF Point2 { get; set; }
 
+        public bool Convex
+        {
+            get
+            {
+                return Angle < (Math.PI / 2);
+            }
+        }
+
         public double Angle
         {
             get
@@ -36,7 +42,7 @@ namespace BoundaryVisualizer.Models
                 if (val == 0) return TriangleOrientation.COLINEAR; // colinear 
 
                 // clock or counterclock wise 
-                return (val < 0) ?  TriangleOrientation.CLOCKWISE : TriangleOrientation.COUNTER_CLOCKWISE;
+                return (val > 0) ? TriangleOrientation.CLOCKWISE : TriangleOrientation.COUNTER_CLOCKWISE;
             }
         }
 
@@ -50,12 +56,12 @@ namespace BoundaryVisualizer.Models
         public double CalculateAngle()
         {
             if (Orientation == TriangleOrientation.COLINEAR) return Math.PI;
-            PointF vector1 = new PointF(MiddlePoint.X - Point1.X , MiddlePoint.Y - Point1.Y);
+            PointF vector1 = new PointF(MiddlePoint.X - Point1.X, MiddlePoint.Y - Point1.Y);
             PointF vector2 = new PointF(Point2.X - MiddlePoint.X, Point2.Y - MiddlePoint.Y);
             double num = (vector1.X * vector2.X + vector1.Y * vector2.Y);
             double den = Math.Sqrt(Square(vector1.X) + Square(vector1.Y)) * Math.Sqrt(Square(vector2.X) + Square(vector2.Y));
             var convexAngle = Math.Acos(num / den);
-            
+
             return (Orientation == TriangleOrientation.CLOCKWISE) ? 2 * Math.PI - convexAngle : convexAngle;
         }
 

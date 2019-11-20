@@ -66,17 +66,9 @@ namespace BoundaryVisualizer.Models
                         List<PointF> scarcePoints = EliminatePoints(points);
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
                         System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        //List<Triangle> triangles = GetTriangles(scarcePoints);
-                        List<List<PointF>> trianglePoints = Triangulator.Triangulate(scarcePoints, true);
-
-                        if (trianglePoints == null) { i = multiPolygon.Coordinates.Count; break; }
-                        List<Triangle> triangles = new List<Triangle>();
-                        foreach (List<PointF> tripoints in trianglePoints)
-                        {
-                            triangles.Add(new Triangle(tripoints[0], tripoints[1], tripoints[2]));
-                        }
+                        //List<Triangle> triangles = 
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
-                        VisualizeLineString(g, scarcePoints, colors[i % colors.Length]);
+                        VisualizeLineString(g, points, Color.White);
 
                     }
                 }
@@ -84,7 +76,7 @@ namespace BoundaryVisualizer.Models
             return b;
         }
 
-        private bool IsPolygonClockwise(List<PointF> points)
+        private static bool IsPolygonClockwise(List<PointF> points)
         {
             double sum = 0.0;
             for (int i = 0; i < points.Count; i++)
@@ -97,31 +89,12 @@ namespace BoundaryVisualizer.Models
             return sum < 0.0;
         }
 
-        private List<Triangle> GetTriangles(List<PointF> points)
+        private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            List<PointF> tmpPoints = Cloner.DeepClone(points);
-            List<Triangle> triangles = new List<Triangle>();
-            int oldCount = 1;
-            while (tmpPoints.Count != oldCount)
-            {
-                oldCount = tmpPoints.Count;
-                bool foundFirstEar = false;
-                for (int i = 0; i < tmpPoints.Count; i++)
-                {
-                    Triangle t = new Triangle(tmpPoints[i], tmpPoints[(i + 1) % tmpPoints.Count], tmpPoints[(i + 2) % tmpPoints.Count]);
-                    if (t.Angle <= Math.PI) { triangles.Add(t); tmpPoints.RemoveAt((i + 1) % tmpPoints.Count); i += 2; if (foundFirstEar == true || tmpPoints.Count==3) break; else foundFirstEar = true; }
-                }
-            }
-            //triangles.Add(new Triangle(tmpPoints[0], tmpPoints[1], tmpPoints[2]));
-            return triangles;
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
-        private List<PointF> EliminatePoints(List<PointF> points)
-        {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 5));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
-        }
-
-        private List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
+        private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
         {
             double dmax = 0;
             int index = 0;
@@ -155,13 +128,10 @@ namespace BoundaryVisualizer.Models
             return resultList;
         }
 
-        private double PerpendicularDistance(PointF point, PointF linePoint1, PointF linePoint2)
+        private static double PerpendicularDistance(PointF point, PointF l1, PointF l2)
         {
-            var a = linePoint1.Y - linePoint2.Y;
-            var b = linePoint2.X - linePoint1.X;
-            var c = linePoint1.X * linePoint2.Y - linePoint2.X * linePoint1.Y;
-
-            return Math.Abs((a * point.X + b * point.Y + c)) / (Math.Sqrt(a * a + b * b));
+            return Math.Abs((l2.X - l1.X) * (l1.Y - point.Y) - (l1.X - point.X) * (l2.Y - l1.Y)) /
+                    Math.Sqrt(Math.Pow(l2.X - l1.X, 2) + Math.Pow(l2.Y - l1.Y, 2));
         }
         private void VisualizeLineString(Graphics g, List<PointF> points, Color c)
         {
@@ -169,7 +139,7 @@ namespace BoundaryVisualizer.Models
             int index = 0;
             foreach (PointF point in points)
             {
-                g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
+                //g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
                 //System.Diagnostics.Debug.WriteLine("Point" + index + ": " + point);
                 index++;
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
