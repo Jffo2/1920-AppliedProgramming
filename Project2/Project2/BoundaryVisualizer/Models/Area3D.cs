@@ -51,6 +51,8 @@ namespace BoundaryVisualizer.Models
                         if (minY2 < minY) minY = minY2;
                     }
                 }
+
+                WorldPosition = new PointF(minX, minY);
                 var o = multiPolygon.Coordinates.OrderBy(coords => coords.Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max());
                 for (int i = 0; i < o.Count(); i++)
                 {
