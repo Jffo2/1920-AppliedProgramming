@@ -28,8 +28,8 @@ namespace Project2
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                //FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
-                MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
+                FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
+                //MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
                 await Task.Run(() =>
                 {
                     Visualizer visualizer = new Visualizer(fileGeoJsonLoader);

@@ -34,13 +34,51 @@ namespace BoundaryVisualizer.Logic
                     var pi3 = copiedPoints[CirculateIndex(i + 1, copiedPoints.Count)];
 
                     var tSignVertexI = CalculateTvalueSign(pi1, pi2, pi3);
+
+                    if (tSignLowestVertex*tSignVertexI>0)
+                    {
+                        // We found a convex vertex, also check if it's an ear
+                        //convexVertices.Add(i);
+                        if (VertexIsEar(i,copiedPoints))
+                        {
+                            triangles.Add(new Triangle(pi1, pi2, pi3));
+                            copiedPoints.RemoveAt(i);
+                            break;
+                        }
+                    }
                 }
-
+                System.Diagnostics.Debug.WriteLine("Found and eliminated an ear! " +(( (points.Count-copiedPoints.Count)/(float)copiedPoints.Count)*100.0));
             }
-
-
+            triangles.Add(new Triangle(copiedPoints[0], copiedPoints[1], copiedPoints[2]));
 
             return triangles;
+        }
+
+        private static bool VertexIsEar(int vertexIndex, List<PointF> polygon)
+        {
+            var previousVertexIndex = CirculateIndex(vertexIndex - 1, polygon.Count);
+            var nextVertexIndex = CirculateIndex(vertexIndex + 1, polygon.Count);
+            for (int i = 0; i<polygon.Count; i++)
+            {
+                // The three verteces constructing the ear will automatically lie inside it, skip them we're only interested in the other points laying inside
+                if (i==previousVertexIndex || i==vertexIndex || i==nextVertexIndex)
+                {
+                    continue;
+                }
+
+                var t1 = CalculateTvalueSign(polygon[previousVertexIndex], polygon[vertexIndex], polygon[i]);
+                var t2 = CalculateTvalueSign(polygon[vertexIndex], polygon[nextVertexIndex], polygon[i]);
+                var t3 = CalculateTvalueSign(polygon[previousVertexIndex], polygon[i], polygon[nextVertexIndex]);
+                var tOriginal = CalculateTvalueSign(polygon[previousVertexIndex], polygon[vertexIndex], polygon[nextVertexIndex]);
+
+                // The point is on the same side of the edges as all other points, this means it is inside the triangle and thus we are in fact intersecting something
+                if (tOriginal==t1 && tOriginal==t2 && tOriginal==t3)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static int CirculateIndex(int index, int upperBoundary)

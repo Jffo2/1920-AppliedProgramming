@@ -66,8 +66,9 @@ namespace BoundaryVisualizer.Models
                         List<PointF> scarcePoints = EliminatePoints(points);
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
                         System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        //List<Triangle> triangles = 
-                        //VisualizeTriangles(g, triangles, colors[i % colors.Length]);
+                        List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
+                         
+                        VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                         VisualizeLineString(g, scarcePoints, Color.White);
 
                     }
@@ -91,7 +92,7 @@ namespace BoundaryVisualizer.Models
 
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 10));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
@@ -139,7 +140,7 @@ namespace BoundaryVisualizer.Models
             int index = 0;
             foreach (PointF point in points)
             {
-                //g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
+                g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
                 //System.Diagnostics.Debug.WriteLine("Point" + index + ": " + point);
                 index++;
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
