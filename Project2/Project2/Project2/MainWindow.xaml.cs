@@ -29,6 +29,7 @@ namespace Project2
             if (openFileDialog.ShowDialog() == true)
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
+                PolyGonImageBox.Source = null;
                 //MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
                 await Task.Run(() =>
                 {

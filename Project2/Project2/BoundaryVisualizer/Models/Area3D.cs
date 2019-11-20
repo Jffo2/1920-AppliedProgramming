@@ -7,12 +7,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Media.Media3D;
 
 namespace BoundaryVisualizer.Models
 {
     public class Area3D
     {
         public Bitmap Model { get; private set; }
+        public MeshGeometry3D Area { get; private set; }
+        public float Scale { get; private set; }
+        public PointF WorldPosition { get; private set; }
 
         public Area3D(MultiPolygon multiPolygon)
         {
@@ -92,7 +96,7 @@ namespace BoundaryVisualizer.Models
 
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 10));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
@@ -140,7 +144,7 @@ namespace BoundaryVisualizer.Models
             int index = 0;
             foreach (PointF point in points)
             {
-                g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
+                //g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
                 //System.Diagnostics.Debug.WriteLine("Point" + index + ": " + point);
                 index++;
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
@@ -184,7 +188,9 @@ namespace BoundaryVisualizer.Models
 
             var yScale = (maxX - minX) > (maxY - minY) ? maxX - minX : maxY - minY;
 
-            return new PointF((x - minX) * (390.0f / (yScale))+5, (y - minY) * (390.0f / (yScale))+5);
+            Scale = (400.0f / yScale);
+
+            return new PointF((x - minX) * Scale, (y - minY) * Scale);
         }
     }
 }
