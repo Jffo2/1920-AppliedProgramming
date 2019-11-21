@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace BoundaryVisualizer.Models
@@ -26,11 +27,11 @@ namespace BoundaryVisualizer.Models
         private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon)
         {
             int side = 400;
-            Color[] colors = { Color.Red, Color.Green, Color.Blue, Color.Cyan, Color.Lime, Color.Magenta, Color.Black, Color.Coral, Color.Salmon, Color.Silver };
+            System.Drawing.Color[] colors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue, System.Drawing.Color.Cyan, System.Drawing.Color.Lime, System.Drawing.Color.Magenta, System.Drawing.Color.Black, System.Drawing.Color.Coral, System.Drawing.Color.Salmon, System.Drawing.Color.Silver };
             Bitmap b = new Bitmap(side, side);
             using (Graphics g = Graphics.FromImage(b))
             {
-                g.FillRectangle(new SolidBrush(Color.Orange), 0, 0, side, side);
+                g.FillRectangle(new SolidBrush(System.Drawing.Color.Orange), 0, 0, side, side);
 
                 float maxX = 0;
                 float maxY = 0;
@@ -67,6 +68,8 @@ namespace BoundaryVisualizer.Models
                             var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY);
 
                             points.Add(normalizedPoint);
+
+
                             //System.Diagnostics.Debug.WriteLine(normalizedPoint);
                         }
                         List<PointF> scarcePoints = EliminatePoints(points);
@@ -75,12 +78,28 @@ namespace BoundaryVisualizer.Models
                         List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
                          
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
-                        VisualizeLineString(g, scarcePoints, Color.White);
+                        VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
+
+                        AssembleModel(scarcePoints, triangles);
 
                     }
                 }
             }
             return b;
+        }
+
+        private void AssembleModel(List<PointF> points, List<Triangle> triangles)
+        {
+            Point3DCollection pointsCollection = new Point3DCollection();
+            Int32Collection triangleIndices = new Int32Collection();
+            pointsCollection.Add(new Point3D(points[0].X, points[0].Y, 0));
+            pointsCollection.Add(new Point3D(points[0].X, points[0].Y, 400));
+
+            for (int i = 1; i < points.Count; i++)
+            {
+                pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 0));
+                pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 400));
+            }
         }
 
         private static bool IsPolygonClockwise(List<PointF> points)
@@ -140,9 +159,9 @@ namespace BoundaryVisualizer.Models
             return Math.Abs((l2.X - l1.X) * (l1.Y - point.Y) - (l1.X - point.X) * (l2.Y - l1.Y)) /
                     Math.Sqrt(Math.Pow(l2.X - l1.X, 2) + Math.Pow(l2.Y - l1.Y, 2));
         }
-        private void VisualizeLineString(Graphics g, List<PointF> points, Color c)
+        private void VisualizeLineString(Graphics g, List<PointF> points, System.Drawing.Color c)
         {
-            Brush b = new SolidBrush(c);
+            System.Drawing.Brush b = new SolidBrush(c);
             int index = 0;
             foreach (PointF point in points)
             {
@@ -152,13 +171,13 @@ namespace BoundaryVisualizer.Models
                 g.FillEllipse(b, point.X, point.Y, 2, 2);
             }
             var lowestVertex = CustomTriangulator.GetLowestVertex(points);
-            g.FillEllipse(new SolidBrush(Color.Red), lowestVertex.X, lowestVertex.Y, 2, 2);
+            g.FillEllipse(new SolidBrush(System.Drawing.Color.Red), lowestVertex.X, lowestVertex.Y, 2, 2);
         }
 
-        private void VisualizeTriangles(Graphics g, List<Triangle> triangles, Color c)
+        private void VisualizeTriangles(Graphics g, List<Triangle> triangles, System.Drawing.Color c)
         {
-            Brush b = new SolidBrush(c);
-            Pen p = new Pen(Color.Black);
+            System.Drawing.Brush b = new SolidBrush(c);
+            System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.Black);
             foreach (Triangle t in triangles)
             {
                 g.FillPolygon(b, new PointF[] { t.Point1, t.MiddlePoint, t.Point2, t.Point1 });
