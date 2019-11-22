@@ -100,7 +100,7 @@ namespace BoundaryVisualizer.Logic
             return true;
         }
 
-        private static int CirculateIndex(int index, int upperBoundary)
+        public static int CirculateIndex(int index, int upperBoundary)
         {
             return (index < 0 ? upperBoundary + index : index % upperBoundary);
         }

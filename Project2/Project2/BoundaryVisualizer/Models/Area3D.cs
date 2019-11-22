@@ -1,12 +1,10 @@
 ﻿
 using BoundaryVisualizer.Logic;
-using BoundaryVisualizer.Util;
 using GeoJSON.Net.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -15,7 +13,7 @@ namespace BoundaryVisualizer.Models
     public class Area3D
     {
         public Bitmap Model { get; private set; }
-        public MeshGeometry3D Area { get; private set; }
+        public GeometryModel3D Area { get; private set; }
         public float Scale { get; private set; }
         public PointF WorldPosition { get; private set; }
 
@@ -76,7 +74,7 @@ namespace BoundaryVisualizer.Models
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
                         System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
                         List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
-                         
+
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                         VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
 
@@ -99,6 +97,37 @@ namespace BoundaryVisualizer.Models
             {
                 pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 0));
                 pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 400));
+                var previousBottom = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
+                var currentBottom = i * 2;
+                var previousTop = previousBottom + 1;
+                var currentTop = currentBottom + 1;
+
+                // Constructing an upwards rectangle out of 2 triangles
+                triangleIndices.Add(previousBottom);
+                triangleIndices.Add(currentBottom);
+                triangleIndices.Add(currentTop);
+
+
+                triangleIndices.Add(previousBottom);
+                triangleIndices.Add(currentTop);
+                triangleIndices.Add(previousTop);
+            }
+            // create top and bottom faces
+            foreach (Triangle triangle in triangles)
+            {
+                var p1 = points.IndexOf(triangle.Point1);
+                var p2 = points.IndexOf(triangle.MiddlePoint);
+                var p3 = points.IndexOf(triangle.Point2);
+
+                // Bottom face
+                triangleIndices.Add(p1 * 2);
+                triangleIndices.Add(p2 * 2);
+                triangleIndices.Add(p3 * 2);
+
+                triangleIndices.Add(p1 * 2 + 1);
+                triangleIndices.Add(p2 * 2 + 1);
+                triangleIndices.Add(p3 * 2 + 1);
+
             }
         }
 
