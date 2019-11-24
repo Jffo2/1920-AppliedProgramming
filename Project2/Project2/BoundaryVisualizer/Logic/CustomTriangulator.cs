@@ -32,7 +32,7 @@ namespace BoundaryVisualizer.Logic
                     if (checkHighestVertex)
                     {
                         // We already tried the highest vertex approach, just eliminate a point and try to continue, if we're lucky no-one will notice
-                        copiedPoints.RemoveAt(GetLowestVertexIndex(copiedPoints));
+                        copiedPoints.RemoveAt(GetHighestVertexIndex(copiedPoints));
                         checkHighestVertex = false;
                     }
                     checkHighestVertex = true;
@@ -110,34 +110,34 @@ namespace BoundaryVisualizer.Logic
             return points.OrderBy(point => point.Y).First();
         }
 
-        public static PointF GetHighestVertex(List<PointF> points)
+        private static PointF GetHighestVertex(List<PointF> points)
         {
             return points.OrderByDescending(point => point.Y).First();
         }
 
-        public static int GetLowestVertexIndex(List<PointF> points)
+        private static int GetLowestVertexIndex(List<PointF> points)
         {
             // Return the point with the lowest y value
             return points.IndexOf(GetLowestVertex(points));
         }
 
-        public static int GetHighestVertexIndex(List<PointF> points)
+        private static int GetHighestVertexIndex(List<PointF> points)
         {
             return points.IndexOf(GetHighestVertex(points));
         }
 
-        public static float CalculateTvalue(PointF p1, PointF p2, PointF p3)
+        private static float CalculateTvalue(PointF p1, PointF p2, PointF p3)
         {
             var t = p1.X * (p2.Y - p3.Y) + p2.X * (p3.Y - p1.Y) + p3.X * (p1.Y - p2.Y);
             return t;
         }
 
-        public static int Sign(float t)
+        private static int Sign(float t)
         {
             return Math.Sign(t);
         }
 
-        public static int CalculateTvalueSign(PointF p1, PointF p2, PointF p3)
+        private static int CalculateTvalueSign(PointF p1, PointF p2, PointF p3)
         {
             return Sign(CalculateTvalue(p1, p2, p3));
         }

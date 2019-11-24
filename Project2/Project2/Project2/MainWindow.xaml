@@ -3,12 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:BoundaryVisualizer.Converter;assembly=BoundaryVisualizer"
         xmlns:local="clr-namespace:Project2"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <converters:LookBackConverter x:Key="LookBackConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -27,5 +32,13 @@
             <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="2" Padding="6"/>
         </Grid>
         <Image x:Name="PolyGonImageBox" Stretch="Uniform" Grid.Row="1"/>
+        <Viewport3D x:Name="Viewport" Grid.Row="2">
+            <Viewport3D.Camera>
+                <PerspectiveCamera x:Name="Camera"
+                           UpDirection="0,0,1"
+                           LookDirection="{Binding RelativeSource={RelativeSource Self}, Path=Position, Converter={StaticResource LookBackConverter}}"
+                           Position="-400,-400,-300" />
+            </Viewport3D.Camera>
+        </Viewport3D>
     </Grid>
 </Window>

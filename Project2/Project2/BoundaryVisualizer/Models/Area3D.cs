@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 
 namespace BoundaryVisualizer.Models
 {
@@ -17,8 +18,11 @@ namespace BoundaryVisualizer.Models
         public float Scale { get; private set; }
         public PointF WorldPosition { get; private set; }
 
-        public Area3D(MultiPolygon multiPolygon)
+        private readonly Dispatcher dispatcher;
+
+        public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher)
         {
+            this.dispatcher = dispatcher;
             Model = GenerateModelFromMultiPolygon(multiPolygon);
         }
 
@@ -72,7 +76,7 @@ namespace BoundaryVisualizer.Models
                         }
                         List<PointF> scarcePoints = EliminatePoints(points);
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
-                        System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
+                        //System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
                         List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
 
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
@@ -88,6 +92,7 @@ namespace BoundaryVisualizer.Models
 
         private void AssembleModel(List<PointF> points, List<Triangle> triangles)
         {
+            var mesh = new MeshGeometry3D();
             Point3DCollection pointsCollection = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
             pointsCollection.Add(new Point3D(points[0].X, points[0].Y, 0));
@@ -95,40 +100,54 @@ namespace BoundaryVisualizer.Models
 
             for (int i = 1; i < points.Count; i++)
             {
+                // Add the points
                 pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 0));
                 pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 400));
-                var previousBottom = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
-                var currentBottom = i * 2;
-                var previousTop = previousBottom + 1;
-                var currentTop = currentBottom + 1;
 
-                // Constructing an upwards rectangle out of 2 triangles
-                triangleIndices.Add(previousBottom);
-                triangleIndices.Add(currentBottom);
-                triangleIndices.Add(currentTop);
+                var previousBottomIndex = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
+                var previousTopIndex = previousBottomIndex + 1;
+                var currentBottomIndex = i;
+                var currentTopIndex = i;
+                var nextBottomIndex = CustomTriangulator.CirculateIndex(i + 1, points.Count) * 2;
+                var nextTopIndex = nextBottomIndex + 1;
 
+                //Add the triangles
+                triangleIndices.Add(previousBottomIndex);
+                triangleIndices.Add(currentBottomIndex);
+                triangleIndices.Add(currentTopIndex);
 
-                triangleIndices.Add(previousBottom);
-                triangleIndices.Add(currentTop);
-                triangleIndices.Add(previousTop);
+                triangleIndices.Add(previousBottomIndex);
+                triangleIndices.Add(currentTopIndex);
+                triangleIndices.Add(previousTopIndex);
+
             }
-            // create top and bottom faces
-            foreach (Triangle triangle in triangles)
+            for (int i = 0; i < triangles.Count; i++)
             {
-                var p1 = points.IndexOf(triangle.Point1);
-                var p2 = points.IndexOf(triangle.MiddlePoint);
-                var p3 = points.IndexOf(triangle.Point2);
+                var p1Index = points.IndexOf(triangles[i].Point1) * 2;
+                var p2Index = points.IndexOf(triangles[i].MiddlePoint) * 2;
+                var p3Index = points.IndexOf(triangles[i].Point2) * 2;
 
-                // Bottom face
-                triangleIndices.Add(p1 * 2);
-                triangleIndices.Add(p2 * 2);
-                triangleIndices.Add(p3 * 2);
+                // Bottom Face triangle
+                triangleIndices.Add(p1Index);
+                triangleIndices.Add(p2Index);
+                triangleIndices.Add(p3Index);
 
-                triangleIndices.Add(p1 * 2 + 1);
-                triangleIndices.Add(p2 * 2 + 1);
-                triangleIndices.Add(p3 * 2 + 1);
-
+                // Top Face triangle
+                triangleIndices.Add(p1Index + 1);
+                triangleIndices.Add(p2Index + 1);
+                triangleIndices.Add(p3Index + 1);
             }
+
+            mesh.Positions = pointsCollection;
+            mesh.TriangleIndices = triangleIndices;
+
+            dispatcher.Invoke(() =>
+                {
+                    Area = new GeometryModel3D
+                    {
+                        Geometry = mesh
+                    };
+                });
         }
 
         private static bool IsPolygonClockwise(List<PointF> points)
