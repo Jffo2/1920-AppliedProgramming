@@ -35,9 +35,12 @@
         <Viewport3D x:Name="Viewport" Grid.Row="2">
             <Viewport3D.Camera>
                 <PerspectiveCamera x:Name="Camera"
-                           UpDirection="0,0,1"
+                           UpDirection="0,1,0"
+                           FarPlaneDistance = "10000"
+                           NearPlaneDistance = "20"
+                           FieldOfView = "45"
                            LookDirection="{Binding RelativeSource={RelativeSource Self}, Path=Position, Converter={StaticResource LookBackConverter}}"
-                           Position="-400,-400,-300" />
+                           Position="200,0,-1200" />
             </Viewport3D.Camera>
         </Viewport3D>
     </Grid>

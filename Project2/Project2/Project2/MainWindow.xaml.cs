@@ -51,24 +51,30 @@ namespace Project2
             {
                 DirectionalLight DirLight1 = new DirectionalLight();
                 DirLight1.Color = Colors.White;
-                DirLight1.Direction = new Vector3D(-1, -1, -1);
+                DirLight1.Direction = new Vector3D(0, 0, -1);
 
                 PerspectiveCamera Camera1 = new PerspectiveCamera
                 {
-                    FarPlaneDistance = 900,
+                    FarPlaneDistance = 50000,
                     NearPlaneDistance = 20,
-                    FieldOfView = 45
+                    FieldOfView = 45,
+                    Position = new Point3D(1200, 1200, 2400),
+                    LookDirection = new Vector3D(0,-1,-1),
+                    UpDirection = new Vector3D(0,1,0),
                 };
-
                 PolyGonImageBox.Source = new BitmapImage(new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + $"./model{TextBoxChangeModel.Text}.png"));
                 Model3DGroup modelgroup = Visualizer.CreateModelGroup(int.Parse(TextBoxChangeModel.Text));
+                modelgroup.Children[0].Transform = new TranslateTransform3D(-200, -200, -200);
+                modelgroup.Transform = new ScaleTransform3D(-1, -1, -1);
                 modelgroup.Children.Add(DirLight1);
                 ModelVisual3D modelVisual3D = new ModelVisual3D();
                 modelVisual3D.Content = (modelgroup);
-                Viewport.Camera = Camera1;
+                //Viewport.Camera = Camera1;
+                Viewport.Children.Clear();
                 Viewport.Children.Add(modelVisual3D);
                 Viewport.Height = 500;
                 Viewport.Width = 500;
+                
             }
             catch (Exception ex)
             {

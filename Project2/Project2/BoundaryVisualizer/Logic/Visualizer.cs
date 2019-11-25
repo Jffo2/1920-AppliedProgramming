@@ -12,6 +12,8 @@ using System.Windows.Media.Media3D;
 using BoundaryVisualizer.Util;
 using System.Windows.Threading;
 using System.Windows.Media;
+using System.Linq;
+using System.Reflection;
 
 namespace BoundaryVisualizer.Logic
 {
@@ -47,8 +49,11 @@ namespace BoundaryVisualizer.Logic
 
             dispatcher.Invoke(() =>
             {
-                areas[index].Area.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-                model3DGroup.Children.Add(areas[index].Area.Clone());
+                foreach (GeometryModel3D v in areas[index].Area.Children)
+                { 
+                    v.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+                    model3DGroup.Children.Add(v.Clone());
+                }
             });
             return model3DGroup;
         }

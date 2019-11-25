@@ -10,7 +10,7 @@ namespace BoundaryVisualizer.Converter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return new Point3D(-400, -400, -300) - (Point3D)value;
+            return new Point3D(0, 0, 0) - (Point3D)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -14,7 +14,7 @@ namespace BoundaryVisualizer.Models
     public class Area3D
     {
         public Bitmap Model { get; private set; }
-        public GeometryModel3D Area { get; private set; }
+        public Model3DGroup Area { get; private set; }
         public float Scale { get; private set; }
         public PointF WorldPosition { get; private set; }
 
@@ -22,6 +22,10 @@ namespace BoundaryVisualizer.Models
 
         public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher)
         {
+            dispatcher.Invoke(() =>
+            {
+                Area = new Model3DGroup();
+            });
             this.dispatcher = dispatcher;
             Model = GenerateModelFromMultiPolygon(multiPolygon);
         }
@@ -70,9 +74,6 @@ namespace BoundaryVisualizer.Models
                             var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY);
 
                             points.Add(normalizedPoint);
-
-
-                            //System.Diagnostics.Debug.WriteLine(normalizedPoint);
                         }
                         List<PointF> scarcePoints = EliminatePoints(points);
                         if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
@@ -83,7 +84,6 @@ namespace BoundaryVisualizer.Models
                         VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
 
                         AssembleModel(scarcePoints, triangles);
-
                     }
                 }
             }
@@ -106,20 +106,17 @@ namespace BoundaryVisualizer.Models
 
                 var previousBottomIndex = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
                 var previousTopIndex = previousBottomIndex + 1;
-                var currentBottomIndex = i;
-                var currentTopIndex = i;
-                var nextBottomIndex = CustomTriangulator.CirculateIndex(i + 1, points.Count) * 2;
-                var nextTopIndex = nextBottomIndex + 1;
+                var currentBottomIndex = i*2;
+                var currentTopIndex = i*2+1;
 
                 //Add the triangles
-                triangleIndices.Add(previousBottomIndex);
+                triangleIndices.Add(currentTopIndex);
                 triangleIndices.Add(currentBottomIndex);
-                triangleIndices.Add(currentTopIndex);
-
                 triangleIndices.Add(previousBottomIndex);
-                triangleIndices.Add(currentTopIndex);
-                triangleIndices.Add(previousTopIndex);
 
+                triangleIndices.Add(previousTopIndex);
+                triangleIndices.Add(currentTopIndex);
+                triangleIndices.Add(previousBottomIndex);
             }
             for (int i = 0; i < triangles.Count; i++)
             {
@@ -133,9 +130,9 @@ namespace BoundaryVisualizer.Models
                 triangleIndices.Add(p3Index);
 
                 // Top Face triangle
-                triangleIndices.Add(p1Index + 1);
-                triangleIndices.Add(p2Index + 1);
                 triangleIndices.Add(p3Index + 1);
+                triangleIndices.Add(p2Index + 1);
+                triangleIndices.Add(p1Index + 1);
             }
 
             mesh.Positions = pointsCollection;
@@ -143,10 +140,10 @@ namespace BoundaryVisualizer.Models
 
             dispatcher.Invoke(() =>
                 {
-                    Area = new GeometryModel3D
+                    Area.Children.Add(new GeometryModel3D
                     {
                         Geometry = mesh
-                    };
+                    });
                 });
         }
 
@@ -165,7 +162,7 @@ namespace BoundaryVisualizer.Models
 
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 0.2));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
