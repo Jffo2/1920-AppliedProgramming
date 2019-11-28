@@ -48,12 +48,12 @@ namespace Project2
 
         private void ChangeModel(object sender, EventArgs e)
         {
-            /*try
-            {*/
+            try
+            {
                 DirectionalLight DirLight1 = new DirectionalLight
                 {
                     Color = Colors.White,
-                    Direction = new Vector3D(1,-1,1)
+                    Direction = new Vector3D(1, -1, 1)
                 };
 
                 /*PerspectiveCamera Camera1 = new PerspectiveCamera
@@ -73,8 +73,9 @@ namespace Project2
                     transformGroup.Children.Add(new TranslateTransform3D(-200, -200, -600));
                     transformGroup.Children.Add(new ScaleTransform3D(-1, -1, -1));
                     child.Transform = transformGroup;*/
-                    
+
                 }
+                modelgroup.Transform = new TranslateTransform3D(modelgroup.Bounds.SizeX / -2.0, modelgroup.Bounds.SizeY / -2.0, modelgroup.Bounds.SizeZ / -2.0);
                 modelgroup.Children.Add(DirLight1);
                 ModelVisual3D modelVisual3D = new ModelVisual3D
                 {
@@ -83,8 +84,7 @@ namespace Project2
                 //Viewport.Camera = Camera1;
                 Viewport.Children.Clear();
                 Viewport.Children.Add(modelVisual3D);
-                
-            /*}
+            }
             catch (Exception ex)
             {
                 if (TextBoxChangeModel.Text != "")
@@ -92,7 +92,7 @@ namespace Project2
                     MessageBox.Show("Invalid");
                     System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
-            }*/
+            }
         }
     }
 }
