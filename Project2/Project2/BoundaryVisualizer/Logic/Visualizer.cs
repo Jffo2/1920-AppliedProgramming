@@ -23,8 +23,11 @@ namespace BoundaryVisualizer.Logic
 
         private Dispatcher dispatcher;
 
-        public Visualizer(IGeoJsonLoader geoJsonLoader, Dispatcher dispatcher)
+        private float scale;
+
+        public Visualizer(IGeoJsonLoader geoJsonLoader, Dispatcher dispatcher, float scale)
         {
+            this.scale = scale;
             this.dispatcher = dispatcher;
             FeatureCollection featureCollection = geoJsonLoader.Load();
             int index = 0;
@@ -34,7 +37,7 @@ namespace BoundaryVisualizer.Logic
                     System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
 
                 //if (index == 9) continue;
-                Area3D area = new Area3D((MultiPolygon)feature.Geometry,dispatcher);
+                Area3D area = new Area3D((MultiPolygon)feature.Geometry,dispatcher,scale);
                 area.Model.Save($"model{index}.png");
                 index ++;
                 areas.Add(area);
@@ -43,16 +46,24 @@ namespace BoundaryVisualizer.Logic
             System.Diagnostics.Debug.WriteLine("Done!");
         }
 
-        public Model3DGroup CreateModelGroup(int index)
+        public Model3DGroup CreateModelGroup()
         {
             Model3DGroup model3DGroup = new Model3DGroup();
+            System.Windows.Media.Color[] colors = { Colors.Red, Colors.Green, Colors.Blue, Colors.Cyan, Colors.Lime, Colors.Magenta, Colors.Black, Colors.Coral, Colors.Salmon, Colors.Silver };
+
+            var minX = areas.Select((area) => area.WorldPosition.X).Min();
+            var minY = areas.Select((area) => area.WorldPosition.Y).Min();
 
             dispatcher.Invoke(() =>
             {
-                foreach (GeometryModel3D v in areas[index].Area.Children)
+                foreach (Area3D v in areas)
                 { 
-                    v.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-                    model3DGroup.Children.Add(v.Clone());
+                    v.Material = new DiffuseMaterial(new SolidColorBrush(colors[areas.IndexOf(v)%colors.Length]));
+                    foreach (var model in v.Area.Children)
+                    {
+                        model.Transform = new TranslateTransform3D((v.WorldPosition.X - minX)*scale, (v.WorldPosition.Y - minY) * scale, 0);
+                        model3DGroup.Children.Add(model.Clone());
+                    }
                 }
             });
             return model3DGroup;

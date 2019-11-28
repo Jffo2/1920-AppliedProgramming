@@ -18,19 +18,44 @@ namespace BoundaryVisualizer.Models
         public float Scale { get; private set; }
         public PointF WorldPosition { get; private set; }
 
+        public Material Material
+        {
+            get
+            {
+                return material;
+            }
+            set
+            {
+                ApplyMaterial(value);
+                material = value;
+            }
+        }
+
+        private Material material;
         private readonly Dispatcher dispatcher;
 
-        public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher)
+        public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher, float scale = 100.0f)
         {
             dispatcher.Invoke(() =>
             {
                 Area = new Model3DGroup();
             });
             this.dispatcher = dispatcher;
-            Model = GenerateModelFromMultiPolygon(multiPolygon);
+            Model = GenerateModelFromMultiPolygon(multiPolygon, scale);
         }
 
-        private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon)
+        private void ApplyMaterial(Material m)
+        {
+            dispatcher.Invoke(() =>
+            {
+                foreach (GeometryModel3D model in Area.Children)
+                {
+                    model.Material = m;
+                }
+            });
+        }
+
+        private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon, float scale)
         {
             int side = 400;
             System.Drawing.Color[] colors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue, System.Drawing.Color.Cyan, System.Drawing.Color.Lime, System.Drawing.Color.Magenta, System.Drawing.Color.Black, System.Drawing.Color.Coral, System.Drawing.Color.Salmon, System.Drawing.Color.Silver };
@@ -83,26 +108,27 @@ namespace BoundaryVisualizer.Models
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
                         VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
 
-                        AssembleModel(scarcePoints, triangles);
+                        AssembleModel(scarcePoints, triangles, scale);
                     }
                 }
             }
             return b;
         }
 
-        private void AssembleModel(List<PointF> points, List<Triangle> triangles)
+        private void AssembleModel(List<PointF> points, List<Triangle> triangles, float scale)
         {
             var mesh = new MeshGeometry3D();
             Point3DCollection pointsCollection = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
-            pointsCollection.Add(new Point3D(points[0].X, points[0].Y, 0));
-            pointsCollection.Add(new Point3D(points[0].X, points[0].Y, 400));
+            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, 0));
+            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, 400));
 
             for (int i = 1; i < points.Count; i++)
             {
                 // Add the points
-                pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 0));
-                pointsCollection.Add(new Point3D(points[i].X, points[i].Y, 400));
+                pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, 0));
+                pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, 400));
+
 
                 var previousBottomIndex = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
                 var previousTopIndex = previousBottomIndex + 1;
@@ -162,7 +188,7 @@ namespace BoundaryVisualizer.Models
 
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 0.2));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
         private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="GeoJSON.Net" Version="1.1.73" />
+    <PackageReference Include="HelixToolkit.Wpf" Version="2.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.6.1" />
     <PackageReference Include="WindowsBase" Version="4.6.1055" />

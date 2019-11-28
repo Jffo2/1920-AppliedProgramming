@@ -6,6 +6,7 @@
         xmlns:converters="clr-namespace:BoundaryVisualizer.Converter;assembly=BoundaryVisualizer"
         xmlns:local="clr-namespace:Project2"
         mc:Ignorable="d"
+        xmlns:h="http://helix-toolkit.org/wpf"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <converters:LookBackConverter x:Key="LookBackConverter"/>
@@ -32,16 +33,16 @@
             <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="2" Padding="6"/>
         </Grid>
         <Image x:Name="PolyGonImageBox" Stretch="Uniform" Grid.Row="1"/>
-        <Viewport3D x:Name="Viewport" Grid.Row="2">
-            <Viewport3D.Camera>
+        <h:HelixViewport3D x:Name="Viewport" Grid.Row="2" IsPanEnabled="True" IsMoveEnabled="True" IsRotationEnabled="True">
+            <h:HelixViewport3D.Camera>
                 <PerspectiveCamera x:Name="Camera"
-                           UpDirection="0,1,0"
-                           FarPlaneDistance = "10000"
+                           UpDirection="0,0,1"
+                           FarPlaneDistance = "50000"
                            NearPlaneDistance = "20"
                            FieldOfView = "45"
-                           LookDirection="{Binding RelativeSource={RelativeSource Self}, Path=Position, Converter={StaticResource LookBackConverter}}"
-                           Position="200,0,-1200" />
-            </Viewport3D.Camera>
-        </Viewport3D>
+                           LookDirection="0,1,8"
+                           Position="0,0,-1200" />
+            </h:HelixViewport3D.Camera>
+        </h:HelixViewport3D>
     </Grid>
 </Window>

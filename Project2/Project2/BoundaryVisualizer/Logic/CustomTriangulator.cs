@@ -60,10 +60,11 @@ namespace BoundaryVisualizer.Logic
                         //convexVertices.Add(i);
                         if (VertexIsEar(i,copiedPoints))
                         {
+                            if (copiedPoints.Count == 3) break;
                             triangles.Add(new Triangle(pi1, pi2, pi3));
                             copiedPoints.RemoveAt(i);
                             checkHighestVertex = false;
-                            break;
+                            //break;
                         }
                     }
                 }
