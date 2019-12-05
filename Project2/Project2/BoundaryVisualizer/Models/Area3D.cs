@@ -34,14 +34,14 @@ namespace BoundaryVisualizer.Models
         private Material material;
         private readonly Dispatcher dispatcher;
 
-        public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher, float scale = 100.0f)
+        public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher, float scale = 100.0f, float height = 400.0f)
         {
             dispatcher.Invoke(() =>
             {
                 Area = new Model3DGroup();
             });
             this.dispatcher = dispatcher;
-            Model = GenerateModelFromMultiPolygon(multiPolygon, scale);
+            Model = GenerateModelFromMultiPolygon(multiPolygon, scale, height);
         }
 
         private void ApplyMaterial(Material m)
@@ -55,7 +55,7 @@ namespace BoundaryVisualizer.Models
             });
         }
 
-        private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon, float scale)
+        private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon, float scale, float height)
         {
             int side = 400;
             System.Drawing.Color[] colors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue, System.Drawing.Color.Cyan, System.Drawing.Color.Lime, System.Drawing.Color.Magenta, System.Drawing.Color.Black, System.Drawing.Color.Coral, System.Drawing.Color.Salmon, System.Drawing.Color.Silver };
@@ -106,28 +106,28 @@ namespace BoundaryVisualizer.Models
                         List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
 
                         VisualizeTriangles(g, triangles, colors[i % colors.Length]);
-                        VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
+                        //VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
 
-                        AssembleModel(scarcePoints, triangles, scale);
+                        AssembleModel(scarcePoints, triangles, scale, height);
                     }
                 }
             }
             return b;
         }
 
-        private void AssembleModel(List<PointF> points, List<Triangle> triangles, float scale)
+        private void AssembleModel(List<PointF> points, List<Triangle> triangles, float scale, float height)
         {
             var mesh = new MeshGeometry3D();
             Point3DCollection pointsCollection = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
             pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, 0));
-            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, 400));
+            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, height));
 
             for (int i = 1; i < points.Count; i++)
             {
                 // Add the points
                 pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, 0));
-                pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, 400));
+                pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, height));
 
 
                 var previousBottomIndex = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;

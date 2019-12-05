@@ -2,18 +2,11 @@
 using BoundaryVisualizer.Models;
 using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Media.Media3D;
-using BoundaryVisualizer.Util;
 using System.Windows.Threading;
 using System.Windows.Media;
-using System.Linq;
-using System.Reflection;
 
 namespace BoundaryVisualizer.Logic
 {
@@ -25,7 +18,7 @@ namespace BoundaryVisualizer.Logic
 
         private float scale;
 
-        public Visualizer(IGeoJsonLoader geoJsonLoader, Dispatcher dispatcher, float scale)
+        public Visualizer(IGeoJsonLoader geoJsonLoader, Dispatcher dispatcher,IDataProvider dataProvider, float scale)
         {
             this.scale = scale;
             this.dispatcher = dispatcher;
@@ -35,9 +28,8 @@ namespace BoundaryVisualizer.Logic
             {
                 if (feature.Properties.ContainsKey("name"))
                     System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
-
-                //if (index == 9) continue;
-                Area3D area = new Area3D((MultiPolygon)feature.Geometry,dispatcher,scale);
+                var height = (float)dataProvider.GetValue(feature.Properties);
+                Area3D area = new Area3D((MultiPolygon)feature.Geometry,dispatcher,scale, height);
                 area.Model.Save($"model{index}.png");
                 index ++;
                 areas.Add(area);

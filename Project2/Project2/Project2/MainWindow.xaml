@@ -15,12 +15,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="HeightSelector" Grid.Column="0" Padding="6">
@@ -28,12 +26,9 @@
                 <ComboBoxItem>Sterfgevallen</ComboBoxItem>
             </ComboBox>
 
-            <TextBox Text="0" MaxLength="2" Grid.Column="1" Padding="20 6" x:Name="TextBoxChangeModel"/>
-
-            <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="2" Padding="6"/>
+            <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="1" Padding="6"/>
         </Grid>
-        <Image x:Name="PolyGonImageBox" Stretch="Uniform" Grid.Row="1"/>
-        <h:HelixViewport3D x:Name="Viewport" Grid.Row="2" IsPanEnabled="True" IsMoveEnabled="True" IsRotationEnabled="True">
+        <h:HelixViewport3D x:Name="Viewport" Grid.Row="1" CameraMode="Inspect">
             <h:HelixViewport3D.Camera>
                 <PerspectiveCamera x:Name="Camera"
                            UpDirection="0,0,1"
@@ -41,7 +36,7 @@
                            NearPlaneDistance = "20"
                            FieldOfView = "45"
                            LookDirection="0,1,8"
-                           Position="0,0,-500" />
+                           Position="0,0,-2576" />
             </h:HelixViewport3D.Camera>
         </h:HelixViewport3D>
     </Grid>

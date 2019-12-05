@@ -1,12 +1,10 @@
 ﻿using BoundaryVisualizer.Data;
+using BoundaryVisualizer.Data.DataProviders;
 using BoundaryVisualizer.Logic;
 using Microsoft.Win32;
-using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 
 namespace Project2
@@ -33,66 +31,57 @@ namespace Project2
             if (openFileDialog.ShowDialog() == true)
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
-                PolyGonImageBox.Source = null;
                 //MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
                 await Task.Run(() =>
                 {
-                    Visualizer = new Visualizer(fileGeoJsonLoader,this.Dispatcher,300);
+                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher,new PopulationProviderBelgianProvinces(), 300);
                 });
-                TextBoxChangeModel.TextChanged += ChangeModel;
-                TextBoxChangeModel.Text = "0";
-                ChangeModel(null, null);
+                RenderModel();
             }
 
         }
 
-        private void ChangeModel(object sender, EventArgs e)
+        private void RenderModel()
         {
-            try
-            {
-                DirectionalLight DirLight1 = new DirectionalLight
-                {
-                    Color = Colors.White,
-                    Direction = new Vector3D(1, -1, 1)
-                };
+            Model3DGroup modelgroup = Visualizer.CreateModelGroup();
 
-                /*PerspectiveCamera Camera1 = new PerspectiveCamera
-                {
-                    FarPlaneDistance = 50000,
-                    NearPlaneDistance = 20,
-                    FieldOfView = 45,
-                    Position = new Point3D(0,0 , -1200),
-                    LookDirection = new Vector3D(0,0,1),
-                    UpDirection = new Vector3D(0,1,0),
-                };*/
-                PolyGonImageBox.Source = new BitmapImage(new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + $"./model{TextBoxChangeModel.Text}.png"));
-                Model3DGroup modelgroup = Visualizer.CreateModelGroup();
-                foreach (var child in modelgroup.Children)
-                {
-                    /*Transform3DGroup transformGroup = new Transform3DGroup();
-                    transformGroup.Children.Add(new TranslateTransform3D(-200, -200, -600));
-                    transformGroup.Children.Add(new ScaleTransform3D(-1, -1, -1));
-                    child.Transform = transformGroup;*/
-
-                }
-                modelgroup.Transform = new TranslateTransform3D(modelgroup.Bounds.SizeX / -2.0, modelgroup.Bounds.SizeY / -2.0, modelgroup.Bounds.SizeZ / -2.0);
-                modelgroup.Children.Add(DirLight1);
-                ModelVisual3D modelVisual3D = new ModelVisual3D
-                {
-                    Content = (modelgroup)
-                };
-                //Viewport.Camera = Camera1;
-                Viewport.Children.Clear();
-                Viewport.Children.Add(modelVisual3D);
-            }
-            catch (Exception ex)
+            DirectionalLight dirLight1 = new DirectionalLight
             {
-                if (TextBoxChangeModel.Text != "")
-                {
-                    MessageBox.Show("Invalid");
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
-                }
-            }
+                Color = Colors.White,
+                Direction = new Vector3D(0, -1, -8)
+            };
+            DirectionalLight dirlight2 = new DirectionalLight
+            {
+                Color = Colors.White,
+                Direction = new Vector3D(0, 1, 8)
+            };
+            DirectionalLight dirlight3 = new DirectionalLight
+            {
+                Color = Colors.White,
+                Direction = new Vector3D(1, 1, 8)
+            };
+            DirectionalLight dirLight4 = new DirectionalLight
+            {
+                Color = Colors.White,
+                Direction = new Vector3D(1, -1, -8)
+            };
+            var maxSize = (modelgroup.Bounds.SizeX > modelgroup.Bounds.SizeY) ? modelgroup.Bounds.SizeX : modelgroup.Bounds.SizeY;
+
+            modelgroup.Transform = new TranslateTransform3D(modelgroup.Bounds.SizeX / -2.0, modelgroup.Bounds.SizeY / 2.0, modelgroup.Bounds.SizeZ / -2.0);
+            modelgroup.Children.Add(dirLight1);
+            modelgroup.Children.Add(dirlight2);
+            modelgroup.Children.Add(dirlight3);
+            modelgroup.Children.Add(dirLight4);
+
+            ModelVisual3D modelVisual3D = new ModelVisual3D
+            {
+                Content = (modelgroup)
+            };
+            Camera.Position = new Point3D(0, 0, maxSize * -6);
+            Viewport.Children.Clear();
+            Viewport.Children.Add(modelVisual3D);
+            Viewport.FixedRotationPoint = new Point3D(modelgroup.Bounds.SizeX / -2.0 + modelgroup.Bounds.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y, modelgroup.Bounds.SizeZ / -2.0 + modelgroup.Bounds.Z);
+            Viewport.FixedRotationPointEnabled = true;
         }
     }
 }

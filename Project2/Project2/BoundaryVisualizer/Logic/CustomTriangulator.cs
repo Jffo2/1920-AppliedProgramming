@@ -46,6 +46,7 @@ namespace BoundaryVisualizer.Logic
                 var p3 = copiedPoints[CirculateIndex(lowestVertexIndex + 1, copiedPoints.Count)];
 
                 var tSignLowestVertex = CalculateTvalueSign(p1, p2, p3);
+
                 for (int i = 0; i < copiedPoints.Count; i++)
                 {
                     var pi1 = copiedPoints[CirculateIndex(i - 1, copiedPoints.Count)];
@@ -53,6 +54,12 @@ namespace BoundaryVisualizer.Logic
                     var pi3 = copiedPoints[CirculateIndex(i + 1, copiedPoints.Count)];
 
                     var tSignVertexI = CalculateTvalueSign(pi1, pi2, pi3);
+
+                    // If points are collinear we can just remove the obsolete one
+                    if (tSignLowestVertex == 0)
+                    {
+                        copiedPoints.RemoveAt(CirculateIndex(i, copiedPoints.Count));
+                    }
 
                     if (tSignLowestVertex*tSignVertexI>0)
                     {
