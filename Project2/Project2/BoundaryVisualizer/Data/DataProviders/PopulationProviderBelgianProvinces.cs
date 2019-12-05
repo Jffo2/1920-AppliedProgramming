@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BoundaryVisualizer.Data.DataProviders
 {
@@ -16,7 +19,7 @@ namespace BoundaryVisualizer.Data.DataProviders
 
         public override double GetValue(IDictionary<string, object> featureProperties)
         {
-            System.Diagnostics.Debug.WriteLine(JSonContent);
+            
             return 400.0;
         }
 

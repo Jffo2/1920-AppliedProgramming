@@ -11,7 +11,7 @@ namespace BoundaryVisualizer.Data
     {
         public virtual string ViewId { get; protected set; }
 
-        public List<dynamic> JSonContent { get; protected set; }
+        public dynamic JSonContent { get; protected set; }
 
         public DataProvider()
         {
@@ -23,12 +23,21 @@ namespace BoundaryVisualizer.Data
             JSonContent = await RetrieveJsonAsync();
         }
 
-        private async Task<List<dynamic>> RetrieveJsonAsync()
+        private async Task<dynamic> RetrieveJsonAsync()
         {
             using (var client = new HttpClient())
             {
-                var content = await client.GetStringAsync(GenerateURL());
-                return JsonConvert.DeserializeObject<List<dynamic>>(content);
+
+                string content = null;
+                while (content == null)
+                {
+                    try
+                    {
+                        content = await client.GetStringAsync(GenerateURL());
+                    } catch { content = null; }
+                }
+                System.Diagnostics.Debug.WriteLine(content);
+                return JsonConvert.DeserializeObject<dynamic>(content);
             }
         }
 
