@@ -10,18 +10,23 @@ namespace BoundaryVisualizer.Data
 {
     public abstract class DataProvider : IDataProvider
     {
+        public event EventHandler<EventArgs> DataProviderReady;
+        public bool IsDataProviderReady { get; private set; }
         public virtual string ViewId { get; protected set; }
 
         public IDataModel JSonContent { get; protected set; }
 
         public DataProvider()
         {
+            IsDataProviderReady = false;
             SetJSon();
         }
 
         private async void SetJSon()
         {
             JSonContent = await RetrieveJsonAsync();
+            DataProviderReady?.Invoke(this, new EventArgs());
+            IsDataProviderReady = true;
         }
 
         private async Task<IDataModel> RetrieveJsonAsync()

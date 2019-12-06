@@ -10,19 +10,22 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 
         public double GetValue(string name)
         {
-            foreach (var b in Facts)
+            if (name != null)
             {
+                foreach (var b in Facts)
+                {
 
-                if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
-                {
-                    return b.PercentageMarried * 1000;
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
+                    {
+                        return b.PercentageMarried * 20;
+                    }
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
+                    {
+                        return b.PercentageMarried * 20;
+                    }
+                    if (b.Region != null && b.Region.Contains(name))
+                        return b.PercentageMarried * 20;
                 }
-                if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
-                {
-                    return b.PercentageMarried * 1000;
-                }
-                if (b.Region != null && b.Region.Contains(name))
-                    return b.PercentageMarried * 1000;
             }
             return 400.0;
         }

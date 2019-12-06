@@ -12,19 +12,22 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 
         public double GetValue(string name)
         {
-            foreach (var b in Facts)
+            if (name != null)
             {
-                
-                if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
+                foreach (var b in Facts)
                 {
-                    return b.Population / 10000;
+
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
+                    {
+                        return b.Population / 100000;
+                    }
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
+                    {
+                        return b.Population / 100000;
+                    }
+                    if (b.Region != null && b.Region.Contains(name))
+                        return b.Population / 100000;
                 }
-                if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
-                {
-                    return b.Population / 10000;
-                }
-                if (b.Region != null && b.Region.Contains(name))
-                    return b.Population / 10000;
             }
             return 400.0;
         }

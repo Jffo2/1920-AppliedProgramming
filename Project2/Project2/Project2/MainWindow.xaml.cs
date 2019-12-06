@@ -2,6 +2,7 @@
 using BoundaryVisualizer.Data.DataProviders;
 using BoundaryVisualizer.Logic;
 using Microsoft.Win32;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -9,11 +10,14 @@ using System.Windows.Media.Media3D;
 
 namespace Project2
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const int MODEL_SCALE = 10;
+
         Visualizer Visualizer;
 
         public MainWindow()
@@ -34,14 +38,15 @@ namespace Project2
                 //MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
                 await Task.Run(() =>
                 {
-                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), 300);
+                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), MODEL_SCALE);
+                    if (Visualizer.IsVisualizerReady) RenderModel(null, null);
+                    else Visualizer.OnVisualizerReady += RenderModel;
                 });
-                RenderModel();
             }
 
         }
 
-        private IDataProvider GetRequiredDataProvider()
+        private DataProvider GetRequiredDataProvider()
         {
             int selectedIndex = 0;
             Dispatcher.Invoke(() =>
@@ -60,48 +65,53 @@ namespace Project2
 
         }
 
-        private void RenderModel()
+        private void RenderModel(object sender, EventArgs args)
         {
-            Model3DGroup modelgroup = Visualizer.CreateModelGroup();
+            System.Diagnostics.Debug.WriteLine("Rendering model");
+            Dispatcher.Invoke(() =>
+            {
 
-            DirectionalLight dirLight1 = new DirectionalLight
-            {
-                Color = Colors.White,
-                Direction = new Vector3D(0, -1, -8)
-            };
-            DirectionalLight dirlight2 = new DirectionalLight
-            {
-                Color = Colors.White,
-                Direction = new Vector3D(0, 1, 8)
-            };
-            DirectionalLight dirlight3 = new DirectionalLight
-            {
-                Color = Colors.White,
-                Direction = new Vector3D(1, 1, 8)
-            };
-            DirectionalLight dirLight4 = new DirectionalLight
-            {
-                Color = Colors.White,
-                Direction = new Vector3D(1, -1, -8)
-            };
-            var maxSize = (modelgroup.Bounds.SizeX > modelgroup.Bounds.SizeY) ? modelgroup.Bounds.SizeX : modelgroup.Bounds.SizeY;
+                Model3DGroup modelgroup = Visualizer.CreateModelGroup();
 
-            modelgroup.Transform = new TranslateTransform3D(modelgroup.Bounds.SizeX / -2.0, modelgroup.Bounds.SizeY / 2.0, modelgroup.Bounds.SizeZ / -2.0);
-            modelgroup.Children.Add(dirLight1);
-            modelgroup.Children.Add(dirlight2);
-            modelgroup.Children.Add(dirlight3);
-            modelgroup.Children.Add(dirLight4);
+                DirectionalLight dirLight1 = new DirectionalLight
+                {
+                    Color = Colors.White,
+                    Direction = new Vector3D(0, -1, -8)
+                };
+                DirectionalLight dirlight2 = new DirectionalLight
+                {
+                    Color = Colors.White,
+                    Direction = new Vector3D(0, 1, 8)
+                };
+                DirectionalLight dirlight3 = new DirectionalLight
+                {
+                    Color = Colors.White,
+                    Direction = new Vector3D(1, 1, 8)
+                };
+                DirectionalLight dirLight4 = new DirectionalLight
+                {
+                    Color = Colors.White,
+                    Direction = new Vector3D(1, -1, -8)
+                };
+                var maxSize = (modelgroup.Bounds.SizeX > modelgroup.Bounds.SizeY) ? modelgroup.Bounds.SizeX : modelgroup.Bounds.SizeY;
 
-            ModelVisual3D modelVisual3D = new ModelVisual3D
-            {
-                Content = (modelgroup)
-            };
-            Camera.Position = new Point3D(0, 0, maxSize * -6);
-            Viewport.Children.Clear();
-            Viewport.Children.Add(modelVisual3D);
-            Viewport.FixedRotationPoint = new Point3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z);
-            Viewport.FixedRotationPointEnabled = true;
-            Camera.LookDirection = new Vector3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X - Camera.Position.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y - Camera.Position.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z - Camera.Position.Z);
+                modelgroup.Transform = new TranslateTransform3D(modelgroup.Bounds.SizeX / -2.0, modelgroup.Bounds.SizeY / 2.0, modelgroup.Bounds.SizeZ / -2.0);
+                modelgroup.Children.Add(dirLight1);
+                modelgroup.Children.Add(dirlight2);
+                modelgroup.Children.Add(dirlight3);
+                modelgroup.Children.Add(dirLight4);
+
+                ModelVisual3D modelVisual3D = new ModelVisual3D
+                {
+                    Content = (modelgroup)
+                };
+                Camera.Position = new Point3D(0, 0, maxSize * -1 * (MODEL_SCALE/5));
+                Viewport.Children.Clear();
+                Viewport.Children.Add(modelVisual3D);
+                Viewport.FixedRotationPoint = new Point3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z);
+                Viewport.FixedRotationPointEnabled = true;
+                Camera.LookDirection = new Vector3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X - Camera.Position.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y - Camera.Position.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z - Camera.Position.Z);
+            });
         }
     }
 }
