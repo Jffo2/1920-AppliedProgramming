@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BoundaryVisualizer.Data.DataProviders.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace BoundaryVisualizer.Data
     {
         public virtual string ViewId { get; protected set; }
 
-        public dynamic JSonContent { get; protected set; }
+        public IDataModel JSonContent { get; protected set; }
 
         public DataProvider()
         {
@@ -23,11 +24,10 @@ namespace BoundaryVisualizer.Data
             JSonContent = await RetrieveJsonAsync();
         }
 
-        private async Task<dynamic> RetrieveJsonAsync()
+        private async Task<IDataModel> RetrieveJsonAsync()
         {
             using (var client = new HttpClient())
             {
-
                 string content = null;
                 while (content == null)
                 {
@@ -36,10 +36,12 @@ namespace BoundaryVisualizer.Data
                         content = await client.GetStringAsync(GenerateURL());
                     } catch { content = null; }
                 }
-                System.Diagnostics.Debug.WriteLine(content);
-                return JsonConvert.DeserializeObject<dynamic>(content);
+                return DeserializeJSon(content);
             }
         }
+
+        protected abstract IDataModel DeserializeJSon(string content);
+
 
         protected abstract string GenerateURL();
 

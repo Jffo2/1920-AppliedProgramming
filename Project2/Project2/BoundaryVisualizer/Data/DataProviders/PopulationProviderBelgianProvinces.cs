@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using BoundaryVisualizer.Data.DataProviders.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -19,13 +22,18 @@ namespace BoundaryVisualizer.Data.DataProviders
 
         public override double GetValue(IDictionary<string, object> featureProperties)
         {
-            
-            return 400.0;
+            string frenchName = (string)((JObject)(featureProperties["alltags"])).SelectToken("name:fr");
+            return JSonContent.GetValue(frenchName);
         }
 
         protected override string GenerateURL()
         {
             return ("https://bestat.statbel.fgov.be/bestat/api/views/" + ViewId + "/result/JSON");
+        }
+
+        protected override IDataModel DeserializeJSon(string content)
+        {
+            return JsonConvert.DeserializeObject<PopulationModel>(content);
         }
     }
 }
