@@ -22,8 +22,8 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="HeightSelector" Grid.Column="0" Padding="6">
-                <ComboBoxItem IsSelected="True">Dokters per km2</ComboBoxItem>
-                <ComboBoxItem>Sterfgevallen</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">Totaal aantal inwoners</ComboBoxItem>
+                <ComboBoxItem>Percentage Getrouwde Koppels</ComboBoxItem>
             </ComboBox>
 
             <Button x:Name="ButtonBrowse" Content="Browse" Click="BrowseGeoJsonFile" Grid.Column="1" Padding="6"/>

@@ -34,9 +34,28 @@ namespace Project2
                 //MockGeoJsonLoader fileGeoJsonLoader = new MockGeoJsonLoader();
                 await Task.Run(() =>
                 {
-                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher,new PopulationProviderBelgianProvinces(), 300);
+                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), 300);
                 });
                 RenderModel();
+            }
+
+        }
+
+        private IDataProvider GetRequiredDataProvider()
+        {
+            int selectedIndex = 0;
+            Dispatcher.Invoke(() =>
+            {
+                selectedIndex = HeightSelector.SelectedIndex;
+            });
+            switch (selectedIndex)
+            {
+                case 0:
+                    return new PopulationProviderBelgianProvinces();
+                case 1:
+                    return new PercentageMarriedCouplesProviderBelgianProvinces();
+                default:
+                    return new PopulationProviderBelgianProvinces();
             }
 
         }
@@ -80,8 +99,9 @@ namespace Project2
             Camera.Position = new Point3D(0, 0, maxSize * -6);
             Viewport.Children.Clear();
             Viewport.Children.Add(modelVisual3D);
-            Viewport.FixedRotationPoint = new Point3D(modelgroup.Bounds.SizeX / -2.0 + modelgroup.Bounds.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y, modelgroup.Bounds.SizeZ / -2.0 + modelgroup.Bounds.Z);
+            Viewport.FixedRotationPoint = new Point3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z);
             Viewport.FixedRotationPointEnabled = true;
+            Camera.LookDirection = new Vector3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X - Camera.Position.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y - Camera.Position.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z - Camera.Position.Z);
         }
     }
 }

@@ -120,10 +120,8 @@ namespace BoundaryVisualizer.Models
             var mesh = new MeshGeometry3D();
             Point3DCollection pointsCollection = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
-            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, 0));
-            pointsCollection.Add(new Point3D((points[0].X / Scale/* + WorldPosition.X*/) * scale, (points[0].Y / Scale/* + WorldPosition.Y*/) * scale, height));
 
-            for (int i = 1; i < points.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
                 // Add the points
                 pointsCollection.Add(new Point3D((points[i].X / Scale/* + WorldPosition.X*/) * scale, (points[i].Y / Scale/* + WorldPosition.Y*/) * scale, 0));

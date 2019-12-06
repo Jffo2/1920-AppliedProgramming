@@ -29,6 +29,7 @@ namespace BoundaryVisualizer.Logic
                 if (feature.Properties.ContainsKey("name"))
                     System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
                 var height = (float)dataProvider.GetValue(feature.Properties);
+                System.Diagnostics.Debug.WriteLine(height);
                 Area3D area = new Area3D((MultiPolygon)feature.Geometry,dispatcher,scale, height);
                 area.Model.Save($"model{index}.png");
                 index ++;
@@ -53,7 +54,10 @@ namespace BoundaryVisualizer.Logic
                     v.Material = new DiffuseMaterial(new SolidColorBrush(colors[areas.IndexOf(v)%colors.Length]));
                     foreach (var model in v.Area.Children)
                     {
-                        model.Transform = new TranslateTransform3D((v.WorldPosition.X - minX)*scale, (v.WorldPosition.Y - minY) * scale, 0);
+                        Transform3DGroup group = new Transform3DGroup();
+                        group.Children.Add(new ScaleTransform3D(1, 1, -1));
+                        group.Children.Add(new TranslateTransform3D((v.WorldPosition.X - minX)*scale, (v.WorldPosition.Y - minY) * scale, 0));
+                        model.Transform = group;
                         model3DGroup.Children.Add(model.Clone());
                     }
                 }
