@@ -15,6 +15,7 @@ namespace BoundaryVisualizer.Data.DataProviders
         public PercentageMarriedCouplesProviderBelgianProvinces() : base()
         {
             ViewId = "04a275c0-5b8d-4d45-9cfd-92cf1298cde7";
+            BackupResourceName = "BoundaryVisualizer.Data.BackupJsonFiles.PercentageMarriedPeople.json";
         }
 
         /// <summary>

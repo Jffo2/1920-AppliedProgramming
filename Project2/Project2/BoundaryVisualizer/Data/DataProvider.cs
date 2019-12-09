@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,18 +16,28 @@ namespace BoundaryVisualizer.Data
         /// Event that triggers when the data has been fetched from the webserver
         /// </summary>
         public event EventHandler<EventArgs> DataProviderReady;
+
         /// <summary>
         /// Boolean telling whether the DataProvider is ready
         /// </summary>
         public bool IsDataProviderReady { get; private set; }
+
         /// <summary>
         /// The ID for the view of the API
         /// </summary>
         public virtual string ViewId { get; protected set; }
+
         /// <summary>
         /// The actual JSon content as a DataModel
         /// </summary>
         public IDataModel JSonContent { get; protected set; }
+
+        /// <summary>
+        /// The resource file path for use when the website is down
+        /// </summary>
+        public string BackupResourceName { get; protected set; }
+
+        private const int MAX_TRIES_DATA_FETCH = 10;
 
         /// <summary>
         /// Constructor, start fetchin JSon
@@ -52,6 +64,7 @@ namespace BoundaryVisualizer.Data
         /// <returns>the data model with the data from the api</returns>
         private async Task<IDataModel> RetrieveJsonAsync()
         {
+            int tries = 0;
             using (var client = new HttpClient())
             {
                 string content = null;
@@ -61,9 +74,30 @@ namespace BoundaryVisualizer.Data
                     try
                     {
                         content = await client.GetStringAsync(GenerateURL());
-                    } catch { content = null; }
+                    } catch { content = null; tries++; }
+                    if (tries==MAX_TRIES_DATA_FETCH)
+                    {
+                        return UseBackupJsonFile();
+                    }
                 }
                 return DeserializeJSon(content);
+            }
+        }
+
+        /// <summary>
+        /// Read the backup json file
+        /// </summary>
+        /// <returns>the data model with the data from the json file</returns>
+        private IDataModel UseBackupJsonFile()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = assembly.GetManifestResourceStream(BackupResourceName))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string result = reader.ReadToEnd();
+                    return DeserializeJSon(result);
+                }
             }
         }
 

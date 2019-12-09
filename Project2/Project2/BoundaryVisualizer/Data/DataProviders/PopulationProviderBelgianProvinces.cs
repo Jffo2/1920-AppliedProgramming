@@ -13,6 +13,7 @@ namespace BoundaryVisualizer.Data.DataProviders
         public PopulationProviderBelgianProvinces() : base()
         {
             ViewId = "760c4d9e-d859-42f7-82f4-21a7232ceaf5";
+            BackupResourceName = "BoundaryVisualizer.Data.BackupJsonFiles.TotalPopulation.json";
         }
 
         /// <summary>

@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\BackupJsonFiles\PercentageMarriedPeople.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\BackupJsonFiles\TotalPopulation.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GeoJSON.Net" Version="1.2.14" />
     <PackageReference Include="HelixToolkit.Wpf" Version="2.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

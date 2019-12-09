@@ -1,0 +1,75 @@
+{
+  "facts" : [ {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province d’Anvers",
+    "Arrondissement" : null,
+    "Population mariée" : 0.5294000000000019
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Brabant flamand",
+    "Arrondissement" : null,
+    "Population mariée" : 0.5400000000000019
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Flandre occidentale",
+    "Arrondissement" : null,
+    "Population mariée" : 0.555500000000002
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Flandre orientale",
+    "Arrondissement" : null,
+    "Population mariée" : 0.5294000000000019
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Limbourg",
+    "Arrondissement" : null,
+    "Population mariée" : 0.572200000000002
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région de Bruxelles-Capitale",
+    "Province" : null,
+    "Arrondissement" : "Arrondissement de Bruxelles-Capitale",
+    "Population mariée" : 0.44410000000000155
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Brabant wallon",
+    "Arrondissement" : null,
+    "Population mariée" : 0.4969000000000018
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Hainaut",
+    "Arrondissement" : null,
+    "Population mariée" : 0.4625000000000017
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Liège",
+    "Arrondissement" : null,
+    "Population mariée" : 0.46920000000000167
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Luxembourg",
+    "Arrondissement" : null,
+    "Population mariée" : 0.5122000000000018
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Namur",
+    "Arrondissement" : null,
+    "Population mariée" : 0.4666000000000017
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : null,
+    "Province" : null,
+    "Arrondissement" : null,
+    "Population mariée" : 0.5101000000000016
+  } ]
+}

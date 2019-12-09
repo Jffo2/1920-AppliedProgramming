@@ -1,0 +1,75 @@
+{
+  "facts" : [ {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province d’Anvers",
+    "Arrondissement" : null,
+    "Population totale" : 1773267.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Brabant flamand",
+    "Arrondissement" : null,
+    "Population totale" : 1088692.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Flandre occidentale",
+    "Arrondissement" : null,
+    "Population totale" : 1168002.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Flandre orientale",
+    "Arrondissement" : null,
+    "Population totale" : 1448928.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région flamande",
+    "Province" : "Province de Limbourg",
+    "Arrondissement" : null,
+    "Population totale" : 846851.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région de Bruxelles-Capitale",
+    "Province" : null,
+    "Arrondissement" : "Arrondissement de Bruxelles-Capitale",
+    "Population totale" : 1136778.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Brabant wallon",
+    "Arrondissement" : null,
+    "Population totale" : 383648.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Hainaut",
+    "Arrondissement" : null,
+    "Population totale" : 1319745.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Liège",
+    "Arrondissement" : null,
+    "Population totale" : 1082136.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Luxembourg",
+    "Arrondissement" : null,
+    "Population totale" : 273205.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : "Région wallonne",
+    "Province" : "Province de Namur",
+    "Arrondissement" : null,
+    "Population totale" : 479386.0
+  }, {
+    "Belgique" : "Belgique",
+    "Région" : null,
+    "Province" : null,
+    "Arrondissement" : null,
+    "Population totale" : 1.1000638E7
+  } ]
+}
