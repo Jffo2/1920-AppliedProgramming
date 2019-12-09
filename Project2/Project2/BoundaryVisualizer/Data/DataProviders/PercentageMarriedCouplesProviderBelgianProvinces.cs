@@ -22,10 +22,10 @@ namespace BoundaryVisualizer.Data.DataProviders
         /// </summary>
         /// <param name="featureProperties">the properties of a feature</param>
         /// <returns>the value for the feature that is most alike to the feature passed in</returns>
-        public override double GetValue(IDictionary<string, object> featureProperties)
+        public override double GetValue(IDictionary<string, object> featureProperties, float scale)
         {
             string frenchName = (string)((JObject)(featureProperties["alltags"])).SelectToken("name:fr");
-            return JSonContent.GetValue(frenchName);
+            return JSonContent.GetValue(frenchName, scale);
         }
 
         /// <summary>

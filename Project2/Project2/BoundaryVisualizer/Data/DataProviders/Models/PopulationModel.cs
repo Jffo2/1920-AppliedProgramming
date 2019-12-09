@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BoundaryVisualizer.Data.DataProviders.Models
 {
@@ -10,7 +8,7 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
         [JsonProperty("facts")]
         public List<ProvincePopulationModel> Facts { get; set; }
 
-        public double GetValue(string name)
+        public double GetValue(string name, float scale)
         {
             if (name != null)
             {
@@ -19,17 +17,17 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
                     {
-                        return b.Population / 100000;
+                        return b.Population * (0.000001 * scale);
                     }
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
                     {
-                        return b.Population / 100000;
+                        return b.Population * (0.000001 * scale);
                     }
                     if (b.Region != null && b.Region.Contains(name))
-                        return b.Population / 100000;
+                        return b.Population * (0.000001 * scale);
                 }
             }
-            return 400.0;
+            return scale;
         }
     }
 

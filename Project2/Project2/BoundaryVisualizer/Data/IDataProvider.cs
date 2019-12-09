@@ -6,6 +6,6 @@ namespace BoundaryVisualizer.Data
 {
     public interface IDataProvider
     {
-        double GetValue(IDictionary<string, object> featureProperties);
+        double GetValue(IDictionary<string, object> featureProperties, float scale);
     }
 }

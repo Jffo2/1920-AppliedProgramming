@@ -85,6 +85,6 @@ namespace BoundaryVisualizer.Data
         /// </summary>
         /// <param name="featureProperties">the properties of a feature</param>
         /// <returns>the value for the feature that is most alike to the feature passed in</returns>
-        public abstract double GetValue(IDictionary<string, object> featureProperties);
+        public abstract double GetValue(IDictionary<string, object> featureProperties, float scale);
     }
 }

@@ -8,7 +8,7 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
         [JsonProperty("facts")]
         public List<ProvinceMarriedModel> Facts { get; set; }
 
-        public double GetValue(string name)
+        public double GetValue(string name, float scale)
         {
             if (name != null)
             {
@@ -17,14 +17,14 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
                     {
-                        return b.PercentageMarried * 20;
+                        return b.PercentageMarried * (scale*20/3.0);
                     }
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
                     {
-                        return b.PercentageMarried * 20;
+                        return b.PercentageMarried * (scale * 20 / 3.0);
                     }
                     if (b.Region != null && b.Region.Contains(name))
-                        return b.PercentageMarried * 20;
+                        return b.PercentageMarried * (scale * 20 / 3.0);
                 }
             }
             return 400.0;

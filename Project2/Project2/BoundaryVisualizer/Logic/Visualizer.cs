@@ -66,7 +66,7 @@ namespace BoundaryVisualizer.Logic
                 if (feature.Properties.ContainsKey("name"))
                     System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
                 // Get the height from the dataProvider
-                var height = (float)dataProvider.GetValue(feature.Properties);
+                var height = (float)dataProvider.GetValue(feature.Properties, scale);
                 System.Diagnostics.Debug.WriteLine(height);
                 // Generate the model
                 Area3D area = new Area3D((MultiPolygon)feature.Geometry, dispatcher, scale, height);
