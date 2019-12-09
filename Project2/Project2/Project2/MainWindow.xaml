@@ -3,14 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:converters="clr-namespace:BoundaryVisualizer.Converter;assembly=BoundaryVisualizer"
-        xmlns:local="clr-namespace:Project2"
         mc:Ignorable="d"
         xmlns:h="http://helix-toolkit.org/wpf"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-        <converters:LookBackConverter x:Key="LookBackConverter"/>
-    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -33,7 +28,7 @@
                 <PerspectiveCamera x:Name="Camera"
                            UpDirection="0,0,1"
                            FarPlaneDistance = "5000000"
-                           NearPlaneDistance = "20"
+                           NearPlaneDistance = "0"
                            FieldOfView = "45"
                            LookDirection="0,1,8"
                            Position="0,0,-2576" />
