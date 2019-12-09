@@ -13,11 +13,24 @@ namespace BoundaryVisualizer.Models
 {
     public class Area3D
     {
-        public Bitmap Model { get; private set; }
+        /// <summary>
+        /// The 3D model for the Area
+        /// </summary>
         public Model3DGroup Area { get; private set; }
+        /// <summary>
+        /// The scale of this object
+        /// </summary>
         public float Scale { get; private set; }
+        /// <summary>
+        /// The position in the world of this object, can be used to translate the model to it's actual position in the world,
+        /// this is because the model itself is built starting from origin, to get the model to it's actual location, it has to be moved to this position
+        /// (scale has to be incorporated as well)
+        /// </summary>
         public PointF WorldPosition { get; private set; }
 
+        /// <summary>
+        /// The material of the object
+        /// </summary>
         public Material Material
         {
             get
@@ -34,6 +47,13 @@ namespace BoundaryVisualizer.Models
         private Material material;
         private readonly Dispatcher dispatcher;
 
+        /// <summary>
+        /// Constructor, this will start processing the polygon
+        /// </summary>
+        /// <param name="multiPolygon">the polygon to process</param>
+        /// <param name="dispatcher">the dispatcher to dispatch to the main thread</param>
+        /// <param name="scale">the scale of the model</param>
+        /// <param name="height">the height of the model</param>
         public Area3D(MultiPolygon multiPolygon, Dispatcher dispatcher, float scale = 100.0f, float height = 400.0f)
         {
             dispatcher.Invoke(() =>
@@ -41,9 +61,13 @@ namespace BoundaryVisualizer.Models
                 Area = new Model3DGroup();
             });
             this.dispatcher = dispatcher;
-            Model = GenerateModelFromMultiPolygon(multiPolygon, scale, height);
+            GenerateModelFromMultiPolygon(multiPolygon, scale, height);
         }
 
+        /// <summary>
+        /// Apply a material to the Model
+        /// </summary>
+        /// <param name="m">the material to assign</param>
         private void ApplyMaterial(Material m)
         {
             dispatcher.Invoke(() =>
@@ -55,66 +79,77 @@ namespace BoundaryVisualizer.Models
             });
         }
 
-        private Bitmap GenerateModelFromMultiPolygon(MultiPolygon multiPolygon, float scale, float height)
+        /// <summary>
+        /// Interpret the MultiPolygon object and start processing it to create a 3D model
+        /// </summary>
+        /// <param name="multiPolygon">the multipolygon to process</param>
+        /// <param name="scale">the scale of the 3d object</param>
+        /// <param name="height">the height of the model</param>
+        private void GenerateModelFromMultiPolygon(MultiPolygon multiPolygon, float scale, float height)
         {
             int side = 400;
-            System.Drawing.Color[] colors = { System.Drawing.Color.Red, System.Drawing.Color.Green, System.Drawing.Color.Blue, System.Drawing.Color.Cyan, System.Drawing.Color.Lime, System.Drawing.Color.Magenta, System.Drawing.Color.Black, System.Drawing.Color.Coral, System.Drawing.Color.Salmon, System.Drawing.Color.Silver };
-            Bitmap b = new Bitmap(side, side);
-            using (Graphics g = Graphics.FromImage(b))
+
+            float maxX = 0;
+            float maxY = 0;
+            float minX = float.MaxValue;
+            float minY = float.MaxValue;
+
+            // Get the extreme points, these will be used for normalization
+            foreach (Polygon p in multiPolygon.Coordinates)
             {
-                g.FillRectangle(new SolidBrush(System.Drawing.Color.Orange), 0, 0, side, side);
-
-                float maxX = 0;
-                float maxY = 0;
-                float minX = float.MaxValue;
-                float minY = float.MaxValue;
-
-                foreach (Polygon p in multiPolygon.Coordinates)
+                foreach (LineString lstring in p.Coordinates)
                 {
-                    foreach (LineString lstring in p.Coordinates)
-                    {
-                        var maxX2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).X).Max();
-                        var maxY2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).Y).Max();
-                        var minX2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).X).Min();
-                        var minY2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).Y).Min();
-                        if (maxX2 > maxX) maxX = maxX2;
-                        if (maxY2 > maxY) maxY = maxY2;
-                        if (minX2 < minX) minX = minX2;
-                        if (minY2 < minY) minY = minY2;
-                    }
-                }
-
-                WorldPosition = new PointF(minX, minY);
-                var o = multiPolygon.Coordinates.OrderBy(coords => coords.Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max());
-                for (int i = 0; i < o.Count(); i++)
-                {
-                    foreach (LineString lstring in o.ElementAt(i).Coordinates)
-                    {
-                        if (lstring.Coordinates.Count != o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) continue;
-                        List<PointF> points = new List<PointF>();
-                        foreach (IPosition point in lstring.Coordinates)
-                        {
-                            var xy = GetPointFromCoordinates(side, side, point);
-
-                            var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY);
-
-                            points.Add(normalizedPoint);
-                        }
-                        List<PointF> scarcePoints = EliminatePoints(points);
-                        if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
-                        //System.Diagnostics.Debug.WriteLine("Eliminated " + ((points.Count - scarcePoints.Count) / (float)points.Count * 100.0f) + "% of points");
-                        List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
-
-                        VisualizeTriangles(g, triangles, colors[i % colors.Length]);
-                        //VisualizeLineString(g, scarcePoints, System.Drawing.Color.White);
-
-                        AssembleModel(scarcePoints, triangles, scale, height);
-                    }
+                    var maxX2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).X).Max();
+                    var maxY2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).Y).Max();
+                    var minX2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).X).Min();
+                    var minY2 = lstring.Coordinates.Select(position => GetPointFromCoordinates(side, side, position).Y).Min();
+                    if (maxX2 > maxX) maxX = maxX2;
+                    if (maxY2 > maxY) maxY = maxY2;
+                    if (minX2 < minX) minX = minX2;
+                    if (minY2 < minY) minY = minY2;
                 }
             }
-            return b;
+
+            WorldPosition = new PointF(minX, minY);
+            var o = multiPolygon.Coordinates.OrderBy(coords => coords.Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max());
+            for (int i = 0; i < o.Count(); i++)
+            {
+                foreach (LineString lstring in o.ElementAt(i).Coordinates)
+                {
+                    // If this linestring is not the longest one, implying that it is actually a hole
+                    if (lstring.Coordinates.Count != o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) continue;
+
+                    List<PointF> points = new List<PointF>();
+                    // Loop over the points, rescale them and add them to the list
+                    foreach (IPosition point in lstring.Coordinates)
+                    {
+                        var xy = GetPointFromCoordinates(side, side, point);
+
+                        var normalizedPoint = NormalizePoint(xy, minX, minY, maxX, maxY, side);
+
+                        points.Add(normalizedPoint);
+                    }
+
+                    // Use Peucker to eliminate points
+                    List<PointF> scarcePoints = EliminatePoints(points);
+                    if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
+                    
+                    // Triangulate the polygon
+                    List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
+
+                    // Generate the model
+                    AssembleModel(scarcePoints, triangles, scale, height);
+                }
+            }
         }
 
+        /// <summary>
+        /// Generate the 3D model and assign it to the Geometry property
+        /// </summary>
+        /// <param name="points">a list of points representing a polygon</param>
+        /// <param name="triangles">a list of triangles representing the polygon shape</param>
+        /// <param name="scale">the scale of our object</param>
+        /// <param name="height">the height of the model</param>
         private void AssembleModel(List<PointF> points, List<Triangle> triangles, float scale, float height)
         {
             var mesh = new MeshGeometry3D();
@@ -130,8 +165,8 @@ namespace BoundaryVisualizer.Models
 
                 var previousBottomIndex = CustomTriangulator.CirculateIndex(i - 1, points.Count) * 2;
                 var previousTopIndex = previousBottomIndex + 1;
-                var currentBottomIndex = i*2;
-                var currentTopIndex = i*2+1;
+                var currentBottomIndex = i * 2;
+                var currentTopIndex = i * 2 + 1;
 
                 //Add the triangles
                 triangleIndices.Add(currentTopIndex);
@@ -162,6 +197,7 @@ namespace BoundaryVisualizer.Models
             mesh.Positions = pointsCollection;
             mesh.TriangleIndices = triangleIndices;
 
+            // Add children on the main thread, otherwise wpf throws an error
             dispatcher.Invoke(() =>
                 {
                     Area.Children.Add(new GeometryModel3D
@@ -171,6 +207,11 @@ namespace BoundaryVisualizer.Models
                 });
         }
 
+        /// <summary>
+        /// Checks if a polygon is ordered clockwise
+        /// </summary>
+        /// <param name="points">a list of points representing the polygon</param>
+        /// <returns>true if clockwise, false if counter-clockwise</returns>
         private static bool IsPolygonClockwise(List<PointF> points)
         {
             double sum = 0.0;
@@ -184,16 +225,30 @@ namespace BoundaryVisualizer.Models
             return sum < 0.0;
         }
 
+        /// <summary>
+        /// Use DouglasPeucker to eliminate points
+        /// </summary>
+        /// <see cref="DouglasPeucker(List{PointF}, double)"/>
+        /// <param name="points">the list of points to be eliminated</param>
+        /// <returns>the list of points after elimination</returns>
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
             return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
         }
 
+        /// <summary>
+        /// Eliminate points from a list of points recursively
+        /// </summary>
+        /// <param name="points">list of points to be eliminated</param>
+        /// <param name="epsilon">the distance at which to eliminate</param>
+        /// <returns>the list of points after elimination</returns>
+        /// https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
         private static List<PointF> DouglasPeucker(List<PointF> points, double epsilon)
         {
             double dmax = 0;
             int index = 0;
             int length = points.Count;
+            // Find the point that's furthest from the line between the first and last point
             for (int i = 1; i < length - 1; i++)
             {
                 double d = PerpendicularDistance(points[i], points[0], points[length - 1]);
@@ -206,8 +261,11 @@ namespace BoundaryVisualizer.Models
 
             List<PointF> resultList = new List<PointF>();
 
+            // If the furthest point is larger than the threshold
             if (dmax > epsilon)
             {
+                // Start recursively again, we cannot eliminate this point since it is too far
+                // Basically we divide from the starting point to the furthest point and from the furthest point to the end point then we recursively try again
                 List<PointF> recursiveResults1 = DouglasPeucker(points.GetRange(0, index + 1), epsilon);
                 List<PointF> recursiveResults2 = DouglasPeucker(points.GetRange(index, length - index), epsilon);
 
@@ -216,6 +274,7 @@ namespace BoundaryVisualizer.Models
             }
             else
             {
+                // All points between the starting point and end point are too close, eliminate all of them!
                 resultList.Add(points[0]);
                 resultList.Add(points[points.Count - 1]);
             }
@@ -223,39 +282,26 @@ namespace BoundaryVisualizer.Models
             return resultList;
         }
 
+        /// <summary>
+        /// The perpendicular distance from a point to a line
+        /// </summary>
+        /// <param name="point">the point</param>
+        /// <param name="l1">the starting point of the line</param>
+        /// <param name="l2">the end point of the line</param>
+        /// <returns>the distance from the point to the line as a double</returns>
         private static double PerpendicularDistance(PointF point, PointF l1, PointF l2)
         {
             return Math.Abs((l2.X - l1.X) * (l1.Y - point.Y) - (l1.X - point.X) * (l2.Y - l1.Y)) /
                     Math.Sqrt(Math.Pow(l2.X - l1.X, 2) + Math.Pow(l2.Y - l1.Y, 2));
         }
-        private void VisualizeLineString(Graphics g, List<PointF> points, System.Drawing.Color c)
-        {
-            System.Drawing.Brush b = new SolidBrush(c);
-            int index = 0;
-            foreach (PointF point in points)
-            {
-                //g.DrawString("" + index, new Font(FontFamily.GenericMonospace, 11), new SolidBrush(Color.Black), point);
-                //System.Diagnostics.Debug.WriteLine("Point" + index + ": " + point);
-                index++;
-                g.FillEllipse(b, point.X, point.Y, 2, 2);
-            }
-            var lowestVertex = CustomTriangulator.GetLowestVertex(points);
-            g.FillEllipse(new SolidBrush(System.Drawing.Color.Red), lowestVertex.X, lowestVertex.Y, 2, 2);
-        }
 
-        private void VisualizeTriangles(Graphics g, List<Triangle> triangles, System.Drawing.Color c)
-        {
-            System.Drawing.Brush b = new SolidBrush(c);
-            System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Color.Black);
-            foreach (Triangle t in triangles)
-            {
-                g.FillPolygon(b, new PointF[] { t.Point1, t.MiddlePoint, t.Point2, t.Point1 });
-                g.DrawPolygon(p, new PointF[] { t.Point1, t.MiddlePoint, t.Point2, t.Point1 });
-            }
-            b.Dispose();
-        }
-
-
+        /// <summary>
+        /// Use Mercator transformation to go from World Coordinates to map coordinates
+        /// </summary>
+        /// <param name="mapWidth">the width of the map to map to</param>
+        /// <param name="mapHeight">the height of the map to map to</param>
+        /// <param name="point">the point to map to the map</param>
+        /// <returns>the point now in euclidean coordinates</returns>
         private PointF GetPointFromCoordinates(int mapWidth, int mapHeight, IPosition point)
         {
             // get x value
@@ -271,14 +317,24 @@ namespace BoundaryVisualizer.Models
             return new PointF((float)x, (float)y);
         }
 
-        private PointF NormalizePoint(PointF xy, float minX, float minY, float maxX, float maxY)
+        /// <summary>
+        /// Normalize a point to be represented
+        /// </summary>
+        /// <param name="xy">the point to normalize</param>
+        /// <param name="minX">the minimum x</param>
+        /// <param name="minY">the maximum x</param>
+        /// <param name="maxX">the minimum y</param>
+        /// <param name="maxY">the maximum y</param>
+        /// <param name="side">the width and height of the space to normalize to</param>
+        /// <returns>the normalized point</returns>
+        private PointF NormalizePoint(PointF xy, float minX, float minY, float maxX, float maxY, float side)
         {
             var x = xy.X;
             var y = xy.Y;
 
             var yScale = (maxX - minX) > (maxY - minY) ? maxX - minX : maxY - minY;
 
-            Scale = (400.0f / yScale);
+            Scale = (side / yScale);
 
             return new PointF((x - minX) * Scale, (y - minY) * Scale);
         }
