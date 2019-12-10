@@ -6,6 +6,7 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 {
     public interface IDataModel
     {
-        double GetValue(string s, float scale);
+        double GetValue(string s);
+        double GetScaledValue(string s, float scale);
     }
 }

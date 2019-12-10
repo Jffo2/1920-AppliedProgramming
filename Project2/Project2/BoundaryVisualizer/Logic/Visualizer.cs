@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using System.Windows.Media;
 using System;
+using System.Threading.Tasks;
 
 namespace BoundaryVisualizer.Logic
 {
@@ -59,20 +60,25 @@ namespace BoundaryVisualizer.Logic
         /// <param name="args"></param>
         private void DoSetup(object sender, EventArgs args)
         {
+            List<Task> renderTasks = new List<Task>();
             int index = 0;
             foreach (Feature feature in featureCollection.Features)
             {
-                // Output the name
-                if (feature.Properties.ContainsKey("name"))
-                    System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
-                // Get the height from the dataProvider
-                var height = (float)dataProvider.GetValue(feature.Properties, scale);
-                System.Diagnostics.Debug.WriteLine(height);
-                // Generate the model
-                Area3D area = new Area3D((MultiPolygon)feature.Geometry, dispatcher, scale, height);
-                index++;
-                areas.Add(area);
+                renderTasks.Add(Task.Run(() =>
+                {
+                    // Output the name
+                    if (feature.Properties.ContainsKey("name"))
+                        System.Diagnostics.Debug.WriteLine(feature.Properties["name"]);
+                    // Get the height from the dataProvider
+                    var height = (float)dataProvider.GetScaledValue(feature.Properties, scale);
+                    System.Diagnostics.Debug.WriteLine(height);
+                    // Generate the model
+                    Area3D area = new Area3D((MultiPolygon)feature.Geometry, dispatcher, scale, height);
+                    index++;
+                    areas.Add(area);
+                }));
             }
+            Task.WaitAll(renderTasks.ToArray());
             IsVisualizerReady = true;
             OnVisualizerReady?.Invoke(this, new EventArgs());
         }

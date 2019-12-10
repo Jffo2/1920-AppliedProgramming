@@ -8,7 +8,12 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
         [JsonProperty("facts")]
         public List<ProvinceMarriedModel> Facts { get; set; }
 
-        public double GetValue(string name, float scale)
+        /// <summary>
+        /// Gets the best fitting value for a feature
+        /// </summary>
+        /// <param name="featureProperties">the properties of a feature</param>
+        /// <returns>the value for the feature that is most alike to the feature passed in</returns>
+        public double GetValue(string name)
         {
             if (name != null)
             {
@@ -17,7 +22,35 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
 
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
                     {
-                        return b.PercentageMarried * (scale*20/3.0);
+                        return b.PercentageMarried;
+                    }
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
+                    {
+                        return b.PercentageMarried;
+                    }
+                    if (b.Region != null && b.Region.Contains(name))
+                        return b.PercentageMarried;
+                }
+            }
+            return 1.0;
+        }
+
+        /// <summary>
+        /// Gets the best fitting value for a feature, scaled to fit the scene
+        /// </summary>
+        /// <param name="featureProperties">the properties of a feature</param>
+        /// <param name="scale">the scale of the scene</param>
+        /// <returns>the scaled value for the feature that is most alike to the feature passed in</returns>
+        public double GetScaledValue(string name, float scale)
+        {
+            if (name != null)
+            {
+                foreach (var b in Facts)
+                {
+
+                    if (b.Province != null && b.Province.ToLower().Contains(name.ToLower()))
+                    {
+                        return b.PercentageMarried * (scale * 20 / 3.0);
                     }
                     if (b.Province != null && b.Province.ToLower().Contains(name.ToLower().Replace("-", " ")))
                     {
@@ -27,8 +60,9 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
                         return b.PercentageMarried * (scale * 20 / 3.0);
                 }
             }
-            return 400.0;
+            return scale;
         }
+
     }
 
 

@@ -23,10 +23,22 @@ namespace BoundaryVisualizer.Data.DataProviders
         /// </summary>
         /// <param name="featureProperties">the properties of a feature</param>
         /// <returns>the value for the feature that is most alike to the feature passed in</returns>
-        public override double GetValue(IDictionary<string, object> featureProperties, float scale)
+        public override double GetValue(IDictionary<string, object> featureProperties)
         {
             string frenchName = (string)((JObject)(featureProperties["alltags"])).SelectToken("name:fr");
-            return JSonContent.GetValue(frenchName, scale);
+            return JSonContent.GetValue(frenchName);
+        }
+
+        /// <summary>
+        /// Gets the best fitting value for a feature, scaled to fit the scene
+        /// </summary>
+        /// <param name="featureProperties">the properties of a feature</param>
+        /// <param name="scale">the scale of the scene</param>
+        /// <returns>the scaled value for the feature that is most alike to the feature passed in</returns>
+        public override double GetScaledValue(IDictionary<string, object> featureProperties, float scale)
+        {
+            string frenchName = (string)((JObject)(featureProperties["alltags"])).SelectToken("name:fr");
+            return JSonContent.GetScaledValue(frenchName, scale);
         }
 
         /// <summary>
