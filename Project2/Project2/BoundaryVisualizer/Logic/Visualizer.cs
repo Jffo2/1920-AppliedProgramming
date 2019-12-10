@@ -126,6 +126,7 @@ namespace BoundaryVisualizer.Logic
                 foreach (Area3D v in areas)
                 {
                     v.Material = new DiffuseMaterial(new SolidColorBrush(colors[areas.IndexOf(v) % colors.Length]));
+                    Model3DGroup intermediaryGroup = new Model3DGroup(); ;
                     foreach (var model in v.Area.Children)
                     {
                         Transform3DGroup group = new Transform3DGroup();
@@ -134,8 +135,9 @@ namespace BoundaryVisualizer.Logic
                         group.Children.Add(new TranslateTransform3D((v.WorldPosition.X - minX) * scale, (v.WorldPosition.Y - minY) * scale, 0));
                         model.Transform = group;
                         // Clone the model otherwise there will be an error as to which thread is was created on, WPF is really sensitive about this
-                        model3DGroup.Children.Add(model.Clone());
+                        intermediaryGroup.Children.Add(model.Clone());
                     }
+                    model3DGroup.Children.Add(intermediaryGroup);
                 }
             });
             return model3DGroup;

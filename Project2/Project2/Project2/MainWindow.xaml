@@ -34,6 +34,6 @@
                            Position="0,0,-2576" />
             </h:HelixViewport3D.Camera>
         </h:HelixViewport3D>
-        <Canvas x:Name="Canvas" Grid.Row="1" IsHitTestVisible="False"></Canvas>
+        <Canvas x:Name="Canvas" Grid.Row="1" IsHitTestVisible="True"></Canvas>
     </Grid>
 </Window>
