@@ -89,6 +89,8 @@ namespace Project2
                 Viewport.Camera.Position = new Point3D(0, 0, -10);
                 Viewport.ZoomExtents();
                 Viewport.Camera.LookDirection = new Vector3D(modelgroup.Bounds.SizeX / 2.0 + modelgroup.Bounds.X - Camera.Position.X, modelgroup.Bounds.SizeY / 2.0 + modelgroup.Bounds.Y - Camera.Position.Y, modelgroup.Bounds.SizeZ / 2.0 + modelgroup.Bounds.Z - Camera.Position.Z);
+
+                LegendVisualizer.VisualizeLegend(Canvas, Visualizer.LegendItems);
             });
         }
 
