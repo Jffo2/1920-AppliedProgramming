@@ -128,7 +128,7 @@ namespace Project2
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void BrowseGeoJsonFile(object sender, RoutedEventArgs e)
+        private void BrowseGeoJsonFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
@@ -138,7 +138,7 @@ namespace Project2
             if (openFileDialog.ShowDialog() == true)
             {
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
-                await Task.Run(() =>
+                Task.Run(() =>
                 {
                     Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), MODEL_SCALE);
                     if (Visualizer.IsVisualizerReady) RenderModel(null, null);
