@@ -134,38 +134,18 @@ namespace BoundaryVisualizer.Models
 
                     // Use Peucker to eliminate points
                     List<PointF> scarcePoints = EliminatePoints(points);
+                    // The algorithm requires the polygon to be in the first index and all holes to follow, we assume that the longest sequence of points is the polygon and all others are holes
                     if (lstring.Coordinates.Count == o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) normalizedPolygon.Insert(0,scarcePoints);
                     else normalizedPolygon.Add(scarcePoints);
                 }
+                // Create a single polygon of the polygon and all it's holes
                 List<PointF> compositePolygon = CustomHoleTriangulator.ConstructPolygon(normalizedPolygon);
-                DrawPoints(compositePolygon, normalizedPolygon);
                 // Triangulate the polygon
                 List<Triangle> triangles = CustomTriangulator.Triangulate(compositePolygon);
 
                 // Generate the model
                 AssembleModel(compositePolygon, triangles, scale, height);
             }
-        }
-
-        private void DrawPoints(List<PointF> points, List<List<PointF>> normalizedPolygon)
-        {
-            try
-            {
-                Bitmap b = new Bitmap(400, 400);
-                using (Graphics g = Graphics.FromImage(b))
-                {
-                    g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Green)), normalizedPolygon[0].ToArray());
-                    //g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Red)), points.ToArray());
-                    foreach (List<PointF> hole in normalizedPolygon.Skip(1))
-                    {
-                        //g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Blue)), hole.ToArray());
-                    }
-                }
-                var l = "jorn123\\testdraw-" + DateTime.Now.Millisecond + (new Random()).NextDouble() + ".png";
-                System.Diagnostics.Debug.WriteLine(l);
-                b.Save(l);
-            }
-            catch { }
         }
 
         /// <summary>
