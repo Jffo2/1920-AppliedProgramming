@@ -114,10 +114,12 @@ namespace BoundaryVisualizer.Models
             var o = multiPolygon.Coordinates.OrderBy(coords => coords.Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max());
             for (int i = 0; i < o.Count(); i++)
             {
+                System.Diagnostics.Debug.WriteLine("Holecount: " + (o.ElementAt(i).Coordinates.Count-1));
+
+                List<List<PointF>> normalizedPolygon = new List<List<PointF>>();
+
                 foreach (LineString lstring in o.ElementAt(i).Coordinates)
                 {
-                    // If this linestring is not the longest one, implying that it is actually a hole
-                    if (lstring.Coordinates.Count != o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) continue;
 
                     List<PointF> points = new List<PointF>();
                     // Loop over the points, rescale them and add them to the list
@@ -132,15 +134,38 @@ namespace BoundaryVisualizer.Models
 
                     // Use Peucker to eliminate points
                     List<PointF> scarcePoints = EliminatePoints(points);
-                    if (IsPolygonClockwise(scarcePoints)) scarcePoints.Reverse();
-                    
-                    // Triangulate the polygon
-                    List<Triangle> triangles = CustomTriangulator.Triangulate(scarcePoints);
-
-                    // Generate the model
-                    AssembleModel(scarcePoints, triangles, scale, height);
+                    if (lstring.Coordinates.Count == o.ElementAt(i).Coordinates.Select(coordinate => coordinate.Coordinates.Count).Max()) normalizedPolygon.Insert(0,scarcePoints);
+                    else normalizedPolygon.Add(scarcePoints);
                 }
+                List<PointF> compositePolygon = CustomHoleTriangulator.ConstructPolygon(normalizedPolygon);
+                DrawPoints(compositePolygon, normalizedPolygon);
+                // Triangulate the polygon
+                List<Triangle> triangles = CustomTriangulator.Triangulate(compositePolygon);
+
+                // Generate the model
+                AssembleModel(compositePolygon, triangles, scale, height);
             }
+        }
+
+        private void DrawPoints(List<PointF> points, List<List<PointF>> normalizedPolygon)
+        {
+            try
+            {
+                Bitmap b = new Bitmap(400, 400);
+                using (Graphics g = Graphics.FromImage(b))
+                {
+                    g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Green)), normalizedPolygon[0].ToArray());
+                    //g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Red)), points.ToArray());
+                    foreach (List<PointF> hole in normalizedPolygon.Skip(1))
+                    {
+                        //g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Blue)), hole.ToArray());
+                    }
+                }
+                var l = "jorn123\\testdraw-" + DateTime.Now.Millisecond + (new Random()).NextDouble() + ".png";
+                System.Diagnostics.Debug.WriteLine(l);
+                b.Save(l);
+            }
+            catch { }
         }
 
         /// <summary>
@@ -205,24 +230,6 @@ namespace BoundaryVisualizer.Models
                         Geometry = mesh
                     });
                 });
-        }
-
-        /// <summary>
-        /// Checks if a polygon is ordered clockwise
-        /// </summary>
-        /// <param name="points">a list of points representing the polygon</param>
-        /// <returns>true if clockwise, false if counter-clockwise</returns>
-        private static bool IsPolygonClockwise(List<PointF> points)
-        {
-            double sum = 0.0;
-            for (int i = 0; i < points.Count; i++)
-            {
-                checked
-                {
-                    sum += (points[(i + 1) % points.Count].X - points[i].X) * (points[(i + 1) % points.Count].Y + points[i].Y);
-                }
-            }
-            return sum < 0.0;
         }
 
         /// <summary>
