@@ -65,11 +65,11 @@ Het material heeft geen invloed op de vorm van het model, maar op de manier waar
 Wiskundig is een ruimte nodig waarin het 3D model voorgesteld wordt.
 Deze ruimte heeft dus 3 dimensies nodig.
 De conventie is hiervoor een euclidisch assenstelsel te gebruiken.
-De assen worden X, Y en Z genoemd maar hun orientatie verschilt.
-Voor de manipulatie in deze ruimte van het 3D lichaam zal elk punt van het het lichaam gemanipuleerd moeten worden.
+De assen worden X, Y en Z genoemd maar hun oriëntatie verschilt.
+Voor de manipulatie in deze ruimte van het 3D lichaam zal elk punt van het lichaam gemanipuleerd moeten worden.
 Hiervoor worden 3 basistransformaties gebruikt. 
 Deze kunnen voorgesteld worden door matrices.
-Deze matrices kunnen ook samgesteld worden tot een enkele matrix.
+Deze matrices kunnen ook samengesteld worden tot een enkele matrix.
 De drie basistransformaties zijn translatie, rotatie en schaling.
 <div align="left">
     <figure>
@@ -82,10 +82,10 @@ Elke manipulatie van het 3D lichaam in de ruimte kan worden voorgesteld door dez
 ### Point Reduction
 
 Tijdens het renderen is snelheid steeds van uiterst belang.
-Een goede balans tussen snelheid en qualiteit moet gevonden worden afhankelijk van de toepassing.
+Een goede balans tussen snelheid en kwaliteit moet gevonden worden afhankelijk van de toepassing.
 Om snelheid te optimaliseren met een minimale impact op kwaliteit kan point reduction gebruikt worden.
 Wanneer bijvoorbeeld uitgezoomd wordt op een afbeelding dan zullen sommige punten hoe ver ze ook in de ruimte van elkaar liggen op 1 pixel moeten getoond worden.
-Om dit tegen te gaan kan bijvoorbeeld vertex cluster reduciton gebruikt worden. 
+Om dit tegen te gaan kan bijvoorbeeld vertex cluster reduction gebruikt worden. 
 Er zijn twee belangrijke soorten point reduction [[5]](http://geomalgorithms.com/a16-_decimate-1.html).
 
 1. Vertex point reduction
@@ -100,7 +100,7 @@ Er zijn twee belangrijke soorten point reduction [[5]](http://geomalgorithms.com
 
 ### Polygon Triangulation
 
-Niet alle modellen worden gemoddeleerd met driehoeken.
+Niet alle modellen worden gemodelleerd met driehoeken.
 Soms wordt ook gebruik gemaakt van vierkanten (quads in het Engels).
 Veelhoeken met meer dan vier hoeken worden niet aangeraden (zie: [https://www.creativeshrimp.com/ngons-tutorial.html](https://www.creativeshrimp.com/ngons-tutorial.html))
 Het proces dat een veelhoek onderverdeelt in driehoeken noemt men Polygon Triangulation.
@@ -170,12 +170,12 @@ Het programma begint dan met het verwerken van de data gevonden in het GeoJson b
 Er moet een 3D model gemaakt worden van de veelhoeken gevonden in het bestand.
 Voor elke feature in het bestand (bijvoorbeeld provincie, land, ...) wordt een object aangemaakt van de klasse Area3D.
 De klasse Visualizer zal ervoor zorgen dat elke feature terecht komt in een Area3D klasse.
-Er wordt ook onmiddelijk een data provider meegegeven. Deze zal de data afhalen van de statbel API.
+Er wordt ook onmiddellijk een data provider meegegeven. Deze zal de data afhalen van de statbel API.
 Deze data provider zal een "hoogte" geven aan de Area3D, een waarde langs de Z-as.
 De Area3D zal eerst de veelhoeken die het kreeg onderwerpen aan een Point Reduction Algorithm, in dit geval Ramer-Douglas-Peucker.
 Het zal ook de punten normaliseren. Dit houdt in dat het de Mercator projectie zal toepassen op alle punten, en zal zorgen dat alle oppervlakten gelijk geschaald zijn.
-Hierna zal het een polygon opstellen door middel van het de bidirectionele bruggen te trekken van de veelhoek naar zijn gaten.
-Daarna zal het een ear clipping algorithm loslaten op de resulterende veelhoek.
+Hierna zal het een polygon opstellen door bidirectionele bruggen te trekken van de veelhoek naar zijn gaten.
+Daarna zal het een ear clipping algoritme loslaten op de resulterende veelhoek.
 De veelhoek is nu klaar om in 3D opgesteld te worden.
 Er zal een triangle mesh opgesteld worden. 
 Voor de onderkant zal de bekomen veelhoek met de driehoeken van het ear clipping algoritme en Z-waarden op 0 gebruikt worden.
@@ -184,7 +184,7 @@ Om een waarde te bekomen van de data provider zal de Visualizer de naam van de A
 Er resten nu enkel nog de zijkanten.
 Elke 2 punten van de onderkant maken samen met hun respectievelijke punten van de bovenkant een rechthoek.
 Een rechthoek bestaat uit 2 driehoeken. 
-Om de zijkanten te bekomen volstaat het dus deze 2 driehoeken toe te voegen aan de mesh.
+Om de zijkanten te bekomen volstaat het dus deze 2 driehoeken toe te voegen aan de mesh voor elke 2 punten van de onderkant.
 Wanneer alle Area3D's klaar zijn zal aan elke Area3D een kleur worden toegewezen om duidelijk te maken welke delen bij elkaar horen.
 Tot slot wordt de scene opgesteld.
 Er worden lichten toegevoegd, de modellen worden geschaald en verplaatst om goed in de scene te passen en er wordt een legende-overlay over de scene getekend.
