@@ -41,7 +41,7 @@ namespace Project2
             {
                 Fill = new SolidColorBrush(Color.FromArgb(128, 180, 180, 180)),
                 Height = legendItems.Count * 20 + 2 * paddingTopBottom + 60,
-                Width = legendItems.Select((legendItem) => (legendItem.Name.Length + legendItem.Value.ToString().Length)).Max() * 7 + 60
+                Width = Math.Max(legendItems.Select((legendItem) => (legendItem.Name.Length + legendItem.Value.ToString().Length)).Max() * 7 + 60, 210)
             };
             c.Children.Add(r);
             Canvas.SetTop(r, 10);

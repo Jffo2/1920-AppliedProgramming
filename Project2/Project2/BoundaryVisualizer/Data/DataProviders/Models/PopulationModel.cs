@@ -60,7 +60,7 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
                         return b.Population;
                 }
             }
-            return 1.0;
+            return double.NaN;
         }
 
     }

@@ -18,7 +18,6 @@ namespace BoundaryVisualizer.Logic
         /// <returns>a list of points representing the single polygon</returns>
         public static List<PointF> ConstructPolygon(List<List<PointF>> polygon)
         {
-            //return polygon[0];
             List<PointF> topVertices = new List<PointF>(FindTopVertices(polygon));
             List<PointF> constructedPolygon = CreateSimplePolygon(polygon, topVertices);
             return constructedPolygon;
@@ -39,14 +38,12 @@ namespace BoundaryVisualizer.Logic
 
             for (int i = 1; i<polygon.Count; i++)
             {
-                // Don't bother adding really small holes, they'll just mess up triangulation and add no value
+                // Find the closest vertex to the highest vertex of the hole
                 var distances = mainPolygon.Select((point) => CalculateDistance(point, topVertices[i])).ToList();
                 var closestVertexIndex = distances.IndexOf(distances.Min());
 
-                mainPolygon.Insert(closestVertexIndex, mainPolygon[closestVertexIndex]);
-                insertionIndex = closestVertexIndex+1;
 
-                //if (IsPolygonClockwise(polygon[i])) polygon[i].Reverse();
+                // Rotate the polygon so the highest vertex is the starting vertex
                 var rotatedPolygon = polygon[i].Skip(polygon[i].IndexOf(topVertices[i])).ToList();
                 rotatedPolygon.AddRange(polygon[i].Take(polygon[i].IndexOf(topVertices[i])));
 
@@ -57,9 +54,9 @@ namespace BoundaryVisualizer.Logic
                 {
                     continue;
                 }
+                mainPolygon.Insert(closestVertexIndex, mainPolygon[closestVertexIndex]);
+                insertionIndex = closestVertexIndex + 1;
                 mainPolygon.InsertRange(insertionIndex, rotatedPolygon);
-                return mainPolygon;
-
             }
             return mainPolygon;
         }
@@ -71,7 +68,7 @@ namespace BoundaryVisualizer.Logic
         /// <param name="polygon2">the second polygon</param>
         /// <param name="epsilon">the distance that is small enough to be considered an intersection</param>
         /// <returns>the amount of times 2 polygons intersect</returns>
-        private static int PolygonIntersections(List<PointF> polygon1, List<PointF> polygon2, double epsilon = 0.005)
+        private static int PolygonIntersections(List<PointF> polygon1, List<PointF> polygon2, double epsilon = 10)
         {
             int intersections = 0;
             foreach (var point1 in polygon1)

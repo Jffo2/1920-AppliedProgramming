@@ -32,7 +32,7 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
                         return b.PercentageMarried;
                 }
             }
-            return 1.0;
+            return double.NaN;
         }
 
         /// <summary>
@@ -62,7 +62,6 @@ namespace BoundaryVisualizer.Data.DataProviders.Models
             }
             return scale;
         }
-
     }
 
 

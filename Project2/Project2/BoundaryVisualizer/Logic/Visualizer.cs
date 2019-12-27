@@ -35,7 +35,34 @@ namespace BoundaryVisualizer.Logic
         private readonly float scale;
         private readonly FeatureCollection featureCollection;
         private readonly DataProvider dataProvider;
-        private readonly static Color[] colors = { Colors.Red, Colors.Green, Colors.Blue, Colors.Cyan, Colors.Lime, Colors.Magenta, Colors.Black, Colors.Coral, Colors.Salmon, Colors.Silver };
+        private readonly static Color[] colors = { 
+            Colors.Red, 
+            Colors.Green, 
+            Colors.Blue, 
+            Colors.Cyan, 
+            Colors.Lime, 
+            Colors.Magenta, 
+            Colors.Black, 
+            Colors.Coral, 
+            Colors.Salmon, 
+            Colors.Silver, 
+            Colors.AliceBlue, 
+            Colors.AntiqueWhite, 
+            Colors.Aqua, 
+            Colors.DarkGreen, 
+            Colors.DarkOrange, 
+            Colors.Khaki, 
+            Colors.Indigo, 
+            Colors.HotPink, 
+            Colors.IndianRed, 
+            Colors.Crimson, 
+            Colors.PaleVioletRed, 
+            Colors.PapayaWhip, 
+            Colors.Peru, 
+            Colors.Goldenrod,
+            Colors.Crimson,
+            Colors.Lavender
+        };
 
         /// <summary>
         /// Constructor

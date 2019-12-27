@@ -142,11 +142,33 @@ namespace BoundaryVisualizer.Models
                 List<PointF> compositePolygon = CustomHoleTriangulator.ConstructPolygon(normalizedPolygon);
                 // Triangulate the polygon
                 List<Triangle> triangles = CustomTriangulator.Triangulate(compositePolygon);
-
+                DrawPoints(compositePolygon, normalizedPolygon);
                 // Generate the model
                 AssembleModel(compositePolygon, triangles, scale, height);
             }
         }
+
+        private void DrawPoints(List<PointF> points, List<List<PointF>> normalizedPolygon)
+        {
+            try
+            {
+                Bitmap b = new Bitmap(400, 400);
+                using (Graphics g = Graphics.FromImage(b))
+                {
+                    g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Green)), normalizedPolygon[0].ToArray());
+                    g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Red)), points.ToArray());
+                    foreach (List<PointF> hole in normalizedPolygon.Skip(1))
+                    {
+                        g.DrawPolygon(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.Blue)), hole.ToArray());
+                    }
+                }
+                var l = "jorn123\\testdraw-" + DateTime.Now.Millisecond + (new Random()).NextDouble() + ".png";
+                System.Diagnostics.Debug.WriteLine(l);
+                b.Save(l);
+            }
+            catch { }
+        }
+
 
         /// <summary>
         /// Generate the 3D model and assign it to the Geometry property
