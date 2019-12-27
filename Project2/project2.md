@@ -275,3 +275,25 @@ Op dit moment kan het aangewezen zijn om features te verbergen tot Brussel voldo
     ![Belgie met semitransparante modellen en een referentievlak](./VerslagImages/belgie_transparante_modellen_gevuldeOnderkant.png)
     ![Verbergen van features om Brussel voldoende zichtbaar te maken](./VerslagImages/belgie_brussel_zichtbaar.png)
 </div>
+
+## Kritische reflectie
+
+Hier volgt een bespreking van het eindproduct.
+Het eindproduct toont een accurate representatie van een feature.
+De hoogte wordt van statbel afgehaald, en wanneer statbel niet bereikt kan worden zullen reservebestanden geraadpleegd worden.
+De camera kan vrij rondbewegen in de ruimte en het resultaat kan van overal bekeken worden.
+Het model kan semitransparant gemaakt worden en er kan een referentieplaat toegevoegd worden.
+Er wordt gebruik gemaakt van multithreading maar de cpu wordt niet volledig benut.
+In toekomstige versies zou dit toegevoegd kunnen worden.
+Het algoritme dat de gaten berekent is ook zeer basis.
+Het houdt bijvoorbeeld geen rekening met bruggen die andere gaten zouden snijden.
+In de toekomst zou hierop verder gebouwd kunnen worden.
+Tot slot zou in komende versies nog een universele data provider gemaakt kunnen worden.
+Deze data provider zou een bestand kunnen interpreteren dat de user aanreikt.
+Het bestand zou een formaat hanteren gelijkaardig aan dat van statbel.
+Op deze manier kan makkelijk data getoond worden zonder de code te hoeven aanpassen.
+Ondanks de resterende werkpunten voldoet het product volledig aan de eisen.
+Het programma verloopt vlot en alle informatie kan duidelijk en vlot afgelezen worden.
+De code is ook duidelijk gedocumenteerd zodat nieuwe features snel en effectief toegevoegd kunnen worden.
+
+## Bronvermelding
