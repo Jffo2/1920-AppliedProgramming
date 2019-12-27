@@ -192,3 +192,86 @@ Deze legende laat ook toe om Area's te verbergen, het materiaal van de modellen 
 
 ## Experimentatie
 
+Het project laat voldoende ruimte voor experimentatie. 
+Zowel op grafisch vlak als inhoudelijk vlak.
+De gebruiker kan de camera manipuleren om een beter zicht te krijgen, alsook het materiaal aanpassen en een referentievlak toevoegen.
+Het programma laat ook de gebruiker toe om bepaalde Area's te verbergen.
+Er is ook de mogelijkheid om verschillende GeoJson bestanden te gebruiken.
+De informatie die getoond wordt op de Z-as kan ook veranderd worden.
+
+### Verschillende GeoJson bestanden
+
+Ter experimentatie kunnen GeoJson bestanden gebruikt worden van verschillende features.
+Zo kunnen bijvoorbeeld de provinciegrenzen van België geïllustreerd worden maar uiteraard ook de bondslanden van Duitsland.
+Er kan zelfs nog verder gegaan worden wanneer België naast Duitsland getekend wordt ter vergelijking.
+Dit laat gebruikers toe om conclusies te trekken uit de gevisualiseerde grenzen.
+Deze conclusies kunnen gaan over schaal, eigendom van een stuk land of gewoon algemeen vorm.
+![Belgie provinciegrenzen](./VerslagImages/belgie_vorm_programma.png)
+![Duitsland Grenzen](./VerslagImages/duitsland_vorm_programma.png)
+![Belgie vs Duitsland](./VerslagImages/belgie_vs_duitsland.png)
+![Belgie vs Duitsland detail](./VerslagImages/belgie_vs_duitsland_staten.png)
+
+### Conclusies trekken uit de legende
+
+De legende laat toe om features te identificeren.
+Dit laat de gebruiker toe om landen te identificeren of provincies.
+Dit hangt af van de features.
+De legende beschikt over een beperkt aantal kleuren.
+Wanneer meer features aanwezig zijn zullen de kleuren meermaals voorkomen.
+Doch de user kan makkelijk via de legende het gebied verbergen om het zo als nog te identificeren.
+De legende bevat ook de waarden op de Z-as.
+Afhankelijk van de gekozen data provider zullen deze waarden veranderen.
+De grafische voorstelling volstaat voor het vergelijken van de Z-waarden onderling.
+Wanneer echter met discrete waarden gewerkt moet worden kunnen deze in de legende afgelezen worden.
+Wanneer de data provider geen waarde bezit voor een feature dan zal deze in de legende worden aangeduid met "NaN".
+<div>
+    <figure>
+        <img widt="241" height="618" src="./VerslagImages/legende_duitsland_belgie.png" alt="Voorbeeld van een NaN notatie bij Duitse bundeslanden en een waarde bij Belgische provincies" >
+        <figcaption>Voorbeeld van een NaN notatie bij Duitse bondslanden en een discrete waarde bij Belgische provincies</figcaption>
+    </figure>
+</div>
+
+### Manipulatie van de camera
+
+Bij het inladen van een GeoJson bestand zal de feature getoond worden vanuit de lucht, loodrecht op de Z-as.
+Dit wil zeggen dat in een eerste oogopslag geen diepte kan waargenomen worden.
+Om dus de waarden van de data provider te kunnen vergelijken is manipulatie van de camera nodig.
+De bewegingen van de camera zijn: zoom, rotate, translate en pan.
+Bij zoom zal de camera dichter of verder inzoomen op het model.
+Rotate zal het model om zijn as of om de 3D cursor roteren.
+Translate zal de camera verplaatsen doorheen de ruimte zodat het model van andere kanten aanschouwd kan worden.
+Pan zal de camera roteren.
+Op deze manier kan de user zich dus doorheen de volledige ruimte begeven om het model vanuit elke denkbare ooghoek te aanschouwen.
+<div>
+    ![Belgie in vogelperspectief](./VerslagImages/belgie_vogelperspectief.png)
+    ![Een zoom op brussel om aan te tonen dat elke kijkhoek en plaats mogelijk is](./VerslagImages/belgie_brussel_zoom.png)
+</div>
+
+### Vergelijken van data provider waarden
+
+De user heeft de keuze uit verschillende data providers alvorens een GeoJson bestand in te laden.
+Er kan geëxperimenteerd worden met de verschillende data providers.
+Op het moment van schrijven zijn 2 data providers aanwezig.
+Er is een data provider die de totale bevolking van een provincie weergeeft, en er is een data provider die het percentage getrouwde koppels weergeeft.
+De data providers gebruiken de API van statbel. Dit betekent dus dat zij enkel informatie bevatten over België.
+<div>
+    ![Populatie van Belgische provincies](./VerslagImages/belgie_vogelperspectief.png)
+    ![Percentage getrouwde koppels van Belgische provincies](./VerslagImages/percentage_getrouwde_koppels_belgie.png)
+</div>
+
+### Manipulatie van de ruimte via de overlay
+
+De user kan via de overlay modellen semitransparant maken en een vlak toevoegen ter referentie.
+Deze opties kunnen de user helpen om een beter zicht te krijgen op de data die gevisualiseerd wordt.
+Het staat de user toe te experimenteren wat persoonlijk de duidelijkste representatie is.
+Daarbovenop kan de user ook bepaalde features laten verbergen.
+Een voorbeeld hiervan is bij de data provider van percentage getrouwde koppels.
+Omdat Brussel een lagere waarde heeft dan Vlaams-Brabant zal Brussel moeilijk zichtbaar zijn omdat het omringd wordt door Vlaams-Brabant.
+Zelfs wanneer semitransparantie aantstaat zal Brussel nog steeds moeilijk te herkennen zijn van zijaanzicht.
+Op dit moment kan het aangewezen zijn om features te verbergen tot Brussel voldoende zichtbaar is.
+<div>
+    ![Semitransparante modellen](./VerslagImages/belgie_transparante_modellen.png)
+    ![Belgie met een referentievlak](./VerslagImages/belgie_gevuldeOnderkant.png)
+    ![Belgie met semitransparante modellen en een referentievlak](./VerslagImages/belgie_transparante_modellen_gevuldeOnderkant.png)
+    ![Verbergen van features om Brussel voldoende zichtbaar te maken](./VerslagImages/belgie_brussel_zichtbaar.png)
+</div>
