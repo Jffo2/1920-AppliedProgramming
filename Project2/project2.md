@@ -4,7 +4,7 @@
 
 In de moderne maatschappij speelt 3D een grote rol. 
 Zelfs tot op vandaag wordt er nog gezocht naar manieren om onze 3D voorstellingen realistischer en beter te maken. 
-Een voorbeeld is de RTX technologie die NVidia nog niet lang geleden uitbracht[[1]](https://www.youtube.com/watch?v=476N4KX8shA&feature=youtu.be).
+Een voorbeeld is de RTX technologie die Nvidia nog niet lang geleden uitbracht[[1]](https://www.youtube.com/watch?v=476N4KX8shA&feature=youtu.be).
 Deze technologie zorgt dat RayTracing sneller kan berekend worden.
 Deze technologie zorgt ervoor dat lichtinval beter en sneller berekend kan worden wat bijdraagt tot een veel realistischer beeld.
 Het spectrum aan toepassingen van 3D is nog niet half gekend.
@@ -74,7 +74,7 @@ De drie basistransformaties zijn translatie, rotatie en schaling.
 <div align="left">
     <figure>
         <img width="690" height="320" alt="Materials" src="./VerslagImages/matrices_diagram.png">
-        <figcaption>Matrix transformaties [[4]](http://sinestesia.co/wp/wp-content/uploads/2017/08/matrices_diagram.png)</figcaption>
+        <figcaption>Matrix transformaties [[4]](https://sinestesia.co/blog/tutorials/python-cube-matrices/)</figcaption>
     </figure>
 </div>
 Elke manipulatie van het 3D lichaam in de ruimte kan worden voorgesteld door deze transformaties.
@@ -297,3 +297,12 @@ Het programma verloopt vlot en alle informatie kan duidelijk en vlot afgelezen w
 De code is ook duidelijk gedocumenteerd zodat nieuwe features snel en effectief toegevoegd kunnen worden.
 
 ## Bronvermelding
+
+ - Video: [[1]](https://www.youtube.com/watch?v=476N4KX8shA&feature=youtu.be) NVIDIA GeForce, "What's the Latest? DirectX and the New Rise of Ray Tracing." op 11/04/2019. Beschikbaar: https://www.youtube.com/watch?v=476N4KX8shA [Geraadpleegd op 27/12/2019]
+ - Artikel: [[2]](https://gamedev.stackexchange.com/a/9512) Nate, "Why do game engines convert models to triangles instead of using quads?" op 09/03/2011. Beschikbaar: https://gamedev.stackexchange.com/a/9512 [Geraadpleegd op 27/12/2019]
+ - Artikel: [[3]](https://www.turbosquid.com/3d-modeling/materials-texturing/) Onbekend, "Materials & Texturing" op onbekend. Beschikbaar: https://www.turbosquid.com/3d-modeling/materials-texturing/ [Geraadpleegd op 27/12/2019]
+ - Artikel: [[4]](https://sinestesia.co/blog/tutorials/python-cube-matrices/) Onbekend, "Meshes with Python & Blender: Cubes and Matrices" op 25/08/2017. Beschikbaar: https://sinestesia.co/blog/tutorials/python-cube-matrices/ [Geraadpleegd op 27/12/2019]
+ - Artikel: [[5]](http://geomalgorithms.com/a16-_decimate-1.html) Dan Sunday, "Polyline Decimation (Any Dim)" op onbekend. Beschikbaar: http://geomalgorithms.com/a16-_decimate-1.html [Geraadpleegd op 27/12/2019]
+ - Artikel: [[6]](http://www-cgrl.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/introduction.html) Ian Inc., "Ear Cutting For Simple Polygons: Introduction" op 06/12/1997. Beschikbaar: http://www-cgrl.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/introduction.html [Geraadpleegd op 27/12/2019]
+ - Artikel: [[7]](https://en.wikipedia.org/wiki/GeoJSON) Wikipedia, "GeoJSON" op onbekend. Beschikbaar: https://en.wikipedia.org/wiki/GeoJSON [Geraadpleegd op 27/12/2019]
+ - Artikel: [[8]](https://nl.wikipedia.org/wiki/Mercatorprojectie) Wikipedia, "Mercatorprojectie" op onbekend. Beschikbaar: https://nl.wikipedia.org/wiki/Mercatorprojectie [Geraadpleegd op 27/12/2019]
