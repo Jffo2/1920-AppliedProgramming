@@ -140,9 +140,16 @@ namespace Project2
                 FileGeoJsonLoader fileGeoJsonLoader = new FileGeoJsonLoader(openFileDialog.FileName);
                 Task.Run(() =>
                 {
-                    Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), MODEL_SCALE);
-                    if (Visualizer.IsVisualizerReady) RenderModel(null, null);
-                    else Visualizer.OnVisualizerReady += RenderModel;
+                    try
+                    {
+
+                        Visualizer = new Visualizer(fileGeoJsonLoader, this.Dispatcher, GetRequiredDataProvider(), MODEL_SCALE);
+                        if (Visualizer.IsVisualizerReady) RenderModel(null, null);
+                        else Visualizer.OnVisualizerReady += RenderModel;
+                    } catch (System.IO.FileFormatException)
+                    {
+                        MessageBox.Show("Error in GeoJson file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 });
             }
 

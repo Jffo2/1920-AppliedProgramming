@@ -71,6 +71,7 @@ namespace BoundaryVisualizer.Logic
         /// <param name="dispatcher">the dispatcher to dispatch tasks to the main thread</param>
         /// <param name="dataProvider">the data provider used to get the height for the models</param>
         /// <param name="scale">the scale of the model</param>
+        /// <exception cref="System.IO.FileFormatException">This exception is thrown when the geojson file is invalid</exception>
         public Visualizer(IGeoJsonLoader geoJsonLoader, Dispatcher dispatcher, DataProvider dataProvider, float scale)
         {
             IsVisualizerReady = false;

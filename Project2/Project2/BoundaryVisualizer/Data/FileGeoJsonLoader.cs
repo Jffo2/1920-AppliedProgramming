@@ -29,8 +29,15 @@ namespace BoundaryVisualizer.Data
         /// <returns>the feature Collection</returns>
         public FeatureCollection Load()
         {
-            FeatureCollection featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(File.ReadAllText(Path));
-            return featureCollection;
+            try
+            {
+                FeatureCollection featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(File.ReadAllText(Path));
+                return featureCollection;
+            }
+            catch
+            {
+                throw new FileFormatException("The provided JSON file is invalid");
+            }
         }
     }
 }
