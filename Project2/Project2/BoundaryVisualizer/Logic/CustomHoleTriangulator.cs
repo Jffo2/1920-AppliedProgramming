@@ -54,6 +54,7 @@ namespace BoundaryVisualizer.Logic
                 {
                     continue;
                 }
+
                 mainPolygon.Insert(closestVertexIndex, mainPolygon[closestVertexIndex]);
                 insertionIndex = closestVertexIndex + 1;
                 mainPolygon.InsertRange(insertionIndex, rotatedPolygon);
