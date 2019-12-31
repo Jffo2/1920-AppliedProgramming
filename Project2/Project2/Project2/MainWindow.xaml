@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:h="http://helix-toolkit.org/wpf"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Boundary Visualizer" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
