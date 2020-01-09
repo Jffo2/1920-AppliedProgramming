@@ -88,15 +88,15 @@ Wanneer bijvoorbeeld uitgezoomd wordt op een afbeelding dan zullen sommige punte
 Om dit tegen te gaan kan bijvoorbeeld vertex cluster reduction gebruikt worden. 
 Er zijn twee belangrijke soorten point reduction [[5]](http://geomalgorithms.com/a16-_decimate-1.html).
 
-1. Vertex point reduction
+1. **Vertex point reduction: **
     Deze manier van vertex reduction maakt gebruik van een radius.
     Beginnende bij de eerste vertex zal elke vertex binnen een radius $`\delta`$ verwijderd worden.
     Dan wordt naar de volgende overblijvende vertex gegaan en wordt het proces herhaald.
-2. Ramer, Douglas Peucker reduction
+2. **Ramer, Douglas Peucker reduction: **
     Bij RDP zal het begin met het einde van de sequentie van vertices verbonden worden.
-    Wanneer het verste punt van deze lijn verder is dan een radius $`delta`$ zal het proces recursief gesplitst worden.
+    Wanneer het verste punt van deze lijn verder is dan een radius $`\delta`$ zal het proces recursief gesplitst worden.
     Het eerste punt zal nu met dit verste punt verbonden worden en het verste punt met het laatste.
-    Wanneer het verste punt dichter is dan een radius $`delta`$ dan kan deze sequentie dus vereenvoudigd worden door het eerste punt en het laatste.
+    Wanneer het verste punt dichter is dan een radius $`\delta`$ dan kan deze sequentie dus vereenvoudigd worden door het eerste punt en het laatste.
 
 ### Polygon Triangulation
 
@@ -267,7 +267,7 @@ Het staat de user toe te experimenteren wat persoonlijk de duidelijkste represen
 Daarbovenop kan de user ook bepaalde features laten verbergen.
 Een voorbeeld hiervan is bij de data provider van percentage getrouwde koppels.
 Omdat Brussel een lagere waarde heeft dan Vlaams-Brabant zal Brussel moeilijk zichtbaar zijn omdat het omringd wordt door Vlaams-Brabant.
-Zelfs wanneer semitransparantie aantstaat zal Brussel nog steeds moeilijk te herkennen zijn van zijaanzicht.
+Zelfs wanneer semitransparantie aanstaat zal Brussel nog steeds moeilijk te herkennen zijn van zijaanzicht.
 Op dit moment kan het aangewezen zijn om features te verbergen tot Brussel voldoende zichtbaar is.
 <div>
     ![Semitransparante modellen](./VerslagImages/belgie_transparante_modellen.png)
