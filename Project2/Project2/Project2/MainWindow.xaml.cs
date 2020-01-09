@@ -19,10 +19,10 @@ namespace Project2
     {
         public const int MODEL_SCALE = 10;
 
-        Visualizer Visualizer;
+        private Visualizer Visualizer;
 
-        LegendVisualizer legendVisualizer;
-        Model3DGroup modelgroup;
+        private readonly LegendVisualizer legendVisualizer;
+        private Model3DGroup modelgroup;
 
         public MainWindow()
         {

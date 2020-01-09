@@ -220,7 +220,7 @@ namespace BoundaryVisualizer.Models
         /// <returns>the list of points after elimination</returns>
         private static List<PointF> EliminatePoints(List<PointF> points)
         {
-            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));//.Concat(new List<PointF>(new PointF[] { points.Last() })));
+            return new List<PointF>(DouglasPeucker(points.GetRange(0, points.Count - 1), 1));
         }
 
         /// <summary>
