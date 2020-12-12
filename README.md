@@ -1,4 +1,4 @@
-#1920-AppliedProgramming
+# 1920-AppliedProgramming
 
 This repository contains two projects I had to complete for my Applied Programming class.
 The first project contains a program that can compress color on images and can use dithering to emulate color depth.
